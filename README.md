@@ -1,26 +1,17 @@
 # 🌃 RAVEN - Berlin Nightlife Discovery Platform
 
 <div align="center">
-  
-  
-  **Discover. Experience. Transcend.**
-  
-  *The ultimate platform for exploring Berlin's underground nightlife scene*
-
-  <div align="center">
   <img src="./RAVEN.png" alt="RAVEN Logo" width="200"/>
 
   **Discover. Experience. Transcend.**
-  
+
   *The ultimate platform for exploring Berlin's underground nightlife scene*
-   
-   <div align="center">
-     <img src="./TOOL.png" alt="Tools" width="400"/>
-  </div>
-  
-
-
 </div>
+
+<div align="center">
+  <img src="./TOOL.png" alt="Tools" width="400"/>
+</div>
+
 
 ---
 
