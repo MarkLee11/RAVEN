@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Bash(echo $env:USERPROFILE)",
+      "Bash(dir:*)",
+      "Bash(echo:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(node:*)",
+      "Bash(del test-hook.txt)",
+      "Bash(rm:*)",
+      "Bash(git init:*)",
+      "Bash(bash:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "defaultMode": "acceptEdits",
+    "additionalDirectories": [
+      "C:\\Users\\Lenovo",
+      "E:\\c\\Users"
+    ]
+  }
+}

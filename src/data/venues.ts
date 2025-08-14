@@ -1,0 +1,75 @@
+import { Venue } from '../contracts/types';
+
+export const venues: Venue[] = [
+  {
+    id: 'berghain',
+    name: 'Berghain',
+    district: 'Friedrichshain',
+    tags: ['techno', 'late-night', 'tourist-free'],
+    ratings: {
+      music: 95,
+      vibe: 88,
+      crowd: 92,
+      safety: 85,
+    },
+    hasLiveVibe: true,
+    description: 'The cathedral of techno. Unforgiving door, transcendent experience.',
+    address: 'Am Wriezener Bahnhof',
+  },
+  {
+    id: 'about-blank',
+    name: 'About Blank',
+    district: 'Friedrichshain',
+    tags: ['techno', 'outdoor', 'queer-friendly'],
+    ratings: {
+      music: 82,
+      vibe: 90,
+      crowd: 85,
+      safety: 88,
+    },
+    hasLiveVibe: true,
+    description: 'Raw space with garden. More welcoming door, diverse crowd.',
+  },
+  {
+    id: 'watergate',
+    name: 'Watergate',
+    district: 'Kreuzberg',
+    tags: ['house', 'techno', 'tourist-free'],
+    ratings: {
+      music: 85,
+      vibe: 80,
+      crowd: 78,
+      safety: 90,
+    },
+    hasLiveVibe: false,
+    description: 'Panoramic Spree views. Sophisticated sound, mixed crowd.',
+  },
+  {
+    id: 'ritter-butzke',
+    name: 'Ritter Butzke',
+    district: 'Kreuzberg',
+    tags: ['techno', 'house', 'cash-only', 'smoke-room'],
+    ratings: {
+      music: 88,
+      vibe: 85,
+      crowd: 82,
+      safety: 80,
+    },
+    hasLiveVibe: true,
+    description: 'Hidden gem in former newspaper printing house.',
+  },
+  {
+    id: 'klunkerkranich',
+    name: 'Klunkerkranich',
+    district: 'Neukölln',
+    tags: ['house', 'disco', 'outdoor', 'queer-friendly'],
+    ratings: {
+      music: 75,
+      vibe: 92,
+      crowd: 88,
+      safety: 95,
+    },
+    hasLiveVibe: false,
+    description: 'Rooftop paradise above shopping mall. Sunset sessions.',
+  },
+];
