@@ -1,28 +1,43 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Landing from './routes/Landing';
 import Clubs from './routes/Clubs';
 import ClubDetail from './routes/ClubDetail';
 import Bars from './routes/Bars';
 import BarDetail from './routes/BarDetail';
-import Plans from './routes/Plans';
-import PlanDetail from './routes/PlanDetail';
 import SubmitReview from './routes/SubmitReview';
 import Profile from './routes/Profile';
+import FavoriteBars from './routes/FavoriteBars';
+import FavoriteClubs from './routes/FavoriteClubs';
 import RavenBottomNav from './components/RavenBottomNav';
 
 function App() {
+  const HeaderLogo: React.FC = () => {
+    const navigate = useNavigate();
+    const handlePointerDown: React.PointerEventHandler<HTMLButtonElement> = (e) => {
+      e.preventDefault();
+      navigate('/');
+    };
+    return (
+      <button
+        type="button"
+        onPointerDown={handlePointerDown}
+        className="flex items-center justify-center h-full w-full cursor-pointer select-none header-logo"
+        aria-label="Go to CORE"
+      >
+        <h1 className="font-space text-xl text-ink transition-transform duration-0 will-change-transform active:-translate-y-1">
+          RAVE<span className="text-raven">N</span>
+        </h1>
+      </button>
+    );
+  };
   return (
     <Router>
       <div className="bg-berlin-black min-h-screen font-inter relative">
         {/* Fixed Top Navigation Bar */}
-        <div className="fixed top-0 left-0 right-0 bg-berlin-black border-b border-ash/10 z-50 h-16" style={{ position: 'fixed !important' }}>
-          <div className="flex items-center justify-center h-full">
-            <h1 className="font-space text-xl text-ink">
-              RAVE<span className="text-raven">N</span>
-            </h1>
-          </div>
+        <div className="fixed top-0 left-0 right-0 bg-berlin-black border-b border-ash/10 z-[9999] h-16 pointer-events-auto" style={{ position: 'fixed !important' }}>
+          <HeaderLogo />
         </div>
         
         {/* Main Content with top and bottom padding to account for fixed bars */}
@@ -34,10 +49,10 @@ function App() {
             <Route path="/clubs/:id" element={<ClubDetail />} />
             <Route path="/bars" element={<Bars />} />
             <Route path="/bars/:id" element={<BarDetail />} />
-            <Route path="/plans" element={<Plans />} />
-            <Route path="/plans/:id" element={<PlanDetail />} />
             <Route path="/submit" element={<SubmitReview />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/favorites/bars" element={<FavoriteBars />} />
+            <Route path="/favorites/clubs" element={<FavoriteClubs />} />
             <Route path="*" element={
               <div className="min-h-screen bg-berlin-black flex items-center justify-center pb-20 md:pb-8">
                 <div className="text-center scanline">

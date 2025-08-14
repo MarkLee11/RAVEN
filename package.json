@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:live": "netlify dev --live=ravenberlin --debug",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"

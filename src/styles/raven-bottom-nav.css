@@ -16,6 +16,8 @@
   padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
   z-index: 50;
   pointer-events: none;
+  /* Performance optimizations only - no visual changes */
+  touch-action: manipulation;
 }
 
 .raven-nav .pane {
@@ -60,6 +62,10 @@
   align-items: center;
   justify-content: center;
   transition: color 0.15s ease;
+  /* Performance optimizations only - no visual changes */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  will-change: color;
 }
 
 .raven-nav button:focus-visible {
@@ -82,6 +88,8 @@
   transform: translateX(calc(var(--i, 0) * 100%));
   transition: transform 0.16s ease, background-color 0.16s ease;
   z-index: 0;
+  /* Performance optimization only - no visual changes */
+  will-change: transform;
 }
 
 @media (hover: hover) {

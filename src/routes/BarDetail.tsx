@@ -6,6 +6,7 @@ import { Venue, Review, VibeSummary } from '../contracts/types';
 import { barsService } from '../services/barsService';
 import { reviewsService } from '../services/reviewsService';
 import { vibeService } from '../services/vibeService';
+import { favoritesService } from '../services/favoritesService';
 import { formatTimeAgo } from '../lib/utils';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
@@ -21,6 +22,7 @@ const BarDetail: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [vibeSummary, setVibeSummary] = useState<VibeSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -28,18 +30,25 @@ const BarDetail: React.FC = () => {
     }
   }, [id]);
 
+  useEffect(() => {
+    // 页面加载时滚动到顶部
+    window.scrollTo(0, 0);
+  }, []);
+
   const loadBarData = async (barId: string) => {
     setLoading(true);
     try {
-      const [barData, reviewsData, vibeData] = await Promise.all([
+      const [barData, reviewsData, favoriteStatus] = await Promise.all([
         barsService.getBar(barId),
-        reviewsService.listReviews(barId),
-        vibeService.getVibeSummary(barId)
+        reviewsService.listBarReviews(barId),
+        favoritesService.isFavorite(barId, 'bar')
       ]);
 
       setBar(barData);
       setReviews(reviewsData);
-      setVibeSummary(vibeData);
+      setIsFavorite(favoriteStatus);
+      // Bars don't have vibe summary feature
+      setVibeSummary(null);
     } catch (error) {
       console.error('Failed to load bar data:', error);
     } finally {
@@ -54,6 +63,29 @@ const BarDetail: React.FC = () => {
       </div>
     );
   }
+
+  // Calculate average ratings from reviews, fallback to default bar ratings
+  const calculateAverageRatings = () => {
+    if (reviews.length === 0) {
+      return bar?.ratings || { music: 0, vibe: 0, crowd: 0, safety: 0 };
+    }
+    
+    const totals = reviews.reduce((acc, review) => ({
+      music: acc.music + review.ratings.music,
+      vibe: acc.vibe + review.ratings.vibe,
+      crowd: acc.crowd + review.ratings.crowd,
+      safety: acc.safety + review.ratings.safety,
+    }), { music: 0, vibe: 0, crowd: 0, safety: 0 });
+    
+    return {
+      music: Math.round(totals.music / reviews.length),
+      vibe: Math.round(totals.vibe / reviews.length),
+      crowd: Math.round(totals.crowd / reviews.length),
+      safety: Math.round(totals.safety / reviews.length),
+    };
+  };
+
+  const currentRatings = calculateAverageRatings();
 
   if (!bar) {
     return (
@@ -93,6 +125,30 @@ const BarDetail: React.FC = () => {
               <span>{bar.district}</span>
             </div>
           </div>
+          <button
+            aria-label="Toggle favorite"
+            onClick={async () => {
+              if (!bar) return;
+              const success = await favoritesService.toggleFavorite(bar.id, 'bar');
+              if (success) {
+                setIsFavorite(prev => !prev);
+              }
+            }}
+            className="p-1.5"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill={isFavorite ? '#8ACE00' : 'transparent'}
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polygon points="12 2 14.85 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 9.15 8.26 12 2" />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -118,19 +174,120 @@ const BarDetail: React.FC = () => {
         <Card>
           <h3 className="font-space text-lg text-ink mb-4">Overall Ratings</h3>
           <div className="grid grid-cols-2 gap-4">
-            <RatingBar label="Drinks" value={bar.ratings.music} />
-            <RatingBar label="Vibe" value={bar.ratings.vibe} />
-            <RatingBar label="Crowd" value={bar.ratings.crowd} />
-            <RatingBar label="Safety" value={bar.ratings.safety} />
+            <RatingBar label="Quality" value={currentRatings.music} />
+            <RatingBar label="Vibe" value={currentRatings.vibe} />
+            <RatingBar label="Price" value={currentRatings.crowd} />
+            <RatingBar label="Friendliness" value={currentRatings.safety} />
           </div>
         </Card>
 
         {/* Add Review Button */}
-        <Link to="/submit" state={{ venueId: bar.id, venueName: bar.name }}>
-          <Button className="w-full justify-center">
-            <MessageCircle size={16} className="mr-2" />
-            Add Review
-          </Button>
+        <Link to="/submit" state={{ venueId: bar.id, venueName: bar.name, venueType: 'bar' }} className="flex justify-center">
+          <button className="pour-words-button">
+            Pour Words
+            <div className="star-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlSpace="preserve"
+                version="1.1"
+                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", imageRendering:"optimizeQuality", fillRule:"evenodd", clipRule:"evenodd"}}
+                viewBox="0 0 784.11 815.53"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+              >
+                <g id="Layer_x0020_1">
+                  <path
+                    className="fil0"
+                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                  />
+                </g>
+              </svg>
+            </div>
+            <div className="star-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlSpace="preserve"
+                version="1.1"
+                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", imageRendering:"optimizeQuality", fillRule:"evenodd", clipRule:"evenodd"}}
+                viewBox="0 0 784.11 815.53"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+              >
+                <g id="Layer_x0020_1">
+                  <path
+                    className="fil0"
+                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                  />
+                </g>
+              </svg>
+            </div>
+            <div className="star-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlSpace="preserve"
+                version="1.1"
+                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", imageRendering:"optimizeQuality", fillRule:"evenodd", clipRule:"evenodd"}}
+                viewBox="0 0 784.11 815.53"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+              >
+                <g id="Layer_x0020_1">
+                  <path
+                    className="fil0"
+                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                  />
+                </g>
+              </svg>
+            </div>
+            <div className="star-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlSpace="preserve"
+                version="1.1"
+                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", imageRendering:"optimizeQuality", fillRule:"evenodd", clipRule:"evenodd"}}
+                viewBox="0 0 784.11 815.53"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+              >
+                <g id="Layer_x0020_1">
+                  <path
+                    className="fil0"
+                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                  />
+                </g>
+              </svg>
+            </div>
+            <div className="star-5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlSpace="preserve"
+                version="1.1"
+                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", imageRendering:"optimizeQuality", fillRule:"evenodd", clipRule:"evenodd"}}
+                viewBox="0 0 784.11 815.53"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+              >
+                <g id="Layer_x0020_1">
+                  <path
+                    className="fil0"
+                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                  />
+                </g>
+              </svg>
+            </div>
+            <div className="star-6">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlSpace="preserve"
+                version="1.1"
+                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", imageRendering:"optimizeQuality", fillRule:"evenodd", clipRule:"evenodd"}}
+                viewBox="0 0 784.11 815.53"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+              >
+                <g id="Layer_x0020_1">
+                  <path
+                    className="fil0"
+                    d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
+                  />
+                </g>
+              </svg>
+            </div>
+          </button>
         </Link>
 
         {/* Reviews */}
@@ -155,34 +312,34 @@ const BarDetail: React.FC = () => {
                   transition={{ delay: index * 0.1 }}
                 >
                   <Card>
-                    <div className="flex items-start space-x-3">
-                      <Avatar
-                        name={review.authorName || 'Anonymous'}
-                        isAnonymous={review.isAnonymous}
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm text-ink font-medium">
-                            {review.isAnonymous ? 'Anonymous' : review.authorName}
-                          </span>
-                          <span className="text-xs text-ash">
-                            {formatTimeAgo(review.createdAt)}
-                          </span>
-                        </div>
+                    <div>
+                      <div className="flex justify-end mb-2">
+                        <span className="text-xs text-ash">
+                          {formatTimeAgo(review.createdAt)}
+                        </span>
+                      </div>
                         
                         <p className="text-sm text-ash mb-3 leading-relaxed">
                           {review.comment}
                         </p>
                         
                         <div className="grid grid-cols-2 gap-2">
-                          {Object.entries(review.ratings).map(([key, value]) => (
-                            <div key={key} className="flex justify-between text-xs">
-                              <span className="text-ash capitalize">
-                                {key === 'music' ? 'drinks' : key}:
-                              </span>
-                              <span className="text-ink font-medium">{value}%</span>
-                            </div>
-                          ))}
+                          <div className="flex justify-between text-xs">
+                            <span className="text-ash capitalize">quality:</span>
+                            <span className="text-ink font-medium">{review.ratings.music}%</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-ash capitalize">vibe:</span>
+                            <span className="text-ink font-medium">{review.ratings.vibe}%</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-ash capitalize">price:</span>
+                            <span className="text-ink font-medium">{review.ratings.crowd}%</span>
+                          </div>
+                          <div className="flex justify-between text-xs">
+                            <span className="text-ash capitalize">friendliness:</span>
+                            <span className="text-ink font-medium">{review.ratings.safety}%</span>
+                          </div>
                         </div>
                         
                         {review.queueTime && (
@@ -190,7 +347,6 @@ const BarDetail: React.FC = () => {
                             Wait time: {review.queueTime} minutes
                           </div>
                         )}
-                      </div>
                     </div>
                   </Card>
                 </motion.div>

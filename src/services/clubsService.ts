@@ -115,6 +115,43 @@ export const clubsService = {
 
       if (!clubsData) return [];
 
+      // Compute review-averaged ratings for each club (0-5 -> 0-100)
+      const clubIds: number[] = clubsData.map((c: any) => c.id).filter((v: any) => typeof v === 'number');
+      let averagesByClubId: Record<number, { music: number; vibe: number; crowd: number; safety: number }> = {};
+      try {
+        if (clubIds.length > 0) {
+          const { data: avgRows, error: avgError } = await supabase
+            .from('club_reviews')
+            .select('club_id, music_rating, vibe_rating, crowd_rating, safety_rating')
+            .in('club_id', clubIds);
+          if (!avgError && Array.isArray(avgRows)) {
+            const agg: Record<number, { m: number; v: number; c: number; s: number; n: number }> = {};
+            for (const row of avgRows as any[]) {
+              const idNum = Number(row.club_id);
+              if (!agg[idNum]) agg[idNum] = { m: 0, v: 0, c: 0, s: 0, n: 0 };
+              agg[idNum].m += Number(row.music_rating || 0);
+              agg[idNum].v += Number(row.vibe_rating || 0);
+              agg[idNum].c += Number(row.crowd_rating || 0);
+              agg[idNum].s += Number(row.safety_rating || 0);
+              agg[idNum].n += 1;
+            }
+            for (const [idStr, val] of Object.entries(agg)) {
+              const idNum = Number(idStr);
+              if (val.n > 0) {
+                averagesByClubId[idNum] = {
+                  music: Math.round((val.m / val.n) * 20),
+                  vibe: Math.round((val.v / val.n) * 20),
+                  crowd: Math.round((val.c / val.n) * 20),
+                  safety: Math.round((val.s / val.n) * 20),
+                };
+              }
+            }
+          }
+        }
+      } catch (avgErr) {
+        console.warn('Average review ratings aggregation failed; falling back to club_ratings.', avgErr);
+      }
+
       // Transform database data to Venue format
       const venues: Venue[] = clubsData.map(club => {
         const ratings = club.club_ratings || {
@@ -139,16 +176,19 @@ export const clubsService = {
           ...(club.card_accepted ? ['card-accepted'] : []),
         ];
 
+        const averaged = averagesByClubId[Number(club.id)];
+
         return {
           id: club.id.toString(),
           name: club.name,
           district: club.districts?.name || 'Unknown District',
           tags: tags as any[],
           ratings: {
-            music: Math.round(ratings?.music_rating || 0), // Database already stores 0-100
-            vibe: Math.round(ratings?.vibe_rating || 0),
-            crowd: Math.round(ratings?.crowd_rating || 0),
-            safety: Math.round(ratings?.safety_rating || 0),
+            // Prefer arithmetic mean from reviews if available, else fall back to club_ratings
+            music: averaged ? averaged.music : Math.round(ratings?.music_rating || 0),
+            vibe: averaged ? averaged.vibe : Math.round(ratings?.vibe_rating || 0),
+            crowd: averaged ? averaged.crowd : Math.round(ratings?.crowd_rating || 0),
+            safety: averaged ? averaged.safety : Math.round(ratings?.safety_rating || 0),
           },
           hasLiveVibe,
           description: club.description,
@@ -224,6 +264,23 @@ export const clubsService = {
     } catch (error) {
       console.error('Failed to load club:', error);
       return null;
+    }
+  },
+
+  async getTotalCount(): Promise<number> {
+    try {
+      const { count, error } = await supabase
+        .from('clubs')
+        .select('*', { count: 'exact', head: true });
+
+      if (error) {
+        throw error;
+      }
+
+      return count || 0;
+    } catch (error) {
+      console.error('Failed to get clubs count:', error);
+      return 0;
     }
   },
 };

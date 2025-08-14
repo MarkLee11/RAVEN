@@ -5,10 +5,30 @@ import { ArrowRight, Zap } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import WordStreamReviews from '../components/WordStreamReviews';
+import { supabase } from '../lib/supabase';
 
 const Landing: React.FC = () => {
   const headerRef = React.useRef<HTMLDivElement>(null);
   const cardsRef = React.useRef<HTMLDivElement>(null);
+  const [clubsCount, setClubsCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchClubsCount = async () => {
+      try {
+        const { count, error } = await supabase
+          .from('clubs')
+          .select('id', { count: 'exact', head: true });
+        if (error) {
+          console.error('Error fetching clubs count:', error);
+          return;
+        }
+        setClubsCount(count ?? 0);
+      } catch (err) {
+        console.error('Failed to fetch clubs count:', err);
+      }
+    };
+    fetchClubsCount();
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-berlin-black overflow-hidden">
@@ -42,7 +62,7 @@ const Landing: React.FC = () => {
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.4 }}
-              className="transition-transform duration-300 w-full perspective-1000 hover:scale-105"
+              className="transition-transform duration-300 w-[80vw] md:w-full perspective-1000 hover:scale-105"
               style={{
                 transform: 'rotateZ(6deg) rotateX(5deg) rotateY(-2deg)',
                 boxShadow: '8px 12px 24px rgba(0, 0, 0, 0.4), 4px 6px 12px rgba(138, 206, 0, 0.1)'
@@ -97,17 +117,24 @@ const Landing: React.FC = () => {
                 
                 {/* Content with relative positioning to stay above smoke */}
                 <div className="relative z-10">
-                <div className="flex items-center space-x-2 mb-2">
+                <div className="flex items-center mb-12">
                   <Zap size={16} className="text-raven animate-pulse" />
-                  <span className="text-xs text-raven font-medium">NO CARE, WE DARE, LAID BARE</span>
+                  <div className="flex-1 flex items-center justify-between px-2 text-xs text-raven font-medium">
+                    <span>NO CARE</span>
+                    <span>WE DARE</span>
+                    <span>LAID BARE</span>
+                  </div>
+                  <Zap size={16} className="text-raven animate-pulse" />
                 </div>
-                <h3 className="font-space text-lg text-ink mb-1">RAVEN</h3>
-                <p className="text-sm text-ash mb-3">
-                  We exist for only one thing: reviews of Berlin's clubs and bars for others. NO TICKETS, NO PROMOS—SAY WHATEVER YOU WANT.
-                </p>
+                
+                {/* Removed NO guest lists / NO secrets / NO mercy / NO boundaries line as requested */}
+                <div className="text-ash mb-12 font-playfair text-base font-semibold text-center">
+                  <div>Unfiltered truth of Berlin</div>
+                  <div>from those who lived it</div>
+                </div>
                 <div className="flex justify-between text-xs text-ash">
-                  <span>Clubs tracked: <span className="text-raven">128</span></span>
-                  <span>Bars tracked: <span className="text-raven">342</span></span>
+                  <span><span className="text-raven">Clubs</span> tracked: <span className="text-raven">{clubsCount ?? '—'}</span></span>
+                  <span><span className="text-raven">Bars</span> tracked: <span className="text-raven">342</span></span>
                 </div>
                 </div>
                 </div>
@@ -120,7 +147,7 @@ const Landing: React.FC = () => {
   initial={{ y: 30, opacity: 0 }}
   animate={{ y: 0, opacity: 1 }}
   transition={{ delay: 0.6 }}
-  className="transition-transform duration-300 w-full hover:scale-105"
+  className="transition-transform duration-300 w-[80vw] md:w-full hover:scale-105"
   style={{
     transform: 'rotateZ(-20deg) rotateX(-8deg) rotateY(12deg)',
     boxShadow: '-6px 10px 20px rgba(0, 0, 0, 0.5), -3px 5px 10px rgba(138, 206, 0, 0.15)'
@@ -141,7 +168,7 @@ const Landing: React.FC = () => {
   initial={{ y: 30, opacity: 0 }}
   animate={{ y: 0, opacity: 1 }}
   transition={{ delay: 0.8 }}
-  className="transition-transform duration-300 w-full hover:scale-105"
+  className="transition-transform duration-300 w-[80vw] md:w-full hover:scale-105"
   style={{
     transform: 'rotateZ(15deg) rotateX(8deg) rotateY(-6deg)',
     boxShadow: '10px 8px 28px rgba(0, 0, 0, 0.6), 5px 4px 14px rgba(138, 206, 0, 0.2)'

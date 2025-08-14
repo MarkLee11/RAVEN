@@ -1,9 +1,10 @@
+
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
-
 :root {
   --berlin-black: #0B0B0B;
   --carbon: #101214;
@@ -25,6 +26,332 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Prevent double-tap hover delay on mobile for header logo */
+.header-logo {
+  touch-action: manipulation;
+}
+
+@media (hover: none) {
+  .header-logo:hover {
+    transform: none !important;
+  }
+}
+
+/* Desktop-only hover color for Clubs Filters button */
+@media (hover: hover) and (pointer: fine) {
+  .filters-hover:hover {
+    color: var(--ink);
+  }
+}
+
+.filters-touch {
+  touch-action: manipulation;
+}
+
+/* eliminate mobile tap delay for fast feedback */
+.tap-fast {
+  touch-action: manipulation;
+}
+
+/* Pour Words button styles (adapted from Uiverse.io by MuhammadHasann) */
+.pour-words-button {
+  position: relative;
+  padding: 12px 52px; /* Extended width by 1.5x (35px -> 52px) */
+  background: #8ACE00;
+  font-size: 17px;
+  font-weight: 500;
+  color: #181818;
+  border: 3px solid #8ACE00;
+  border-radius: 8px;
+  box-shadow: 0 0 0 #8ACE0080;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.pour-words-button .star-1 {
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 25px;
+  height: auto;
+  filter: drop-shadow(0 0 0 #fffdef);
+  z-index: -5;
+  transition: all 1s cubic-bezier(0.05, 0.83, 0.43, 0.96);
+}
+
+.pour-words-button .star-2 {
+  position: absolute;
+  top: 45%;
+  left: 45%;
+  width: 15px;
+  height: auto;
+  filter: drop-shadow(0 0 0 #fffdef);
+  z-index: -5;
+  transition: all 1s cubic-bezier(0, 0.4, 0, 1.01);
+}
+
+.pour-words-button .star-3 {
+  position: absolute;
+  top: 40%;
+  left: 40%;
+  width: 5px;
+  height: auto;
+  filter: drop-shadow(0 0 0 #fffdef);
+  z-index: -5;
+  transition: all 1s cubic-bezier(0, 0.4, 0, 1.01);
+}
+
+.pour-words-button .star-4 {
+  position: absolute;
+  top: 20%;
+  left: 40%;
+  width: 8px;
+  height: auto;
+  filter: drop-shadow(0 0 0 #fffdef);
+  z-index: -5;
+  transition: all 0.8s cubic-bezier(0, 0.4, 0, 1.01);
+}
+
+.pour-words-button .star-5 {
+  position: absolute;
+  top: 25%;
+  left: 45%;
+  width: 15px;
+  height: auto;
+  filter: drop-shadow(0 0 0 #fffdef);
+  z-index: -5;
+  transition: all 0.6s cubic-bezier(0, 0.4, 0, 1.01);
+}
+
+.pour-words-button .star-6 {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  width: 5px;
+  height: auto;
+  filter: drop-shadow(0 0 0 #fffdef);
+  z-index: -5;
+  transition: all 0.8s ease;
+}
+
+.pour-words-button:hover {
+  background: transparent;
+  color: #8ACE00;
+  box-shadow: 0 0 25px #8ACE0080;
+}
+
+.pour-words-button:hover .star-1 {
+  position: absolute;
+  top: -80%;
+  left: -30%;
+  width: 25px;
+  height: auto;
+  filter: drop-shadow(0 0 10px #fffdef);
+  z-index: 2;
+}
+
+.pour-words-button:hover .star-2 {
+  position: absolute;
+  top: -25%;
+  left: 10%;
+  width: 15px;
+  height: auto;
+  filter: drop-shadow(0 0 10px #fffdef);
+  z-index: 2;
+}
+
+.pour-words-button:hover .star-3 {
+  position: absolute;
+  top: 55%;
+  left: 25%;
+  width: 5px;
+  height: auto;
+  filter: drop-shadow(0 0 10px #fffdef);
+  z-index: 2;
+}
+
+.pour-words-button:hover .star-4 {
+  position: absolute;
+  top: 30%;
+  left: 80%;
+  width: 8px;
+  height: auto;
+  filter: drop-shadow(0 0 10px #fffdef);
+  z-index: 2;
+}
+
+.pour-words-button:hover .star-5 {
+  position: absolute;
+  top: 25%;
+  left: 115%;
+  width: 15px;
+  height: auto;
+  filter: drop-shadow(0 0 10px #fffdef);
+  z-index: 2;
+}
+
+.pour-words-button:hover .star-6 {
+  position: absolute;
+  top: 5%;
+  left: 60%;
+  width: 5px;
+  height: auto;
+  filter: drop-shadow(0 0 10px #fffdef);
+  z-index: 2;
+}
+
+.pour-words-button .fil0 {
+  fill: #fffdef;
+}
+
+/* CTA Skewed button styles (adapted from Uiverse.io by mobinkakei) */
+.cta {
+  display: flex;
+  padding: 11px 33px;
+  text-decoration: none;
+  font-size: 25px;
+  color: white;
+  background: #8ACE00;
+  transition: 1s;
+  box-shadow: 6px 6px 0 black;
+  transform: skewX(-15deg);
+  border: none;
+  cursor: pointer;
+}
+
+.cta:focus {
+  outline: none;
+}
+
+.cta:hover {
+  transition: 0.5s;
+  box-shadow: 10px 10px 0 #8ACE00;
+}
+
+.cta .second {
+  transition: 0.5s;
+  margin-right: 0px;
+}
+
+.cta:hover .second {
+  transition: 0.5s;
+  margin-right: 45px;
+}
+
+.cta .span {
+  transform: skewX(15deg);
+}
+
+.cta .second {
+  width: 20px;
+  margin-left: 30px;
+  position: relative;
+  top: 12%;
+}
+
+.cta .one {
+  transition: 0.4s;
+  transform: translateX(-60%);
+}
+
+.cta .two {
+  transition: 0.5s;
+  transform: translateX(-30%);
+}
+
+.cta:hover .three {
+  animation: color_anim 1s infinite 0.2s;
+}
+
+.cta:hover .one {
+  transform: translateX(0%);
+  animation: color_anim 1s infinite 0.6s;
+}
+
+.cta:hover .two {
+  transform: translateX(0%);
+  animation: color_anim 1s infinite 0.4s;
+}
+
+@keyframes color_anim {
+  0% {
+    fill: white;
+  }
+
+  50% {
+    fill: #8ACE00;
+  }
+
+  100% {
+    fill: white;
+  }
+}
+
+/* Graveyard button styles (adapted from Uiverse.io by satyamchaudharydev) */
+.graveyard-button {
+  --primary-color: #8ACE00;
+  --secondary-color: #fff;
+  --hover-color: #111;
+  --arrow-width: 10px;
+  --arrow-stroke: 2px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 20px;
+  color: var(--secondary-color);
+  padding: 1em 1.8em;
+  background: var(--primary-color);
+  display: flex;
+  transition: 0.2s background;
+  align-items: center;
+  gap: 0.6em;
+  font-weight: bold;
+}
+
+.graveyard-button .arrow-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.graveyard-button .arrow {
+  margin-top: 1px;
+  width: var(--arrow-width);
+  background: var(--primary-color);
+  height: var(--arrow-stroke);
+  position: relative;
+  transition: 0.2s;
+}
+
+.graveyard-button .arrow::before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  border: solid var(--secondary-color);
+  border-width: 0 var(--arrow-stroke) var(--arrow-stroke) 0;
+  display: inline-block;
+  top: -3px;
+  right: 3px;
+  transition: 0.2s;
+  padding: 3px;
+  transform: rotate(-45deg);
+}
+
+.graveyard-button:hover {
+  background-color: var(--hover-color);
+}
+
+.graveyard-button:hover .arrow {
+  background: var(--secondary-color);
+}
+
+.graveyard-button:hover .arrow:before {
+  right: 0;
 }
 
 body::before {
@@ -272,4 +599,161 @@ p {
   40% { transform: translate(12px, 10px) scale(0.7); opacity: 0.06; }
   60% { transform: translate(-15px, -5px) scale(1.1); opacity: 0.03; }
   80% { transform: translate(5px, 15px) scale(0.9); opacity: 0.05; }
+}
+
+/* Circular rotating text button (green variant of Uiverse.io) */
+/* Adapted: purple (#7808d0) -> #8ACE00; flattened nested selectors */
+.button {
+  cursor: pointer;
+  border: none;
+  background: #8ACE00;
+  color: #fff;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  display: grid;
+  place-content: center;
+  transition:
+    background 300ms,
+    transform 200ms;
+  font-weight: 600;
+}
+
+.button__text {
+  position: absolute;
+  inset: 0;
+  animation: text-rotation 8s linear infinite;
+}
+
+.button__text > span {
+  position: absolute;
+  transform: rotate(calc(19deg * var(--index)));
+  inset: 7px;
+}
+
+.button__circle {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  background: #fff;
+  color: #8ACE00;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button__icon--copy {
+  position: absolute;
+  transform: translate(-150%, 150%);
+}
+
+.button:hover {
+  background: #000;
+  transform: scale(1.05);
+}
+
+.button:hover .button__icon {
+  color: #000;
+}
+
+.button:hover .button__icon:first-child {
+  transition: transform 0.3s ease-in-out;
+  transform: translate(150%, -150%);
+}
+
+.button:hover .button__icon--copy {
+  transition: transform 0.3s ease-in-out 0.1s;
+  transform: translate(0);
+}
+
+@keyframes text-rotation {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* SubmitReview range sliders: color only */
+.slider {
+  accent-color: #8ACE00;
+}
+
+/* Mobile-friendly slider styling: ensure green on iOS/Android */
+.slider::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, #8ACE00 var(--fill, 50%), rgba(156, 163, 175, 0.2) var(--fill, 50%));
+  height: 8px;
+  border-radius: 8px;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #8ACE00;
+  border: 2px solid #0B0B0B;
+  margin-top: -10px; /* centers thumb on 8px track */
+}
+.slider::-moz-range-track {
+  background: linear-gradient(to right, #8ACE00 var(--fill, 50%), rgba(156, 163, 175, 0.2) var(--fill, 50%));
+  height: 8px;
+  border-radius: 8px;
+}
+.slider::-moz-range-progress {
+  background-color: #8ACE00;
+  height: 8px;
+  border-radius: 8px 0 0 8px;
+}
+.slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #8ACE00;
+  border: 2px solid #0B0B0B;
+}
+
+/* Spill button (Explore -> Spill) doubled size variant */
+.spill-button {
+  width: 220px; /* 110 * 2 */
+  height: 80px; /* 40 * 2 */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px; /* 10 * 2 */
+  background-color: #8ACE00; /* replace rgb(161,255,20) with theme green */
+  border-radius: 60px; /* 30 * 2 */
+  color: #131313;
+  font-weight: 600;
+  font-size: 2rem; /* double font size approximately */
+  border: none;
+  position: relative;
+  cursor: pointer;
+  transition-duration: .2s;
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.116); /* doubled */
+  padding-left: 16px; /* 8 * 2 */
+  transition-duration: .5s;
+}
+
+.spill-svgIcon {
+  height: 50px; /* 25 * 2 */
+  transition-duration: 1.5s;
+  fill: #131313;
+}
+
+.spill-button:hover {
+  background-color: #a3e64c; /* lighter green on hover */
+  transition-duration: .5s;
+}
+
+.spill-button:active {
+  transform: scale(0.97);
+  transition-duration: .2s;
+}
+
+.spill-button:hover .spill-svgIcon {
+  transform: rotate(250deg);
+  transition-duration: 1.5s;
 }

@@ -50,35 +50,6 @@ export interface VibeSummary {
   bestWindow?: string;
 }
 
-export interface Plan {
-  id: string;
-  title: string;
-  description: string;
-  timeWindow: string;
-  meetupHint: string; // vague location like "U1 Görlitzer Bahnhof area"
-  preciseLocation?: string; // revealed after joining
-  maxMembers: number;
-  currentMembers: number;
-  tags: PlanTag[];
-  isLGBTQFriendly: boolean;
-  languages: string[];
-  createdBy: string;
-  createdAt: Date;
-}
-
-export interface PlanMember {
-  id: string;
-  planId: string;
-  name: string;
-  avatarUrl?: string;
-  joinedAt: Date;
-}
-
-export interface PlanRequest {
-  planId: string;
-  memberName: string;
-  message?: string;
-}
 
 export interface ReviewInput {
   venueId: string;
@@ -118,12 +89,3 @@ export type VenueTag =
   | 'late-night'
   | 'tourist-free';
 
-export type PlanTag = 
-  | 'techno-heads'
-  | 'queer'
-  | 'tourists-welcome'
-  | 'locals-only'
-  | 'party-hard'
-  | 'chill-vibes'
-  | 'pre-drinks'
-  | 'club-crawl';

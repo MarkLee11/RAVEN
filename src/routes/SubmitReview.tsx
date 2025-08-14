@@ -12,7 +12,7 @@ const SubmitReview: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  const { venueId, venueName } = location.state || {};
+  const { venueId, venueName, venueType = 'club' } = location.state || {};
   
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -58,26 +58,38 @@ const SubmitReview: React.FC = () => {
     setError(null);
     
     try {
-      // Use the reviewsService to create the review
-      await reviewsService.createReview({
+      // Use the appropriate service method based on venue type
+      if (venueType === 'bar') {
+        await reviewsService.createBarReview({
+          barId: venueId,
+          userId: user.id,
+          ratings,
+          comment,
+          isAnonymous: true,
+        });
+      } else {
+        await reviewsService.createReview({
+          venueId,
+          userId: user.id,
+          ratings,
+          comment,
+          isAnonymous: true,
+        });
+      }
+      
+      // Build optimistic review for immediate echo on detail page
+      const optimisticReview: Review = {
+        id: Math.random().toString(36).slice(2),
         venueId,
-        userId: user.id,
+        isAnonymous: true,
         ratings,
         comment,
-        isAnonymous: true,
-      });
-      
-      // Show success state
-      setSuccess(true);
-      
-      // Clear form
-      setRatings({ music: 50, vibe: 50, crowd: 50, safety: 50 });
-      setComment('');
-      
-      // Navigate back after a short delay
-      setTimeout(() => {
-        navigate(`/clubs/${venueId}`, { replace: true });
-      }, 2000);
+        createdAt: new Date(),
+      } as any;
+
+      // Navigate back to appropriate detail page with optimistic data
+      const detailRoute = venueType === 'bar' ? `/bars/${venueId}` : `/clubs/${venueId}`;
+      navigate(detailRoute, { replace: true, state: { optimisticReview } });
       
     } catch (error: any) {
       console.error('Failed to submit review:', error);
@@ -107,7 +119,9 @@ const SubmitReview: React.FC = () => {
       <div className="min-h-screen bg-berlin-black flex items-center justify-center">
         <div className="text-center">
           <p className="text-ash mb-4">No venue selected</p>
-          <Button onClick={() => navigate('/clubs')}>Back to Clubs</Button>
+          <Button onClick={() => navigate(venueType === 'bar' ? '/bars' : '/clubs')}>
+            Back to {venueType === 'bar' ? 'Bars' : 'Clubs'}
+          </Button>
         </div>
       </div>
     );
@@ -225,12 +239,28 @@ const SubmitReview: React.FC = () => {
           <h3 className="font-space text-lg text-ink mb-4">Rate Your Experience</h3>
           
           <div className="space-y-6">
-            {Object.entries(ratings).map(([aspect, value]) => (
-              <div key={aspect} className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <label className="text-sm font-medium text-ink capitalize">
-                    {aspect}
-                  </label>
+            {Object.entries(ratings).map(([aspect, value]) => {
+              // Map rating aspects to appropriate labels based on venue type
+              const getAspectLabel = (aspect: string, venueType: string) => {
+                if (venueType === 'bar') {
+                  switch (aspect) {
+                    case 'music': return 'Quality';
+                    case 'vibe': return 'Vibe';
+                    case 'crowd': return 'Price';
+                    case 'safety': return 'Friendliness';
+                    default: return aspect;
+                  }
+                }
+                // Default club labels
+                return aspect.charAt(0).toUpperCase() + aspect.slice(1);
+              };
+
+              return (
+                <div key={aspect} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <label className="text-sm font-medium text-ink">
+                      {getAspectLabel(aspect, venueType)}
+                    </label>
                   <span className="text-sm text-raven font-semibold">
                     {value}%
                   </span>
@@ -245,12 +275,13 @@ const SubmitReview: React.FC = () => {
                     onChange={(e) => handleRatingChange(aspect as keyof VenueRatings, parseInt(e.target.value))}
                     className="w-full h-2 bg-ash/20 rounded-lg appearance-none cursor-pointer slider"
                     style={{
-                      background: `linear-gradient(to right, ${getRatingColor(value)} 0%, ${getRatingColor(value)} ${value}%, rgba(156, 163, 175, 0.2) ${value}%, rgba(156, 163, 175, 0.2) 100%)`
+                      background: `linear-gradient(to right, #8ACE00 0%, #8ACE00 ${value}%, rgba(156, 163, 175, 0.2) ${value}%, rgba(156, 163, 175, 0.2) 100%)`
                     }}
                   />
                 </div>
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </Card>
 
@@ -260,7 +291,7 @@ const SubmitReview: React.FC = () => {
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Share your experience... What was the vibe? How was the music? Any tips for others? (Optional)"
+            placeholder="Sip it. Spill it. Savor it."
             rows={4}
             maxLength={500}
             className="w-full bg-berlin-black border border-ash/30 rounded-md px-3 py-2 text-ink placeholder-ash focus:border-raven focus:outline-none resize-none"
@@ -277,16 +308,17 @@ const SubmitReview: React.FC = () => {
 
         {/* Submit Button */}
         <div className="space-y-3">
-          <Button
+          <button
             type="submit"
-            size="lg"
-            className="w-full justify-center"
             disabled={isSubmitting}
-            isLoading={isSubmitting}
+            className="spill-button mx-auto"
+            aria-busy={isSubmitting}
           >
-            <Star size={16} className="mr-2" />
-            Submit Review
-          </Button>
+            <svg className="spill-svgIcon" viewBox="0 0 512 512" height="1em" xmlns="http://www.w3.org/2000/svg">
+              <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm50.7-186.9L162.4 380.6c-19.4 7.5-38.5-11.6-31-31l55.5-144.3c3.3-8.5 9.9-15.1 18.4-18.4l144.3-55.5c19.4-7.5 38.5 11.6 31 31L325.1 306.7c-3.2 8.5-9.9 15.1-18.4 18.4zM288 256a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"></path>
+            </svg>
+            Spill
+          </button>
           
           <p className="text-xs text-ash text-center">
             All REVIEWS ARE <span className="font-bold text-raven">ANONYMOUS</span>

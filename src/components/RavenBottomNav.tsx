@@ -26,6 +26,11 @@ const RavenBottomNav: React.FC = () => {
     navigate(tabs[index].to);
   };
 
+  // Fast touch handler to prevent 300ms delay on mobile
+  const handleTouchStart = (index: number) => {
+    handleTabClick(index);
+  };
+
   const handleKeyDown = (event: React.KeyboardEvent, index: number) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -46,6 +51,7 @@ const RavenBottomNav: React.FC = () => {
             role="tab"
             aria-selected={currentIndex === index}
             onClick={() => handleTabClick(index)}
+            onTouchStart={() => handleTouchStart(index)}
             onKeyDown={(e) => handleKeyDown(e, index)}
           >
             {tab.label}

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, LogOut, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Lock, LogOut, Eye, EyeOff, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { clubsService } from '../services/clubsService';
+import { barsService } from '../services/barsService';
+import { reviewsService } from '../services/reviewsService';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
@@ -17,6 +21,7 @@ interface AuthError {
 }
 
 const Profile: React.FC = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,16 +30,100 @@ const Profile: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [clubsTotal, setClubsTotal] = useState<number>(0);
+  const [barsTotal, setBarsTotal] = useState<number>(0);
+  const [loadingCounts, setLoadingCounts] = useState(true);
+  const [userClubsVisited, setUserClubsVisited] = useState<number>(0);
+  const [userBarsVisited, setUserBarsVisited] = useState<number>(0);
+  const [loadingUserCounts, setLoadingUserCounts] = useState(true);
+  const [reviewHistory, setReviewHistory] = useState<{
+    reviews: Array<{
+      id: string;
+      venueId: string;
+      venueName: string;
+      venueType: 'club' | 'bar';
+      ratings: {
+        music: number;
+        vibe: number;
+        crowd: number;
+        safety: number;
+      };
+      comment: string;
+      queueTime?: number;
+      createdAt: Date;
+    }>;
+    totalCount: number;
+    totalPages: number;
+  }>({ reviews: [], totalCount: 0, totalPages: 0 });
+  const [currentReviewPage, setCurrentReviewPage] = useState(1);
+  const [loadingReviews, setLoadingReviews] = useState(false);
 
   useEffect(() => {
     checkUser();
+    loadCounts();
   }, []);
+
+  const loadCounts = async () => {
+    setLoadingCounts(true);
+    try {
+      const [clubsCount, barsCount] = await Promise.all([
+        clubsService.getTotalCount(),
+        barsService.getTotalCount()
+      ]);
+      setClubsTotal(clubsCount);
+      setBarsTotal(barsCount);
+    } catch (error) {
+      console.error('Failed to load venue counts:', error);
+    } finally {
+      setLoadingCounts(false);
+    }
+  };
+
+  const loadUserCounts = async (userId: string) => {
+    setLoadingUserCounts(true);
+    try {
+      const [userClubsCount, userBarsCount] = await Promise.all([
+        reviewsService.getUserClubsVisited(userId),
+        reviewsService.getUserBarsVisited(userId)
+      ]);
+      setUserClubsVisited(userClubsCount);
+      setUserBarsVisited(userBarsCount);
+    } catch (error) {
+      console.error('Failed to load user visit counts:', error);
+    } finally {
+      setLoadingUserCounts(false);
+    }
+  };
+
+  const loadReviewHistory = async (userId: string, page: number = 1) => {
+    setLoadingReviews(true);
+    try {
+      const history = await reviewsService.getUserReviewHistory(userId, page, 3); // 3 reviews per page
+      setReviewHistory(history);
+      setCurrentReviewPage(page);
+    } catch (error) {
+      console.error('Failed to load review history:', error);
+    } finally {
+      setLoadingReviews(false);
+    }
+  };
 
   const checkUser = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUser(user);
+        // Load user visit counts and review history when user is authenticated
+        await Promise.all([
+          loadUserCounts(user.id),
+          loadReviewHistory(user.id, 1)
+        ]);
+      } else {
+        // Reset user counts when no user
+        setUserClubsVisited(0);
+        setUserBarsVisited(0);
+        setLoadingUserCounts(false);
+        setReviewHistory({ reviews: [], totalCount: 0, totalPages: 0 });
       }
     } catch (error) {
       console.error('Error checking user:', error);
@@ -61,6 +150,11 @@ const Profile: React.FC = () => {
 
       if (data.user) {
         setUser(data.user);
+        // Load user visit counts and review history
+        await Promise.all([
+          loadUserCounts(data.user.id),
+          loadReviewHistory(data.user.id, 1)
+        ]);
         // Clear form
         setEmail('');
         setPassword('');
@@ -91,6 +185,11 @@ const Profile: React.FC = () => {
 
       if (data.user) {
         setUser(data.user);
+        // Load user visit counts and review history
+        await Promise.all([
+          loadUserCounts(data.user.id),
+          loadReviewHistory(data.user.id, 1)
+        ]);
         // Clear form
         setEmail('');
         setPassword('');
@@ -114,6 +213,9 @@ const Profile: React.FC = () => {
       setUser(null);
       setEmail('');
       setPassword('');
+      // Reset user counts
+      setUserClubsVisited(0);
+      setUserBarsVisited(0);
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -176,11 +278,15 @@ const Profile: React.FC = () => {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-raven mb-1">0/128</div>
+                <div className="text-2xl font-bold text-raven mb-1">
+                  {loadingCounts || loadingUserCounts ? '...' : `${userClubsVisited}/${clubsTotal}`}
+                </div>
                 <div className="text-xs text-ash">Clubs</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-raven mb-1">0/342</div>
+                <div className="text-2xl font-bold text-raven mb-1">
+                  {loadingCounts || loadingUserCounts ? '...' : `${userBarsVisited}/${barsTotal}`}
+                </div>
                 <div className="text-xs text-ash">Bars</div>
               </div>
             </div>
@@ -189,39 +295,146 @@ const Profile: React.FC = () => {
           {/* Graveyard */}
           <Card>
             <h3 className="font-space text-lg text-ink mb-3">Graveyard</h3>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Badge size="sm">Closed Venues</Badge>
-                <span className="text-xs text-ash">Venues that are no longer open</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Badge size="sm">Lost Reviews</Badge>
-                <span className="text-xs text-ash">Reviews from venues that closed</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Badge size="sm">Memory Lane</Badge>
-                <span className="text-xs text-ash">Archived nightlife memories</span>
-              </div>
+            <div className="flex flex-col space-y-3">
+              <button 
+                className="graveyard-button"
+                onClick={() => navigate('/favorites/clubs')}
+              >
+                Clubs
+                <div className="arrow-wrapper">
+                  <div className="arrow"></div>
+                </div>
+              </button>
+              <button 
+                className="graveyard-button"
+                onClick={() => navigate('/favorites/bars')}
+              >
+                Bars
+                <div className="arrow-wrapper">
+                  <div className="arrow"></div>
+                </div>
+              </button>
             </div>
           </Card>
 
           {/* Echo */}
           <Card>
-            <h3 className="font-space text-lg text-ink mb-3">Echo</h3>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Badge size="sm">Sound Waves</Badge>
-                <span className="text-xs text-ash">Track your music journey</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Badge size="sm">Reverb</Badge>
-                <span className="text-xs text-ash">Echoes of past nights</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Badge size="sm">Frequency</Badge>
-                <span className="text-xs text-ash">Your nightlife patterns</span>
-              </div>
+            <h3 className="font-space text-lg text-ink mb-4">Echo</h3>
+            
+            {/* Debug info - remove after testing */}
+            <div className="mb-2 p-2 bg-ash/10 rounded text-xs text-ash">
+              <div>Debug: Reviews: {reviewHistory.reviews.length}, Total: {reviewHistory.totalCount}, Pages: {reviewHistory.totalPages}, Current: {currentReviewPage}</div>
             </div>
+            
+            {loadingReviews ? (
+              <div className="text-center py-8">
+                <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-ash mt-2 text-sm">Loading review history...</p>
+              </div>
+            ) : reviewHistory.reviews.length === 0 ? (
+              <div className="text-center py-8">
+                <MessageCircle size={32} className="text-ash mx-auto mb-3 opacity-50" />
+                <p className="text-ash text-sm mb-2">No reviews yet</p>
+                <p className="text-ash/60 text-xs">Start exploring venues and share your experiences!</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {reviewHistory.reviews.map((review, index) => (
+                  <motion.div
+                    key={review.id}
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="border border-ash/20 rounded-lg p-3"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <button
+                          onClick={() => navigate(`/${review.venueType}s/${review.venueId}`)}
+                          className="font-medium text-ink hover:text-raven transition-colors text-left"
+                        >
+                          {review.venueName}
+                        </button>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <Badge size="sm" variant={review.venueType === 'club' ? 'raven' : 'default'}>
+                            {review.venueType.toUpperCase()}
+                          </Badge>
+                          <span className="text-xs text-ash">
+                            {review.createdAt.toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {review.comment && (
+                      <p className="text-sm text-ash mb-3 leading-relaxed line-clamp-2">
+                        {review.comment}
+                      </p>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="flex justify-between">
+                        <span className="text-ash">
+                          {review.venueType === 'bar' ? 'Quality:' : 'Music:'}
+                        </span>
+                        <span className="text-ink font-medium">{review.ratings.music}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-ash">Vibe:</span>
+                        <span className="text-ink font-medium">{review.ratings.vibe}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-ash">
+                          {review.venueType === 'bar' ? 'Price:' : 'Crowd:'}
+                        </span>
+                        <span className="text-ink font-medium">{review.ratings.crowd}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-ash">
+                          {review.venueType === 'bar' ? 'Friendliness:' : 'Safety:'}
+                        </span>
+                        <span className="text-ink font-medium">{review.ratings.safety}%</span>
+                      </div>
+                    </div>
+
+                    {review.queueTime && (
+                      <div className="mt-2 text-xs text-ash">
+                        Queue time: {review.queueTime} minutes
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+
+                {/* Pagination - temporarily always show for testing */}
+                {reviewHistory.reviews.length > 0 && (
+                  <div className="flex items-center justify-between pt-3 border-t border-ash/10">
+                    <button
+                      onClick={() => user && loadReviewHistory(user.id, currentReviewPage - 1)}
+                      disabled={currentReviewPage === 1 || loadingReviews}
+                      className="flex items-center space-x-1 px-3 py-1 text-xs bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft size={12} />
+                      <span>Previous</span>
+                    </button>
+                    
+                    <span className="text-xs text-ash">
+                      <span className="text-raven">{currentReviewPage}</span>
+                      <span> / </span>
+                      <span className="text-raven">{reviewHistory.totalPages}</span>
+                    </span>
+                    
+                    <button
+                      onClick={() => user && loadReviewHistory(user.id, currentReviewPage + 1)}
+                      disabled={currentReviewPage >= reviewHistory.totalPages || loadingReviews}
+                      className="flex items-center space-x-1 px-3 py-1 text-xs bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      <span>Next</span>
+                      <ChevronRight size={12} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </Card>
 
           {/* Logout Button at Bottom */}

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Filter } from 'lucide-react';
 import { Venue } from '../contracts/types';
 import { clubsService, getDistricts } from '../services/clubsService';
+import { favoritesService } from '../services/favoritesService';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
@@ -24,6 +25,7 @@ const paymentFilters = [
 ];
 
 const Clubs: React.FC = () => {
+  const navigate = useNavigate();
   const [clubs, setClubs] = useState<Venue[]>([]);
   const [districts, setDistricts] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,11 +34,29 @@ const Clubs: React.FC = () => {
   const [selectedPayment, setSelectedPayment] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [favoriteClubIds, setFavoriteClubIds] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     loadDistricts();
     loadClubs();
   }, [selectedDistrict, selectedConstruction, selectedPayment]);
+
+  // Refresh favorite statuses when page becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && clubs.length > 0) {
+        const clubIds = clubs.map(club => club.id);
+        favoritesService.getFavoriteStatuses(clubIds, 'club').then(favoriteStatuses => {
+          setFavoriteClubIds(favoriteStatuses);
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [clubs]);
 
   const loadDistricts = async () => {
     try {
@@ -57,6 +77,13 @@ const Clubs: React.FC = () => {
         selectedPayment.length > 0 ? selectedPayment : undefined
       );
       setClubs(results);
+      
+      // Load favorite statuses for all clubs
+      if (results.length > 0) {
+        const clubIds = results.map(club => club.id);
+        const favoriteStatuses = await favoritesService.getFavoriteStatuses(clubIds, 'club');
+        setFavoriteClubIds(favoriteStatuses);
+      }
     } catch (error) {
       console.error('Failed to load clubs:', error);
       setError('Failed to load clubs. Please try again.');
@@ -74,11 +101,23 @@ const Clubs: React.FC = () => {
   };
 
   const togglePayment = (filter: string) => {
-    setSelectedPayment(prev =>
-      prev.includes(filter)
-        ? prev.filter(f => f !== filter)
-        : [...prev, filter]
-    );
+    setSelectedPayment(prev => (prev.includes(filter) ? [] : [filter]));
+  };
+
+  const clearAllFilters = () => {
+    setSelectedDistrict('');
+    setSelectedConstruction([]);
+    setSelectedPayment([]);
+  };
+
+  const toggleFavorite = async (clubId: string) => {
+    const success = await favoritesService.toggleFavorite(clubId, 'club');
+    if (success) {
+      setFavoriteClubIds(prev => ({
+        ...prev,
+        [clubId]: !prev[clubId]
+      }));
+    }
   };
 
   const getTotalFilters = () => {
@@ -89,17 +128,22 @@ const Clubs: React.FC = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.05 } }}
       className="min-h-screen bg-berlin-black"
     >
       <div className="px-4 pt-4">
         {/* Filters Toggle */}
         <div className="flex items-center justify-between mb-4">
           <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center space-x-2 text-ash hover:text-ink transition-colors"
+            onPointerDown={(e) => { e.preventDefault(); setShowFilters(prev => !prev); }}
+            aria-expanded={showFilters}
+            aria-controls="filters-panel"
+            className={`group flex items-center transition-colors filters-touch ${showFilters ? 'text-raven' : 'text-ash filters-hover'}`}
           >
-            <Filter size={16} />
-            <span className="text-sm">Filters</span>
+            <span className="-mx-3 px-3 py-2 flex items-center">
+              <Filter size={16} />
+              <span className="text-sm ml-2">Filters</span>
+            </span>
             {getTotalFilters() > 0 && (
               <Badge variant="raven" size="sm">
                 {getTotalFilters()}
@@ -111,6 +155,7 @@ const Clubs: React.FC = () => {
         {/* Filters Panel */}
         {showFilters && (
           <motion.div
+            id="filters-panel"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -171,6 +216,15 @@ const Clubs: React.FC = () => {
                 ))}
               </div>
             </div>
+
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={clearAllFilters}
+                className="px-3 py-1 text-xs bg-raven text-berlin-black rounded-md"
+              >
+                clear all filters
+              </button>
+            </div>
           </motion.div>
         )}
 
@@ -214,12 +268,31 @@ const Clubs: React.FC = () => {
                           <span>{club.district}</span>
                         </div>
                       </div>
-                      <div className="ml-3">
-                        <Link to={`/clubs/${club.id}`}>
-                          <button className="px-3 py-1 text-xs bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap">
-                            Last Words Echohall
-                          </button>
-                        </Link>
+                      <div className="ml-3 flex flex-col items-end">
+                        <button
+                          onPointerDown={(e) => { e.preventDefault(); navigate(`/clubs/${club.id}`); }}
+                          className="px-4 py-2 text-sm bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap"
+                        >
+                          Last Words Echohall
+                        </button>
+                        <button
+                          aria-label="Toggle favorite"
+                          onClick={() => toggleFavorite(club.id)}
+                          className="mt-2 p-1.5"
+                        >
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill={favoriteClubIds[club.id] ? '#8ACE00' : 'transparent'}
+                            stroke="white"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polygon points="12 2 14.85 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 9.15 8.26 12 2" />
+                          </svg>
+                        </button>
                       </div>
                     </div>
 
