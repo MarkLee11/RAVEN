@@ -1,2 +1,0 @@
-This is a test file to trigger the auto-commit hook system.
-Testing automated Git commits with Claude Code hooks.
