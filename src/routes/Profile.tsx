@@ -154,7 +154,7 @@ const Profile: React.FC = () => {
           </Card>
 
           {/* Stats Placeholder */}
-          <Card>
+          {/*<Card>
             <h3 className="font-space text-lg text-ink mb-4">Your Activity</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center">
@@ -166,7 +166,7 @@ const Profile: React.FC = () => {
                 <div className="text-xs text-ash">Plans Joined</div>
               </div>
             </div>
-          </Card>
+          </Card>*/}
 
           {/* Deathmarch */}
           <Card>
