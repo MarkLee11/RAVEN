@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, LogOut, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
-import Badge from '../components/ui/Badge';
+import UserIdTemplate from '../templates/user-id-template';
 
 interface UserProfile {
   id: string;
@@ -129,84 +129,7 @@ const Profile: React.FC = () => {
 
   // Show authenticated user profile
   if (user) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="min-h-screen bg-berlin-black"
-      >
-        <div className="px-4 pt-4 space-y-6">
-          {/* Profile Header */}
-          <Card>
-            <div className="flex items-start justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 bg-raven/20 rounded-full flex items-center justify-center">
-                  <User size={24} className="text-raven" />
-                </div>
-                <div>
-                  <h2 className="font-space text-xl text-ink">
-                    User
-                  </h2>
-                  <p className="text-sm text-ash">{user.email}</p>
-                  <p className="text-xs text-ash mt-1">
-                    Member since {new Date(user.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleLogout}
-                className="flex items-center space-x-2"
-              >
-                <LogOut size={16} />
-                <span>Logout</span>
-              </Button>
-            </div>
-          </Card>
-
-          {/* Profile Bio */}
-          <Card>
-            <h3 className="font-space text-lg text-ink mb-3">About</h3>
-            <p className="text-sm text-ash leading-relaxed">Welcome to Berlin's nightlife community!</p>
-          </Card>
-
-          {/* Stats Placeholder */}
-          <Card>
-            <h3 className="font-space text-lg text-ink mb-4">Your Activity</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-raven mb-1">0</div>
-                <div className="text-xs text-ash">Reviews</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-raven mb-1">0</div>
-                <div className="text-xs text-ash">Plans Joined</div>
-              </div>
-            </div>
-          </Card>
-
-          {/* Coming Soon Features */}
-          <Card>
-            <h3 className="font-space text-lg text-ink mb-3">Coming Soon</h3>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Badge size="sm">Profile Editing</Badge>
-                <span className="text-xs text-ash">Customize your profile</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Badge size="sm">Favorite Venues</Badge>
-                <span className="text-xs text-ash">Save your favorite spots</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Badge size="sm">Review History</Badge>
-                <span className="text-xs text-ash">View your past reviews</span>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </motion.div>
-    );
+    return <UserIdTemplate user={user} onLogout={handleLogout} />;
   }
 
   // Show login/signup form
