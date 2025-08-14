@@ -265,7 +265,8 @@ const Profile: React.FC = () => {
 
         {/* Form */}
         <Card>
-          <form onSubmit={activeTab === 'login' ? handleLogin : handleSignup}>
+          <h3 className="font-space text-lg text-ink mb-2 text-center">Deathmarch</h3>
+          <p className="text-xs text-ash mb-4 text-center">Every venue visited brings you closer to transcendence.</p>
             <div className="space-y-4">
               {/* Email Input */}
               <div>
@@ -325,8 +326,8 @@ const Profile: React.FC = () => {
                 isLoading={loading}
                 disabled={!email || !password}
               >
-                {activeTab === 'login' ? 'Login' : 'Sign Up'}
-              </Button>
+              <div className="text-2xl font-bold text-raven mb-1">0/128</div>
+              <div className="text-xs text-ash">Clubs</div>
             </div>
           </form>
 
@@ -352,8 +353,8 @@ const Profile: React.FC = () => {
                   >
                     Login
                   </button>
-                </>
-              )}
+              <div className="text-2xl font-bold text-raven mb-1">0/342</div>
+              <div className="text-xs text-ash">Bars</div>
             </p>
           </div>
         </Card>
