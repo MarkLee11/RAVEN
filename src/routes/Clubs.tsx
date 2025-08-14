@@ -122,7 +122,6 @@ const Clubs: React.FC = () => {
               <div className="flex flex-wrap gap-2">
                 <Badge
                   variant={selectedDistrict === '' ? 'raven' : 'default'}
-                  className="cursor-pointer"
                   onClick={() => setSelectedDistrict('')}
                 >
                   All
@@ -131,7 +130,6 @@ const Clubs: React.FC = () => {
                   <Badge
                     key={district}
                     variant={selectedDistrict === district ? 'raven' : 'default'}
-                    className="cursor-pointer"
                     onClick={() => setSelectedDistrict(
                       selectedDistrict === district ? '' : district
                     )}
@@ -150,7 +148,6 @@ const Clubs: React.FC = () => {
                   <Badge
                     key={filter.key}
                     variant={selectedConstruction.includes(filter.key) ? 'raven' : 'default'}
-                    className="cursor-pointer"
                     onClick={() => toggleConstruction(filter.key)}
                   >
                     {filter.label}
@@ -167,7 +164,6 @@ const Clubs: React.FC = () => {
                   <Badge
                     key={filter.key}
                     variant={selectedPayment.includes(filter.key) ? 'raven' : 'default'}
-                    className="cursor-pointer"
                     onClick={() => togglePayment(filter.key)}
                   >
                     {filter.label}
