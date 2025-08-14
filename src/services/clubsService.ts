@@ -117,11 +117,13 @@ export const clubsService = {
 
       // Transform database data to Venue format
       const venues: Venue[] = clubsData.map(club => {
-        const ratings = club.club_ratings?.[0] || {
-          music_rating: 0,
-          vibe_rating: 0,
-          crowd_rating: 0,
-          safety_rating: 0
+        // Get ratings from club_ratings table
+        const ratingsData = club.club_ratings?.[0];
+        const ratings = {
+          music: ratingsData?.music_rating ? Math.round(ratingsData.music_rating * 20) : 0,
+          vibe: ratingsData?.vibe_rating ? Math.round(ratingsData.vibe_rating * 20) : 0,
+          crowd: ratingsData?.crowd_rating ? Math.round(ratingsData.crowd_rating * 20) : 0,
+          safety: ratingsData?.safety_rating ? Math.round(ratingsData.safety_rating * 20) : 0,
         };
 
         const themes = club.club_themes?.map(ct => ct.themes?.name).filter(Boolean) || [];
@@ -144,12 +146,7 @@ export const clubsService = {
           name: club.name,
           district: club.districts?.name || 'Unknown District',
           tags: tags as any[],
-          ratings: {
-            music: Math.round((ratings.music_rating || 0) * 20), // Convert 0-5 to 0-100
-            vibe: Math.round((ratings.vibe_rating || 0) * 20),
-            crowd: Math.round((ratings.crowd_rating || 0) * 20),
-            safety: Math.round((ratings.safety_rating || 0) * 20),
-          },
+          ratings,
           hasLiveVibe,
           description: club.description,
         };
@@ -190,11 +187,13 @@ export const clubsService = {
         return null;
       }
 
-      const ratings = clubData.club_ratings?.[0] || {
-        music_rating: 0,
-        vibe_rating: 0,
-        crowd_rating: 0,
-        safety_rating: 0
+      // Get ratings from club_ratings table
+      const ratingsData = clubData.club_ratings?.[0];
+      const ratings = {
+        music: ratingsData?.music_rating ? Math.round(ratingsData.music_rating * 20) : 0,
+        vibe: ratingsData?.vibe_rating ? Math.round(ratingsData.vibe_rating * 20) : 0,
+        crowd: ratingsData?.crowd_rating ? Math.round(ratingsData.crowd_rating * 20) : 0,
+        safety: ratingsData?.safety_rating ? Math.round(ratingsData.safety_rating * 20) : 0,
       };
 
       const themes = clubData.club_themes?.map(ct => ct.themes?.name).filter(Boolean) || [];
@@ -205,12 +204,7 @@ export const clubsService = {
         name: clubData.name,
         district: clubData.districts?.name || 'Unknown District',
         tags: themes as any[],
-        ratings: {
-          music: Math.round((ratings.music_rating || 0) * 20),
-          vibe: Math.round((ratings.vibe_rating || 0) * 20),
-          crowd: Math.round((ratings.crowd_rating || 0) * 20),
-          safety: Math.round((ratings.safety_rating || 0) * 20),
-        },
+        ratings,
         hasLiveVibe,
         description: clubData.description,
         address: clubData.club_locations?.[0]?.address_line,
