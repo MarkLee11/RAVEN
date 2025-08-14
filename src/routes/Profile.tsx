@@ -375,3 +375,9 @@ const Profile: React.FC = () => {
             </p>
           </div>
         </Card>
+      </div>
+    </motion.div>
+  );
+};
+
+export default Profile;
