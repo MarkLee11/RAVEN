@@ -217,7 +217,7 @@ const Clubs: React.FC = () => {
                       <div className="ml-3">
                         <Link to={`/clubs/${club.id}`}>
                           <button className="px-3 py-1 text-xs bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap">
-                            Last Words
+                            Last Words Echohall
                           </button>
                         </Link>
                       </div>
