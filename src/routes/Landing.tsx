@@ -148,9 +148,9 @@ const Landing: React.FC = () => {
   }}
 >
   <Link to="/bars">
-    <button className="gradient-bars-btn w-full justify-center items-center font-sora font-semibold pt-4">
+    <Button variant="ghost" size="lg" className="w-full justify-center items-center font-sora font-semibold pt-4">
       BARS
-    </button>
+    </Button>
   </Link>
 </motion.div>
           </div>
