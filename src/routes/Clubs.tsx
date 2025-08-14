@@ -2,28 +2,50 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Filter } from 'lucide-react';
-import { Venue, District, VenueTag } from '../contracts/types';
-import { clubsService } from '../services/clubsService';
+import { Venue } from '../contracts/types';
+import { clubsService, getDistricts } from '../services/clubsService';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
 
-// Available districts from database
-const districts: District[] = ['Kreuzberg', 'Friedrichshain', 'Neukölln', 'Mitte', 'Prenzlauer Berg', 'Wedding', 'Lichtenberg'];
-// Available themes from database (mapped to tags)
-const clubTags: string[] = ['techno', 'house', 'underground', 'queer-friendly', 'outdoor', 'cash-only', 'smoke-room', 'late-night', 'tourist-free'];
+// Construction filters
+const constructionFilters = [
+  { key: 'outdoor-area', label: 'Outdoor Area' },
+  { key: 'smoking-area', label: 'Smoking Area' },
+  { key: 'awareness-room', label: 'Awareness Room' },
+  { key: 'dark-room', label: 'Dark Room' },
+  { key: 'cursing-area', label: 'Cursing Area' },
+];
+
+// Payment filters
+const paymentFilters = [
+  { key: 'cash-only', label: 'Cash Only' },
+  { key: 'card-accepted', label: 'Card Accepted' },
+];
 
 const Clubs: React.FC = () => {
   const [clubs, setClubs] = useState<Venue[]>([]);
+  const [districts, setDistricts] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDistrict, setSelectedDistrict] = useState<string>('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedConstruction, setSelectedConstruction] = useState<string[]>([]);
+  const [selectedPayment, setSelectedPayment] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    loadDistricts();
     loadClubs();
-  }, [selectedDistrict, selectedTags]);
+  }, [selectedDistrict, selectedConstruction, selectedPayment]);
+
+  const loadDistricts = async () => {
+    try {
+      const districtList = await getDistricts();
+      setDistricts(districtList);
+    } catch (error) {
+      console.error('Failed to load districts:', error);
+    }
+  };
 
   const loadClubs = async () => {
     setLoading(true);
@@ -31,7 +53,8 @@ const Clubs: React.FC = () => {
     try {
       const results = await clubsService.listClubs(
         selectedDistrict || undefined,
-        selectedTags.length > 0 ? selectedTags : undefined
+        selectedConstruction.length > 0 ? selectedConstruction : undefined,
+        selectedPayment.length > 0 ? selectedPayment : undefined
       );
       setClubs(results);
     } catch (error) {
@@ -42,12 +65,24 @@ const Clubs: React.FC = () => {
     }
   };
 
-  const toggleTag = (tag: string) => {
-    setSelectedTags(prev =>
-      prev.includes(tag)
-        ? prev.filter(t => t !== tag)
-        : [...prev, tag]
+  const toggleConstruction = (filter: string) => {
+    setSelectedConstruction(prev =>
+      prev.includes(filter)
+        ? prev.filter(f => f !== filter)
+        : [...prev, filter]
     );
+  };
+
+  const togglePayment = (filter: string) => {
+    setSelectedPayment(prev =>
+      prev.includes(filter)
+        ? prev.filter(f => f !== filter)
+        : [...prev, filter]
+    );
+  };
+
+  const getTotalFilters = () => {
+    return (selectedDistrict ? 1 : 0) + selectedConstruction.length + selectedPayment.length;
   };
 
   return (
@@ -65,9 +100,9 @@ const Clubs: React.FC = () => {
           >
             <Filter size={16} />
             <span className="text-sm">Filters</span>
-            {(selectedDistrict || selectedTags.length > 0) && (
+            {getTotalFilters() > 0 && (
               <Badge variant="raven" size="sm">
-                {(selectedDistrict ? 1 : 0) + selectedTags.length}
+                {getTotalFilters()}
               </Badge>
             )}
           </button>
@@ -107,18 +142,35 @@ const Clubs: React.FC = () => {
               </div>
             </div>
 
-            {/* Tags */}
+            {/* Construction */}
             <div>
-              <h4 className="text-sm font-medium text-ink mb-2">Vibe</h4>
+              <h4 className="text-sm font-medium text-ink mb-2">Construction</h4>
               <div className="flex flex-wrap gap-2">
-                {clubTags.map(tag => (
+                {constructionFilters.map(filter => (
                   <Badge
-                    key={tag}
-                    variant={selectedTags.includes(tag) ? 'raven' : 'default'}
+                    key={filter.key}
+                    variant={selectedConstruction.includes(filter.key) ? 'raven' : 'default'}
                     className="cursor-pointer"
-                    onClick={() => toggleTag(tag)}
+                    onClick={() => toggleConstruction(filter.key)}
                   >
-                    {tag}
+                    {filter.label}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            {/* Payment */}
+            <div>
+              <h4 className="text-sm font-medium text-ink mb-2">Payment</h4>
+              <div className="flex flex-wrap gap-2">
+                {paymentFilters.map(filter => (
+                  <Badge
+                    key={filter.key}
+                    variant={selectedPayment.includes(filter.key) ? 'raven' : 'default'}
+                    className="cursor-pointer"
+                    onClick={() => togglePayment(filter.key)}
+                  >
+                    {filter.label}
                   </Badge>
                 ))}
               </div>

@@ -1,8 +1,32 @@
 import { supabase } from '../lib/supabase';
 import { Venue } from '../contracts/types';
 
+// 获取所有区域
+export const getDistricts = async (): Promise<string[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('districts')
+      .select('name')
+      .order('name');
+    
+    if (error) {
+      console.error('Error fetching districts:', error);
+      return [];
+    }
+    
+    return data?.map(d => d.name) || [];
+  } catch (error) {
+    console.error('Failed to load districts:', error);
+    return [];
+  }
+};
+
 export const clubsService = {
-  async listClubs(district?: string, tags?: string[]): Promise<Venue[]> {
+  async listClubs(
+    district?: string, 
+    construction?: string[], 
+    payment?: string[]
+  ): Promise<Venue[]> {
     try {
       let query = supabase
         .from('clubs')
@@ -10,6 +34,13 @@ export const clubsService = {
           id,
           name,
           description,
+          outdoor_area,
+          smoke_room,
+          awareness_room,
+          dark_room,
+          cursing_area,
+          cash_only,
+          card_accepted,
           districts!clubs_district_id_fkey(name),
           club_ratings(music_rating, vibe_rating, crowd_rating, safety_rating),
           club_themes(themes(name)),
@@ -24,6 +55,43 @@ export const clubsService = {
       // Apply district filter
       if (district) {
         query = query.eq('districts.name', district);
+      }
+
+      // Apply construction filters
+      if (construction && construction.length > 0) {
+        construction.forEach(filter => {
+          switch (filter) {
+            case 'outdoor-area':
+              query = query.eq('outdoor_area', true);
+              break;
+            case 'smoking-area':
+              query = query.eq('smoke_room', true);
+              break;
+            case 'awareness-room':
+              query = query.eq('awareness_room', true);
+              break;
+            case 'dark-room':
+              query = query.eq('dark_room', true);
+              break;
+            case 'cursing-area':
+              query = query.eq('cursing_area', true);
+              break;
+          }
+        });
+      }
+
+      // Apply payment filters
+      if (payment && payment.length > 0) {
+        payment.forEach(filter => {
+          switch (filter) {
+            case 'cash-only':
+              query = query.eq('cash_only', true);
+              break;
+            case 'card-accepted':
+              query = query.eq('card_accepted', true);
+              break;
+          }
+        });
       }
 
       const { data: clubsData, error } = await query;
@@ -47,31 +115,35 @@ export const clubsService = {
         const themes = club.club_themes?.map(ct => ct.themes?.name).filter(Boolean) || [];
         const hasLiveVibe = club.club_tonight_vibe?.some(vibe => vibe.status === 'live') || false;
 
+        // Build tags array from database boolean fields and themes
+        const tags = [
+          ...themes,
+          ...(club.outdoor_area ? ['outdoor-area'] : []),
+          ...(club.smoke_room ? ['smoking-area'] : []),
+          ...(club.awareness_room ? ['awareness-room'] : []),
+          ...(club.dark_room ? ['dark-room'] : []),
+          ...(club.cursing_area ? ['cursing-area'] : []),
+          ...(club.cash_only ? ['cash-only'] : []),
+          ...(club.card_accepted ? ['card-accepted'] : []),
+        ];
+
         return {
           id: club.id.toString(),
           name: club.name,
           district: club.districts?.name || 'Unknown',
-          tags: themes as any[], // Map themes to tags
+          tags: tags as any[],
           ratings: {
-            music: Math.round(ratings.music_rating || 0),
-            vibe: Math.round(ratings.vibe_rating || 0),
-            crowd: Math.round(ratings.crowd_rating || 0),
-            safety: Math.round(ratings.safety_rating || 0),
+            music: Math.round((ratings.music_rating || 0) * 20), // Convert 0-5 to 0-100
+            vibe: Math.round((ratings.vibe_rating || 0) * 20),
+            crowd: Math.round((ratings.crowd_rating || 0) * 20),
+            safety: Math.round((ratings.safety_rating || 0) * 20),
           },
           hasLiveVibe,
           description: club.description,
         };
       });
 
-      // Apply tag filter if specified
-      let filteredVenues = venues;
-      if (tags && tags.length > 0) {
-        filteredVenues = venues.filter(venue =>
-          tags.some(tag => venue.tags.includes(tag as any))
-        );
-      }
-
-      return filteredVenues;
+      return venues;
 
     } catch (error) {
       console.error('Failed to load clubs:', error);
