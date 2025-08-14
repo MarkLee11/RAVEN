@@ -654,21 +654,22 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[用户点击"Add Review"按钮] --> B{用户是否已登录?}
+    A[用户点击 Add Review 按钮] --> B{用户是否已登录?}
     B -->|否| C[跳转到登录页面]
     B -->|是| D[进入评论提交页面]
     D --> E[用户填写评分和评论]
     E --> F[提交表单]
     F --> G{场所类型判断}
-    G -->|Club| H[调用createReview]
-    G -->|Bar| I[调用createBarReview]
-    H --> J[保存到club_reviews表]
-    I --> K[保存到bar_reviews表]
-    J --> L[创建乐观更新Review]
+    G -->|Club| H[调用 createReview]
+    G -->|Bar| I[调用 createBarReview]
+    H --> J[保存到 club_reviews 表]
+    I --> K[保存到 bar_reviews 表]
+    J --> L[创建乐观更新 Review]
     K --> L
     L --> M[导航回详情页面]
     M --> N[立即显示新评论]
     N --> O[重新计算场所评分]
+
 ```
 
 ### Deathmarch 进度更新流程
