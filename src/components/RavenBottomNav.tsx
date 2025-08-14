@@ -8,8 +8,8 @@ const RavenBottomNav: React.FC = () => {
 
   const tabs = [
     { label: 'CORE', to: '/' },
-    { label: 'CLUBS', to: '/venues' },
-    { label: 'BARS', to: '/plans' },
+    { label: 'CLUBS', to: '/clubs' },
+    { label: 'BARS', to: '/bars' },
     { label: 'ID', to: '/profile' },
   ];
 

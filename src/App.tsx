@@ -2,8 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Landing from './routes/Landing';
-import Venues from './routes/Venues';
-import VenueDetail from './routes/VenueDetail';
+import Clubs from './routes/Clubs';
+import ClubDetail from './routes/ClubDetail';
+import Bars from './routes/Bars';
+import BarDetail from './routes/BarDetail';
 import Plans from './routes/Plans';
 import PlanDetail from './routes/PlanDetail';
 import SubmitReview from './routes/SubmitReview';
@@ -28,8 +30,10 @@ function App() {
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/venues" element={<Venues />} />
-            <Route path="/venues/:id" element={<VenueDetail />} />
+            <Route path="/clubs" element={<Clubs />} />
+            <Route path="/clubs/:id" element={<ClubDetail />} />
+            <Route path="/bars" element={<Bars />} />
+            <Route path="/bars/:id" element={<BarDetail />} />
             <Route path="/plans" element={<Plans />} />
             <Route path="/plans/:id" element={<PlanDetail />} />
             <Route path="/submit" element={<SubmitReview />} />

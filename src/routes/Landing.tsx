@@ -126,7 +126,7 @@ const Landing: React.FC = () => {
     boxShadow: '-6px 10px 20px rgba(0, 0, 0, 0.5), -3px 5px 10px rgba(138, 206, 0, 0.15)'
   }}
 >
-  <Link to="/venues">
+  <Link to="/clubs">
     <Button size="lg" className="w-full justify-center items-center font-sora font-semibold pt-4">
       CLUBS
     </Button>
@@ -144,7 +144,7 @@ const Landing: React.FC = () => {
     boxShadow: '10px 8px 28px rgba(0, 0, 0, 0.6), 5px 4px 14px rgba(138, 206, 0, 0.2)'
   }}
 >
-  <Link to="/plans">
+  <Link to="/bars">
     <Button variant="ghost" size="lg" className="w-full justify-center items-center font-sora font-semibold pt-4">
       BARS
     </Button>
