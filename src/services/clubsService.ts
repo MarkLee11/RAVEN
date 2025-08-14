@@ -28,7 +28,7 @@ export const clubsService = {
     payment?: string[]
   ): Promise<Venue[]> {
     try {
-      console.log('🔍 Starting listClubs query...');
+      console.log('🔍 Starting listClubs query with params:', { district, construction, payment });
       let query = supabase
         .from('clubs')
         .select(`
@@ -114,6 +114,14 @@ export const clubsService = {
 
       console.log('📊 Raw database response:', clubsData);
       console.log('❌ Query error:', error);
+      
+      // Test a simple query to see if database connection works
+      const { data: testData, error: testError } = await supabase
+        .from('clubs')
+        .select('id, name')
+        .limit(1);
+      console.log('🧪 Simple test query result:', testData, testError);
+      
       if (error) {
         console.error('Error fetching clubs:', error);
         return [];
