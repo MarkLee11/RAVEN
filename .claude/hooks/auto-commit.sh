@@ -100,6 +100,40 @@ EOF
 echo "✅ Successfully committed changes!"
 echo "📝 Commit message: $COMMIT_MSG"
 
+# Push to GitHub automatically
+echo "🚀 Pushing to GitHub..."
+
+# Check if remote origin exists
+if git remote get-url origin >/dev/null 2>&1; then
+    # Get current branch name
+    CURRENT_BRANCH=$(git branch --show-current)
+    
+    # Push to remote repository
+    if git push origin "$CURRENT_BRANCH" 2>/dev/null; then
+        echo "✅ Successfully pushed to GitHub!"
+        echo "🔗 Repository: $(git remote get-url origin)"
+        echo "🌿 Branch: $CURRENT_BRANCH"
+    else
+        echo "⚠️  Failed to push to GitHub. Checking if upstream is set..."
+        
+        # Try to set upstream and push
+        if git push -u origin "$CURRENT_BRANCH" 2>/dev/null; then
+            echo "✅ Successfully pushed to GitHub with upstream set!"
+            echo "🔗 Repository: $(git remote get-url origin)"
+            echo "🌿 Branch: $CURRENT_BRANCH"
+        else
+            echo "❌ Failed to push to GitHub. Please check your credentials and network connection."
+            echo "💡 Commit was successful locally. You can manually push later with:"
+            echo "   git push origin $CURRENT_BRANCH"
+        fi
+    fi
+else
+    echo "⚠️  No remote repository configured. Commit saved locally only."
+    echo "💡 To push to GitHub, configure a remote with:"
+    echo "   git remote add origin <your-github-repo-url>"
+fi
+
 # Show brief summary
+echo ""
 echo "📊 Changes summary:"
 git show --stat --oneline HEAD | head -10
