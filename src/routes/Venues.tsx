@@ -10,29 +10,29 @@ import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
 
 const districts: District[] = ['Kreuzberg', 'Friedrichshain', 'Neukölln', 'Mitte', 'Prenzlauer Berg', 'Wedding'];
-const tags: VenueTag[] = ['techno', 'house', 'disco', 'queer-friendly', 'outdoor', 'cash-only', 'smoke-room', 'late-night'];
+const tags: VenueTag[] = ['techno', 'house', 'disco', 'outdoor', 'world-famous', 'inclusive', 'riverside', 'underground', 'rooftop'];
 
 const Venues: React.FC = () => {
-  const [venues, setVenues] = useState<Venue[]>([]);
+  const [nightclubs, setNightclubs] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDistrict, setSelectedDistrict] = useState<string>('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
-    loadVenues();
+    loadNightclubs();
   }, [selectedDistrict, selectedTags]);
 
-  const loadVenues = async () => {
+  const loadNightclubs = async () => {
     setLoading(true);
     try {
-      const results = await venuesService.listVenues(
+      const results = await venuesService.listNightclubs(
         selectedDistrict || undefined,
         selectedTags.length > 0 ? selectedTags : undefined
       );
-      setVenues(results);
+      setNightclubs(results);
     } catch (error) {
-      console.error('Failed to load venues:', error);
+      console.error('Failed to load nightclubs:', error);
     } finally {
       setLoading(false);
     }
@@ -46,6 +46,11 @@ const Venues: React.FC = () => {
     );
   };
 
+  // 页面标题
+  React.useEffect(() => {
+    document.title = 'RAVEN - 夜店评价';
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -56,6 +61,7 @@ const Venues: React.FC = () => {
       <div className="px-4 pt-4">
         {/* Filters Toggle */}
         <div className="flex items-center justify-between mb-4">
+          <h2 className="font-space text-xl text-ink">夜店评价</h2>
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center space-x-2 text-ash hover:text-ink transition-colors"
@@ -80,7 +86,7 @@ const Venues: React.FC = () => {
           >
             {/* Districts */}
             <div>
-              <h4 className="text-sm font-medium text-ink mb-2">District</h4>
+              <h4 className="text-sm font-medium text-ink mb-2">区域</h4>
               <div className="flex flex-wrap gap-2">
                 <Badge
                   variant={selectedDistrict === '' ? 'raven' : 'default'}
@@ -106,7 +112,7 @@ const Venues: React.FC = () => {
 
             {/* Tags */}
             <div>
-              <h4 className="text-sm font-medium text-ink mb-2">Vibe</h4>
+              <h4 className="text-sm font-medium text-ink mb-2">风格</h4>
               <div className="flex flex-wrap gap-2">
                 {tags.map(tag => (
                   <Badge
@@ -123,19 +129,19 @@ const Venues: React.FC = () => {
           </motion.div>
         )}
 
-        {/* Venues List */}
+        {/* Nightclubs List */}
         <div className="space-y-4">
           {loading ? (
             <div className="text-center py-12">
               <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
-              <p className="text-ash mt-2">Loading venues...</p>
+              <p className="text-ash mt-2">加载夜店信息中...</p>
             </div>
-          ) : venues.length === 0 ? (
+          ) : nightclubs.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-ash">No venues match your filters.</p>
+              <p className="text-ash">没有符合条件的夜店。</p>
             </div>
           ) : (
-            venues.map((venue, index) => (
+            nightclubs.map((venue, index) => (
               <motion.div
                 key={venue.id}
                 initial={{ y: 20, opacity: 0 }}
@@ -149,7 +155,7 @@ const Venues: React.FC = () => {
                         <div className="flex items-center space-x-2 mb-1">
                           <h3 className="font-space text-lg text-ink">{venue.name}</h3>
                           {venue.hasLiveVibe && (
-                            <Badge variant="raven" size="sm">LIVE</Badge>
+                            <Badge variant="raven" size="sm">热门</Badge>
                           )}
                         </div>
                         <div className="flex items-center space-x-1 text-sm text-ash mb-2">
@@ -168,10 +174,10 @@ const Venues: React.FC = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                      <RatingBar label="Music" value={venue.ratings.music} />
-                      <RatingBar label="Vibe" value={venue.ratings.vibe} />
-                      <RatingBar label="Crowd" value={venue.ratings.crowd} />
-                      <RatingBar label="Safety" value={venue.ratings.safety} />
+                      <RatingBar label="音乐" value={venue.ratings.music} />
+                      <RatingBar label="氛围" value={venue.ratings.vibe} />
+                      <RatingBar label="人群" value={venue.ratings.crowd} />
+                      <RatingBar label="安全" value={venue.ratings.safety} />
                     </div>
                   </Card>
                 </Link>
