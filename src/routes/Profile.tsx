@@ -142,7 +142,7 @@ const Profile: React.FC = () => {
               <div className="flex items-center space-x-4">
                 <div>
                   <h2 className="font-space text-xl text-ink">
-                    User
+                    ID
                   </h2>
                   <p className="text-sm text-ash">{user.email}</p>
                   <p className="text-xs text-ash mt-1">
