@@ -3,7 +3,7 @@ import { User } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { getInitials } from '../lib/utils';
 
-// Avatar component for user profile display
+// Avatar component for user profile display and identification
 
 interface AvatarProps {
   name?: string;
