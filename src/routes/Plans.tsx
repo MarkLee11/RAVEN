@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Filter } from 'lucide-react';
+import { MapPin, Filter, Clock, Star } from 'lucide-react';
 import { Venue, District, VenueTag } from '../contracts/types';
 import { venuesService } from '../services/venuesService';
-import SectionHeader from '../components/SectionHeader';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
@@ -46,6 +45,30 @@ const Plans: React.FC = () => {
     );
   };
 
+  // 获取营业时间显示
+  const getOperatingHours = (barId: string): string => {
+    const hours: Record<string, string> = {
+      'zur-letzten-instanz': '11:00 - 24:00',
+      'prater-garten': '12:00 - 24:00 (夏季延长)',
+      'hackescher-hof': '17:00 - 02:00',
+      'zur-wilden-renate': '20:00 - 06:00',
+      'monkey-bar': '12:00 - 02:00',
+    };
+    return hours[barId] || '营业时间详询';
+  };
+
+  // 获取推荐饮品
+  const getRecommendedDrinks = (barId: string): string[] => {
+    const drinks: Record<string, string[]> = {
+      'zur-letzten-instanz': ['柏林白啤', '传统德式香肠'],
+      'prater-garten': ['Prater特制啤酒', '烤猪肘'],
+      'hackescher-hof': ['经典马天尼', '威士忌品鉴'],
+      'zur-wilden-renate': ['创意鸡尾酒', '深夜特调'],
+      'monkey-bar': ['景观鸡尾酒', '精品威士忌'],
+    };
+    return drinks[barId] || ['招牌饮品'];
+  };
+
   // 页面标题
   React.useEffect(() => {
     document.title = 'RAVEN - 酒吧评价';
@@ -57,9 +80,8 @@ const Plans: React.FC = () => {
       animate={{ opacity: 1 }}
       className="min-h-screen bg-berlin-black"
     >
-
       <div className="px-4 pt-4">
-        {/* Filters Toggle */}
+        {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-space text-xl text-ink">酒吧评价</h2>
           <button
@@ -149,7 +171,8 @@ const Plans: React.FC = () => {
                 transition={{ delay: index * 0.1 }}
               >
                 <Link to={`/venues/${bar.id}`}>
-                  <Card hover>
+                  <Card hover className="relative overflow-hidden">
+                    {/* Header */}
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-1">
@@ -165,10 +188,24 @@ const Plans: React.FC = () => {
                       </div>
                     </div>
 
+                    {/* Description */}
                     <p className="text-sm text-ash leading-relaxed mb-3">
                       {bar.description}
                     </p>
 
+                    {/* Additional Info */}
+                    <div className="space-y-2 mb-3">
+                      <div className="flex items-center space-x-2 text-xs text-ash">
+                        <Clock size={12} />
+                        <span>{getOperatingHours(bar.id)}</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-xs text-ash">
+                        <Star size={12} />
+                        <span>推荐: {getRecommendedDrinks(bar.id).join(', ')}</span>
+                      </div>
+                    </div>
+
+                    {/* Tags */}
                     <div className="flex flex-wrap gap-1 mb-3">
                       {bar.tags.map(tag => (
                         <Badge key={tag} size="sm">
@@ -177,12 +214,16 @@ const Plans: React.FC = () => {
                       ))}
                     </div>
 
+                    {/* Ratings */}
                     <div className="grid grid-cols-2 gap-3">
                       <RatingBar label="音乐" value={bar.ratings.music} />
                       <RatingBar label="氛围" value={bar.ratings.vibe} />
                       <RatingBar label="人群" value={bar.ratings.crowd} />
                       <RatingBar label="安全" value={bar.ratings.safety} />
                     </div>
+
+                    {/* Decorative element */}
+                    <div className="absolute top-2 right-2 w-2 h-2 bg-raven/20 rounded-full" />
                   </Card>
                 </Link>
               </motion.div>

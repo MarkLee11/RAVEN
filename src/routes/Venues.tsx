@@ -4,35 +4,34 @@ import { motion } from 'framer-motion';
 import { MapPin, Filter } from 'lucide-react';
 import { Venue, District, VenueTag } from '../contracts/types';
 import { venuesService } from '../services/venuesService';
-import SectionHeader from '../components/SectionHeader';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
 
 const districts: District[] = ['Kreuzberg', 'Friedrichshain', 'Neukölln', 'Mitte', 'Prenzlauer Berg', 'Wedding'];
-const tags: VenueTag[] = ['techno', 'house', 'disco', 'outdoor', 'world-famous', 'inclusive', 'riverside', 'underground', 'rooftop'];
+const tags: VenueTag[] = ['techno', 'house', 'disco', 'outdoor', 'late-night', 'world-famous', 'inclusive', 'riverside', 'underground', 'rooftop'];
 
 const Venues: React.FC = () => {
-  const [nightclubs, setNightclubs] = useState<Venue[]>([]);
+  const [venues, setVenues] = useState<Venue[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDistrict, setSelectedDistrict] = useState<string>('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
-    loadNightclubs();
+    loadVenues();
   }, [selectedDistrict, selectedTags]);
 
-  const loadNightclubs = async () => {
+  const loadVenues = async () => {
     setLoading(true);
     try {
-      const results = await venuesService.listNightclubs(
+      const results = await venuesService.listVenues(
         selectedDistrict || undefined,
         selectedTags.length > 0 ? selectedTags : undefined
       );
-      setNightclubs(results);
+      setVenues(results);
     } catch (error) {
-      console.error('Failed to load nightclubs:', error);
+      console.error('Failed to load venues:', error);
     } finally {
       setLoading(false);
     }
@@ -57,7 +56,6 @@ const Venues: React.FC = () => {
       animate={{ opacity: 1 }}
       className="min-h-screen bg-berlin-black"
     >
-
       <div className="px-4 pt-4">
         {/* Filters Toggle */}
         <div className="flex items-center justify-between mb-4">
@@ -67,7 +65,7 @@ const Venues: React.FC = () => {
             className="flex items-center space-x-2 text-ash hover:text-ink transition-colors"
           >
             <Filter size={16} />
-            <span className="text-sm">Filters</span>
+            <span className="text-sm">筛选</span>
             {(selectedDistrict || selectedTags.length > 0) && (
               <Badge variant="raven" size="sm">
                 {(selectedDistrict ? 1 : 0) + selectedTags.length}
@@ -93,7 +91,7 @@ const Venues: React.FC = () => {
                   className="cursor-pointer"
                   onClick={() => setSelectedDistrict('')}
                 >
-                  All
+                  全部
                 </Badge>
                 {districts.map(district => (
                   <Badge
@@ -129,19 +127,19 @@ const Venues: React.FC = () => {
           </motion.div>
         )}
 
-        {/* Nightclubs List */}
+        {/* Venues List */}
         <div className="space-y-4">
           {loading ? (
             <div className="text-center py-12">
               <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
               <p className="text-ash mt-2">加载夜店信息中...</p>
             </div>
-          ) : nightclubs.length === 0 ? (
+          ) : venues.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-ash">没有符合条件的夜店。</p>
             </div>
           ) : (
-            nightclubs.map((venue, index) => (
+            venues.map((venue, index) => (
               <motion.div
                 key={venue.id}
                 initial={{ y: 20, opacity: 0 }}
@@ -164,6 +162,10 @@ const Venues: React.FC = () => {
                         </div>
                       </div>
                     </div>
+
+                    <p className="text-sm text-ash leading-relaxed mb-3">
+                      {venue.description}
+                    </p>
 
                     <div className="flex flex-wrap gap-1 mb-3">
                       {venue.tags.map(tag => (
