@@ -127,12 +127,9 @@ const Landing: React.FC = () => {
   }}
 >
   <Link to="/clubs">
-    <button 
-      className="glitch-btn w-full font-sora font-semibold"
-      data-label="CLUBS"
-    >
+    <Button size="lg" className="w-full justify-center items-center font-sora font-semibold pt-4">
       CLUBS
-    </button>
+    </Button>
   </Link>
 </motion.div>
             
