@@ -206,6 +206,24 @@ const Profile: React.FC = () => {
             </div>
           </Card>
 
+          {/* Deathmarch */}
+          <Card>
+            <div className="text-center">
+              <h3 className="font-space text-lg text-ink mb-2">Deathmarch</h3>
+              <p className="text-xs text-ash mb-4">Every venue visited brings you closer to transcendence.</p>
+              
+              <div className="flex justify-center items-center space-x-8 mb-2">
+                <div className="font-mono text-lg text-raven">0/128</div>
+                <div className="font-mono text-lg text-raven">0/342</div>
+              </div>
+              
+              <div className="flex justify-center items-center space-x-16">
+                <div className="text-xs text-ash font-medium">CLUBS</div>
+                <div className="text-xs text-ash font-medium">BARS</div>
+              </div>
+            </div>
+          </Card>
+
           {/* Logout Button at Bottom */}
           <Button
             variant="ghost"
@@ -345,18 +363,15 @@ const Profile: React.FC = () => {
                 </>
               ) : (
                 <>
-          <div className="text-center">
-            <h3 className="font-space text-lg text-ink mb-2">Deathmarch</h3>
-            <p className="text-xs text-ash mb-4">Every venue visited brings you closer to transcendence.</p>
-            
-            <div className="flex justify-center items-center space-x-8 mb-2">
-              <div className="font-mono text-lg text-raven">0/128</div>
-              <div className="font-mono text-lg text-raven">0/342</div>
-            </div>
-            
-            <div className="flex justify-center items-center space-x-16">
-              <div className="text-xs text-ash font-medium">CLUBS</div>
-              <div className="text-xs text-ash font-medium">BARS</div>
+                  Already have an account?{' '}
+                  <button
+                    onClick={() => setActiveTab('login')}
+                    className="text-raven hover:underline"
+                  >
+                    Login
+                  </button>
+                </>
+              )}
             </p>
           </div>
         </Card>
