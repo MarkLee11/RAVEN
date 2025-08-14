@@ -155,7 +155,12 @@ export const clubsService = {
         };
       });
 
-      return venues;
+      // Sort by total rating score (descending)
+      return venues.sort((a, b) => {
+        const totalA = a.ratings.music + a.ratings.vibe + a.ratings.crowd + a.ratings.safety;
+        const totalB = b.ratings.music + b.ratings.vibe + b.ratings.crowd + b.ratings.safety;
+        return totalB - totalA;
+      });
 
     } catch (error) {
       console.error('Failed to load clubs:', error);
