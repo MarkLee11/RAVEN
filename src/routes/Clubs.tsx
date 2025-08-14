@@ -152,6 +152,11 @@ const Clubs: React.FC = () => {
                           <span>{club.district}</span>
                         </div>
                       </div>
+                      <div className="ml-3">
+                        <button className="px-3 py-1 text-xs bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven/20 transition-colors whitespace-nowrap">
+                          Past reviews & Today's vibe
+                        </button>
+                      </div>
                     </div>
 
                     <div className="flex flex-wrap gap-1 mb-3">
