@@ -21,7 +21,6 @@ const SubmitReview: React.FC = () => {
   });
   
   const [comment, setComment] = useState('');
-  const [queueTime, setQueueTime] = useState<number | undefined>();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRatingChange = (aspect: keyof VenueRatings, value: number) => {
@@ -42,7 +41,6 @@ const SubmitReview: React.FC = () => {
         venueId,
         ratings,
         comment: comment.trim() || undefined,
-        queueTime,
         isAnonymous: true, // All reviews are anonymous
       };
 
@@ -139,20 +137,6 @@ const SubmitReview: React.FC = () => {
               </div>
             ))}
           </div>
-        </Card>
-
-        {/* Queue Time */}
-        <Card>
-          <h3 className="font-space text-lg text-ink mb-3">Queue Time (Optional)</h3>
-          <input
-            type="number"
-            placeholder="Minutes waited"
-            min="0"
-            max="240"
-            value={queueTime || ''}
-            onChange={(e) => setQueueTime(e.target.value ? parseInt(e.target.value) : undefined)}
-            className="w-full bg-berlin-black border border-ash/30 rounded-md px-3 py-2 text-ink placeholder-ash focus:border-raven focus:outline-none"
-          />
         </Card>
 
         {/* Comment */}
