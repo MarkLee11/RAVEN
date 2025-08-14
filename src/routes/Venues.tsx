@@ -47,7 +47,7 @@ const Venues: React.FC = () => {
 
   // 页面标题
   React.useEffect(() => {
-    document.title = 'RAVEN - Club Reviews';
+    document.title = 'RAVEN - 夜店评价';
   }, []);
 
   return (
@@ -59,13 +59,13 @@ const Venues: React.FC = () => {
       <div className="px-4 pt-4">
         {/* Filters Toggle */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-space text-xl text-ink">Club Reviews</h2>
+          <h2 className="font-space text-xl text-ink">夜店评价</h2>
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center space-x-2 text-ash hover:text-ink transition-colors"
           >
             <Filter size={16} />
-            <span className="text-sm">Filters</span>
+            <span className="text-sm">筛选</span>
             {(selectedDistrict || selectedTags.length > 0) && (
               <Badge variant="raven" size="sm">
                 {(selectedDistrict ? 1 : 0) + selectedTags.length}
@@ -84,14 +84,14 @@ const Venues: React.FC = () => {
           >
             {/* Districts */}
             <div>
-              <h4 className="text-sm font-medium text-ink mb-2">District</h4>
+              <h4 className="text-sm font-medium text-ink mb-2">区域</h4>
               <div className="flex flex-wrap gap-2">
                 <Badge
                   variant={selectedDistrict === '' ? 'raven' : 'default'}
                   className="cursor-pointer"
                   onClick={() => setSelectedDistrict('')}
                 >
-                  All
+                  全部
                 </Badge>
                 {districts.map(district => (
                   <Badge
@@ -110,7 +110,7 @@ const Venues: React.FC = () => {
 
             {/* Tags */}
             <div>
-              <h4 className="text-sm font-medium text-ink mb-2">Style</h4>
+              <h4 className="text-sm font-medium text-ink mb-2">风格</h4>
               <div className="flex flex-wrap gap-2">
                 {tags.map(tag => (
                   <Badge
@@ -132,11 +132,11 @@ const Venues: React.FC = () => {
           {loading ? (
             <div className="text-center py-12">
               <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
-              <p className="text-ash mt-2">Loading clubs...</p>
+              <p className="text-ash mt-2">加载夜店信息中...</p>
             </div>
           ) : venues.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-ash">No clubs match your criteria.</p>
+              <p className="text-ash">没有符合条件的夜店。</p>
             </div>
           ) : (
             venues.map((venue, index) => (
@@ -153,7 +153,7 @@ const Venues: React.FC = () => {
                         <div className="flex items-center space-x-2 mb-1">
                           <h3 className="font-space text-lg text-ink">{venue.name}</h3>
                           {venue.hasLiveVibe && (
-                            <Badge variant="raven" size="sm">Hot</Badge>
+                            <Badge variant="raven" size="sm">热门</Badge>
                           )}
                         </div>
                         <div className="flex items-center space-x-1 text-sm text-ash mb-2">
@@ -176,10 +176,10 @@ const Venues: React.FC = () => {
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                      <RatingBar label="Music" value={venue.ratings.music} />
-                      <RatingBar label="Vibe" value={venue.ratings.vibe} />
-                      <RatingBar label="Crowd" value={venue.ratings.crowd} />
-                      <RatingBar label="Safety" value={venue.ratings.safety} />
+                      <RatingBar label="音乐" value={venue.ratings.music} />
+                      <RatingBar label="氛围" value={venue.ratings.vibe} />
+                      <RatingBar label="人群" value={venue.ratings.crowd} />
+                      <RatingBar label="安全" value={venue.ratings.safety} />
                     </div>
                   </Card>
                 </Link>
