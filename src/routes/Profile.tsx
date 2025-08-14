@@ -265,8 +265,6 @@ const Profile: React.FC = () => {
 
         {/* Form */}
         <Card>
-          <h3 className="font-space text-lg text-ink mb-2 text-center">Deathmarch</h3>
-          <p className="text-xs text-ash mb-4 text-center">Every venue visited brings you closer to transcendence.</p>
           <form onSubmit={activeTab === 'login' ? handleLogin : handleSignup}>
             <div className="space-y-4">
               {/* Email Input */}
