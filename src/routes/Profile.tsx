@@ -1,231 +1,403 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Settings, Heart, MapPin, Calendar, Star, Edit3 } from 'lucide-react';
+import { User, Mail, Lock, LogOut, Eye, EyeOff } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
-import Avatar from '../components/Avatar';
-import SectionHeader from '../components/SectionHeader';
-
-interface UserStats {
-  reviewsCount: number;
-  plansJoined: number;
-  favoriteVenues: string[];
-  memberSince: string;
-}
 
 interface UserProfile {
-  name: string;
-  bio: string;
-  favoriteDistricts: string[];
-  musicTastes: string[];
-  languages: string[];
-  isLGBTQFriendly: boolean;
+  id: string;
+  email: string;
+  name?: string;
+  bio?: string;
+  created_at: string;
+}
+
+interface AuthError {
+  message: string;
 }
 
 const Profile: React.FC = () => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState<UserProfile>({
-    name: 'Berlin Raver',
-    bio: 'Techno enthusiast exploring Berlin\'s underground scene. Always down for a good night out.',
-    favoriteDistricts: ['Kreuzberg', 'Friedrichshain'],
-    musicTastes: ['techno', 'house', 'disco'],
-    languages: ['EN', 'DE'],
-    isLGBTQFriendly: true,
-  });
+  const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
-  const [stats] = useState<UserStats>({
-    reviewsCount: 12,
-    plansJoined: 8,
-    favoriteVenues: ['Berghain', 'About Blank', 'Ritter Butzke'],
-    memberSince: 'December 2024',
-  });
+  useEffect(() => {
+    checkUser();
+  }, []);
 
-  const handleSaveProfile = () => {
-    setIsEditing(false);
-    // In real app, this would save to backend
-    console.log('Profile saved:', profile);
+  const checkUser = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+        await fetchProfile(user.id);
+      }
+    } catch (error) {
+      console.error('Error checking user:', error);
+    } finally {
+      setCheckingAuth(false);
+    }
   };
 
-  const getLanguageFlag = (lang: string): string => {
-    const flags: Record<string, string> = {
-      'DE': '🇩🇪',
-      'EN': '🇬🇧',
-      'ES': '🇪🇸',
-      'FR': '🇫🇷',
-      'IT': '🇮🇹',
-    };
-    return flags[lang] || '🌍';
+  const fetchProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching profile:', error);
+        return;
+      }
+
+      if (data) {
+        setProfile(data);
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
   };
 
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      if (data.user) {
+        setUser(data.user);
+        await fetchProfile(data.user.id);
+        // Clear form
+        setEmail('');
+        setPassword('');
+      }
+    } catch (error) {
+      setError('An unexpected error occurred');
+      console.error('Login error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      if (data.user) {
+        // Create profile entry
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: data.user.id,
+              email: data.user.email,
+              name: email.split('@')[0], // Use email prefix as default name
+              created_at: new Date().toISOString(),
+            }
+          ]);
+
+        if (profileError) {
+          console.error('Error creating profile:', profileError);
+        }
+
+        setUser(data.user);
+        await fetchProfile(data.user.id);
+        // Clear form
+        setEmail('');
+        setPassword('');
+      }
+    } catch (error) {
+      setError('An unexpected error occurred');
+      console.error('Signup error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Logout error:', error);
+        return;
+      }
+      
+      setUser(null);
+      setProfile(null);
+      setEmail('');
+      setPassword('');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-berlin-black flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Show authenticated user profile
+  if (user && profile) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="min-h-screen bg-berlin-black"
+      >
+        <div className="px-4 pt-4 space-y-6">
+          {/* Profile Header */}
+          <Card>
+            <div className="flex items-start justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 bg-raven/20 rounded-full flex items-center justify-center">
+                  <User size={24} className="text-raven" />
+                </div>
+                <div>
+                  <h2 className="font-space text-xl text-ink">
+                    {profile.name || 'User'}
+                  </h2>
+                  <p className="text-sm text-ash">{profile.email}</p>
+                  <p className="text-xs text-ash mt-1">
+                    Member since {new Date(profile.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                className="flex items-center space-x-2"
+              >
+                <LogOut size={16} />
+                <span>Logout</span>
+              </Button>
+            </div>
+          </Card>
+
+          {/* Profile Bio */}
+          {profile.bio && (
+            <Card>
+              <h3 className="font-space text-lg text-ink mb-3">About</h3>
+              <p className="text-sm text-ash leading-relaxed">{profile.bio}</p>
+            </Card>
+          )}
+
+          {/* Stats Placeholder */}
+          <Card>
+            <h3 className="font-space text-lg text-ink mb-4">Your Activity</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-raven mb-1">0</div>
+                <div className="text-xs text-ash">Reviews</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-raven mb-1">0</div>
+                <div className="text-xs text-ash">Plans Joined</div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Coming Soon Features */}
+          <Card>
+            <h3 className="font-space text-lg text-ink mb-3">Coming Soon</h3>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Badge size="sm">Profile Editing</Badge>
+                <span className="text-xs text-ash">Customize your profile</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Badge size="sm">Favorite Venues</Badge>
+                <span className="text-xs text-ash">Save your favorite spots</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Badge size="sm">Review History</Badge>
+                <span className="text-xs text-ash">View your past reviews</span>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // Show login/signup form
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="min-h-screen bg-berlin-black"
     >
+      <div className="px-4 pt-4 max-w-md mx-auto">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="font-space text-2xl text-ink mb-2">
+            Welcome to RAVE<span className="text-raven">N</span>
+          </h1>
+          <p className="text-sm text-ash">
+            Join Berlin's nightlife community
+          </p>
+        </div>
 
-      <div className="px-4 pt-4 space-y-6">
-        {/* Profile Header */}
+        {/* Tab Navigation */}
+        <div className="flex mb-6">
+          <button
+            onClick={() => setActiveTab('login')}
+            className={`flex-1 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === 'login'
+                ? 'border-raven text-raven'
+                : 'border-ash/20 text-ash hover:text-ink'
+            }`}
+          >
+            Login
+          </button>
+          <button
+            onClick={() => setActiveTab('signup')}
+            className={`flex-1 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === 'signup'
+                ? 'border-raven text-raven'
+                : 'border-ash/20 text-ash hover:text-ink'
+            }`}
+          >
+            Sign Up
+          </button>
+        </div>
+
+        {/* Form */}
         <Card>
-          <div className="flex items-start space-x-4">
-            <Avatar name={profile.name} size="lg" />
-            <div className="flex-1">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="font-space text-xl text-ink">{profile.name}</h2>
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="text-ash hover:text-raven transition-colors"
-                >
-                  <Edit3 size={16} />
-                </button>
-              </div>
-              
-              {isEditing ? (
-                <div className="space-y-3">
-                  <input
-                    type="text"
-                    value={profile.name}
-                    onChange={(e) => setProfile(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full bg-berlin-black border border-ash/30 rounded px-2 py-1 text-ink text-sm focus:border-raven focus:outline-none"
-                  />
-                  <textarea
-                    value={profile.bio}
-                    onChange={(e) => setProfile(prev => ({ ...prev, bio: e.target.value }))}
-                    rows={3}
-                    className="w-full bg-berlin-black border border-ash/30 rounded px-2 py-1 text-ink text-sm focus:border-raven focus:outline-none resize-none"
-                  />
-                  <div className="flex space-x-2">
-                    <Button size="sm" onClick={handleSaveProfile}>Save</Button>
-                    <Button size="sm" variant="ghost" onClick={() => setIsEditing(false)}>Cancel</Button>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-sm text-ash leading-relaxed">{profile.bio}</p>
-              )}
-            </div>
-          </div>
-        </Card>
-
-        {/* Stats */}
-        <Card>
-          <h3 className="font-space text-lg text-ink mb-4">Your Stats</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-raven mb-1">{stats.reviewsCount}</div>
-              <div className="text-xs text-ash">Reviews</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-raven mb-1">{stats.plansJoined}</div>
-              <div className="text-xs text-ash">Plans Joined</div>
-            </div>
-          </div>
-          <div className="mt-4 pt-4 border-t border-ash/10">
-            <div className="flex items-center space-x-2 text-sm text-ash">
-              <Calendar size={14} />
-              <span>Member since {stats.memberSince}</span>
-            </div>
-          </div>
-        </Card>
-
-        {/* Preferences */}
-        <Card>
-          <h3 className="font-space text-lg text-ink mb-4">Preferences</h3>
-          
-          <div className="space-y-4">
-            {/* Favorite Districts */}
-            <div>
-              <h4 className="text-sm font-medium text-ink mb-2 flex items-center">
-                <MapPin size={14} className="mr-1" />
-                Favorite Districts
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {profile.favoriteDistricts.map(district => (
-                  <Badge key={district} variant="raven" size="sm">
-                    {district}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-
-            {/* Music Tastes */}
-            <div>
-              <h4 className="text-sm font-medium text-ink mb-2 flex items-center">
-                <Star size={14} className="mr-1" />
-                Music Tastes
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {profile.musicTastes.map(taste => (
-                  <Badge key={taste} size="sm">
-                    {taste}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-
-            {/* Languages */}
-            <div>
-              <h4 className="text-sm font-medium text-ink mb-2">Languages</h4>
-              <div className="flex items-center space-x-3">
-                {profile.languages.map(lang => (
-                  <div key={lang} className="flex items-center space-x-1">
-                    <span className="text-lg">{getLanguageFlag(lang)}</span>
-                    <span className="text-sm text-ash">{lang}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* LGBTQ+ Friendly */}
-            {profile.isLGBTQFriendly && (
-              <div className="flex items-center space-x-2">
-                <Heart size={16} className="text-raven" />
-                <span className="text-sm text-ink">LGBTQ+ Friendly</span>
-              </div>
-            )}
-          </div>
-        </Card>
-
-        {/* Favorite Venues */}
-        <Card>
-          <h3 className="font-space text-lg text-ink mb-4">Favorite Venues</h3>
-          <div className="space-y-2">
-            {stats.favoriteVenues.map((venue, index) => (
-              <div key={venue} className="flex items-center justify-between py-2">
-                <span className="text-sm text-ink">{venue}</span>
-                <div className="flex items-center space-x-1">
-                  <Star size={12} className="text-raven" />
-                  <span className="text-xs text-ash">#{index + 1}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Settings */}
-        <Card>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Settings size={20} className="text-ash" />
+          <form onSubmit={activeTab === 'login' ? handleLogin : handleSignup}>
+            <div className="space-y-4">
+              {/* Email Input */}
               <div>
-                <h3 className="font-space text-lg text-ink">Settings</h3>
-                <p className="text-sm text-ash">Privacy, notifications, and more</p>
+                <label className="block text-sm font-medium text-ink mb-2">
+                  Email
+                </label>
+                <div className="relative">
+                  <Mail size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ash" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full bg-berlin-black border border-ash/30 rounded-md pl-10 pr-3 py-2 text-ink placeholder-ash focus:border-raven focus:outline-none"
+                    placeholder="your@email.com"
+                  />
+                </div>
               </div>
+
+              {/* Password Input */}
+              <div>
+                <label className="block text-sm font-medium text-ink mb-2">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ash" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    className="w-full bg-berlin-black border border-ash/30 rounded-md pl-10 pr-10 py-2 text-ink placeholder-ash focus:border-raven focus:outline-none"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-ash hover:text-ink"
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="bg-blood/10 border border-blood/30 rounded-md p-3">
+                  <p className="text-sm text-blood">{error}</p>
+                </div>
+              )}
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                className="w-full justify-center"
+                isLoading={loading}
+                disabled={!email || !password}
+              >
+                {activeTab === 'login' ? 'Login' : 'Sign Up'}
+              </Button>
             </div>
-            <Button variant="ghost" size="sm">
-              Configure
-            </Button>
+          </form>
+
+          {/* Additional Info */}
+          <div className="mt-4 pt-4 border-t border-ash/10">
+            <p className="text-xs text-ash text-center">
+              {activeTab === 'login' ? (
+                <>
+                  Don't have an account?{' '}
+                  <button
+                    onClick={() => setActiveTab('signup')}
+                    className="text-raven hover:underline"
+                  >
+                    Sign up
+                  </button>
+                </>
+              ) : (
+                <>
+                  Already have an account?{' '}
+                  <button
+                    onClick={() => setActiveTab('login')}
+                    className="text-raven hover:underline"
+                  >
+                    Login
+                  </button>
+                </>
+              )}
+            </p>
           </div>
         </Card>
 
-        {/* Account Actions */}
-        <div className="space-y-3">
-          <Button variant="ghost" className="w-full justify-center">
-            Export My Data
-          </Button>
-          <Button variant="danger" className="w-full justify-center">
-            Delete Account
-          </Button>
+        {/* Privacy Notice */}
+        <div className="mt-6 text-center">
+          <p className="text-xs text-ash">
+            By signing up, you agree to our privacy policy.<br />
+            Your data is secure and never shared.
+          </p>
         </div>
       </div>
     </motion.div>
