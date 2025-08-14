@@ -28,6 +28,7 @@ export const clubsService = {
     payment?: string[]
   ): Promise<Venue[]> {
     try {
+      console.log('🔍 Starting listClubs query...');
       let query = supabase
         .from('clubs')
         .select(`
@@ -54,6 +55,7 @@ export const clubsService = {
 
       // Apply district filter
       if (district) {
+        console.log('🏘️ Filtering by district:', district);
         // Join with districts table and filter by district name
         const { data: districtData, error: districtError } = await supabase
           .from('districts')
@@ -71,6 +73,7 @@ export const clubsService = {
 
       // Apply construction filters
       if (construction && construction.length > 0) {
+        console.log('🏗️ Filtering by construction:', construction);
         construction.forEach(filter => {
           switch (filter) {
             case 'outdoor-area':
@@ -94,6 +97,7 @@ export const clubsService = {
 
       // Apply payment filters
       if (payment && payment.length > 0) {
+        console.log('💳 Filtering by payment:', payment);
         payment.forEach(filter => {
           switch (filter) {
             case 'cash-only':
@@ -108,6 +112,8 @@ export const clubsService = {
 
       const { data: clubsData, error } = await query;
 
+      console.log('📊 Raw database response:', clubsData);
+      console.log('❌ Query error:', error);
       if (error) {
         console.error('Error fetching clubs:', error);
         return [];
@@ -117,6 +123,9 @@ export const clubsService = {
 
       // Transform database data to Venue format
       const venues: Venue[] = clubsData.map(club => {
+        console.log('🏢 Processing club:', club.name);
+        console.log('📈 Raw ratings data:', club.club_ratings);
+        
         const ratings = club.club_ratings?.[0] || {
           music_rating: 0,
           vibe_rating: 0,
@@ -124,6 +133,7 @@ export const clubsService = {
           safety_rating: 0
         };
 
+        console.log('📊 Processed ratings:', ratings);
         const themes = club.club_themes?.map(ct => ct.themes?.name).filter(Boolean) || [];
         const hasLiveVibe = club.club_tonight_vibe?.some(vibe => vibe.status === 'live') || false;
 
@@ -139,22 +149,26 @@ export const clubsService = {
           ...(club.card_accepted ? ['card-accepted'] : []),
         ];
 
+        const finalRatings = {
+          music: ratings.music_rating || 0,
+          vibe: ratings.vibe_rating || 0,
+          crowd: ratings.crowd_rating || 0,
+          safety: ratings.safety_rating || 0,
+        };
+        
+        console.log('🎯 Final ratings for', club.name, ':', finalRatings);
         return {
           id: club.id.toString(),
           name: club.name,
           district: club.districts?.name || 'Unknown District',
           tags: tags as any[],
-          ratings: {
-            music: ratings.music_rating || 0, // Already 0-100
-            vibe: ratings.vibe_rating || 0,
-            crowd: ratings.crowd_rating || 0,
-            safety: ratings.safety_rating || 0,
-          },
+          ratings: finalRatings,
           hasLiveVibe,
           description: club.description,
         };
       });
 
+      console.log('✅ Final venues data:', venues);
       return venues;
 
     } catch (error) {
