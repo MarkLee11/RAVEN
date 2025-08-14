@@ -1,7 +1,7 @@
 # 🌃 RAVEN - Berlin Nightlife Discovery Platform
 
 <div align="center">
-  <img src=src="./RAVEN.png" alt="RAVEN Logo" width="200"/>
+  
   
   **Discover. Experience. Transcend.**
   
@@ -13,46 +13,11 @@
   **Discover. Experience. Transcend.**
   
   *The ultimate platform for exploring Berlin's underground nightlife scene*
-
-  <style>
-    .card {
-      --white: hsl(0, 0%, 100%);
-      --black: hsl(240, 15%, 9%);
-      --line: hsl(240, 9%, 17%);
-      --primary: #8ACE00;
-
-      display: inline-flex;
-      flex-direction: column;
-      gap: 1rem;
-      padding: 1rem;
-      width: 19rem;
-      background-color: hsla(240, 15%, 9%, 1);
-      border-radius: 1rem;
-      box-shadow: 0px -16px 24px 0px rgba(255, 255, 255, 0.25) inset;
-    }
-    .card .line { width: 100%; height: 0.1rem; background-color: var(--line); border: none; }
-    .card__list { display: flex; flex-direction: column; gap: 0.5rem; padding: 0; margin: 0; list-style: none; }
-    .card__list_item { display: flex; align-items: center; gap: 0.5rem; }
-    .check { display: flex; justify-content: center; align-items: center; width: 1rem; height: 1rem; background-color: var(--primary); border-radius: 50%; }
-    .check_svg { width: 0.75rem; height: 0.75rem; fill: var(--black); }
-    .list_text { font-size: 0.75rem; color: var(--white); }
-    .card_title { font-size: 1rem; color: var(--white); }
-    .button { cursor: pointer; padding: 0.5rem; width: 100%; background-color: var(--primary); font-size: 0.75rem; color: var(--black); border: 0; border-radius: 9999px; box-shadow: inset 0 -2px 25px -4px var(--white); }
-  </style>
-
-  <div class="card">
-    <span class="card_title">Tools</span>
-    <hr class="line" />
-    <ul class="card__list">
-      <li class="card__list_item"><span class="check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="check_svg"><path fill-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"></path></svg></span><span class="list_text">REACT 18.3+</span></li>
-      <li class="card__list_item"><span class="check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="check_svg"><path fill-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"></path></svg></span><span class="list_text">TYPESCRIPT 5.0+</span></li>
-      <li class="card__list_item"><span class="check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="check_svg"><path fill-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"></path></svg></span><span class="list_text">SUPABASE</span></li>
-      <li class="card__list_item"><span class="check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="check_svg"><path fill-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"></path></svg></span><span class="list_text">TAILWIND CSS</span></li>
-      <li class="card__list_item"><span class="check"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="check_svg"><path fill-rule="evenodd" d="M12.416 3.376a.75.75 0 0 1 .208 1.04l-5 7.5a.75.75 0 0 1-1.154.114l-3-3a.75.75 0 0 1 1.06-1.06l2.353 2.353 4.493-6.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd"></path></svg></span><span class="list_text">VITE</span></li>
-    </ul>
-    <button class="button">RAVEN</button>
+   
+   <div align="center">
+     <img src="./TOOL.png" alt="Tools" width="400"/>
   </div>
-</div>
+  
 
 
 </div>
