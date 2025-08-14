@@ -43,10 +43,23 @@ const Profile: React.FC = () => {
     }
   };
 
+  // 邮箱验证函数
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    // 邮箱格式验证
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address');
+      setLoading(false);
+      return;
+    }
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -77,6 +90,13 @@ const Profile: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    // 邮箱格式验证
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address');
+      setLoading(false);
+      return;
+    }
 
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -153,24 +173,9 @@ const Profile: React.FC = () => {
             </div>
           </Card>
 
-          {/* Stats Placeholder */}
-          {/*<Card>
-            <h3 className="font-space text-lg text-ink mb-4">Your Activity</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-raven mb-1">0</div>
-                <div className="text-xs text-ash">Reviews</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-raven mb-1">0</div>
-                <div className="text-xs text-ash">Plans Joined</div>
-              </div>
-            </div>
-          </Card>*/}
-
           {/* Deathmarch */}
           <Card>
-            <div className="mb-4 text-left">
+            <div className="mb-4 text-center">
               <h3 className="font-space text-lg text-ink mb-1">Deathmarch</h3>
               <p className="text-xs text-ash">Every venue visited brings you closer to transcendence</p>
             </div>
