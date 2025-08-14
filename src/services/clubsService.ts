@@ -145,10 +145,10 @@ export const clubsService = {
           district: club.districts?.name || 'Unknown District',
           tags: tags as any[],
           ratings: {
-            music: ratings.music_rating || 0, // Already 0-100
-            vibe: ratings.vibe_rating || 0,
-            crowd: ratings.crowd_rating || 0,
-            safety: ratings.safety_rating || 0,
+            music: Math.round((ratings.music_rating || 0) * 20), // Convert 0-5 to 0-100
+            vibe: Math.round((ratings.vibe_rating || 0) * 20),
+            crowd: Math.round((ratings.crowd_rating || 0) * 20),
+            safety: Math.round((ratings.safety_rating || 0) * 20),
           },
           hasLiveVibe,
           description: club.description,
@@ -206,10 +206,10 @@ export const clubsService = {
         district: clubData.districts?.name || 'Unknown District',
         tags: themes as any[],
         ratings: {
-          music: ratings.music_rating || 0, // Already 0-100
-          vibe: ratings.vibe_rating || 0,
-          crowd: ratings.crowd_rating || 0,
-          safety: ratings.safety_rating || 0,
+          music: Math.round((ratings.music_rating || 0) * 20),
+          vibe: Math.round((ratings.vibe_rating || 0) * 20),
+          crowd: Math.round((ratings.crowd_rating || 0) * 20),
+          safety: Math.round((ratings.safety_rating || 0) * 20),
         },
         hasLiveVibe,
         description: clubData.description,
