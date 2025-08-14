@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Filter, MessageSquare } from 'lucide-react';
+import { MapPin, Filter } from 'lucide-react';
 import { Venue, District, VenueTag } from '../contracts/types';
 import { clubsService } from '../services/clubsService';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
-import Button from '../components/ui/Button';
 
 const districts: District[] = ['Kreuzberg', 'Friedrichshain', 'Neukölln', 'Mitte', 'Prenzlauer Berg', 'Wedding'];
 const clubTags: VenueTag[] = ['techno', 'house', 'underground', 'queer-friendly', 'outdoor', 'cash-only', 'smoke-room', 'late-night', 'tourist-free'];
@@ -141,7 +140,8 @@ const Clubs: React.FC = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: index * 0.1 }}
               >
-                  <Card>
+                <Link to={`/clubs/${club.id}`}>
+                  <Card hover>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-1">
@@ -168,16 +168,8 @@ const Clubs: React.FC = () => {
                       <RatingBar label="Crowd" value={club.ratings.crowd} />
                       <RatingBar label="Safety" value={club.ratings.safety} />
                     </div>
-
-                    <div className="mt-4 pt-3 border-t border-ash/10">
-                      <Link to={`/clubs/${club.id}`}>
-                        <Button variant="ghost" size="sm" className="w-full justify-center">
-                          <MessageSquare size={14} className="mr-2" />
-                          Past Reviews & Today's Vibe
-                        </Button>
-                      </Link>
-                    </div>
                   </Card>
+                </Link>
               </motion.div>
             ))
           )}
