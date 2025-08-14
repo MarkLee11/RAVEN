@@ -31,7 +31,7 @@ const SubmitReview: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!venueId || comment.trim().length < 10) {
+    if (!venueId) {
       return;
     }
 
@@ -41,7 +41,7 @@ const SubmitReview: React.FC = () => {
       const reviewInput: ReviewInput = {
         venueId,
         ratings,
-        comment: comment.trim(),
+        comment: comment.trim() || undefined,
         queueTime,
         isAnonymous: true, // All reviews are anonymous
       };
@@ -69,7 +69,7 @@ const SubmitReview: React.FC = () => {
     return 'bg-blood';
   };
 
-  const isFormValid = comment.trim().length >= 10;
+  const isFormValid = true; // Always valid since all fields are optional
 
   if (!venueId) {
     return (
@@ -161,17 +161,15 @@ const SubmitReview: React.FC = () => {
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Share your experience... What was the vibe? How was the music? Any tips for others?"
+            placeholder="Share your experience... What was the vibe? How was the music? Any tips for others? (Optional)"
             rows={4}
             className="w-full bg-berlin-black border border-ash/30 rounded-md px-3 py-2 text-ink placeholder-ash focus:border-raven focus:outline-none resize-none"
-            minLength={10}
-            required
           />
           <div className="flex justify-between items-center mt-2">
             <span className="text-xs text-ash">
-              Minimum 10 characters
+              Optional field
             </span>
-            <span className={`text-xs ${comment.length >= 10 ? 'text-raven' : 'text-ash'}`}>
+            <span className="text-xs text-ash">
               {comment.length}/500
             </span>
           </div>
@@ -181,7 +179,7 @@ const SubmitReview: React.FC = () => {
         <Card>
           <div className="text-center py-8">
             <Upload size={24} className="mx-auto text-ash mb-2" />
-            <p className="text-sm text-ash">Photo upload coming soon</p>
+            <p className="text-sm text-ash">Photo upload coming soon (Optional)</p>
           </div>
         </Card>
 
@@ -198,11 +196,9 @@ const SubmitReview: React.FC = () => {
             Submit Review
           </Button>
           
-          {!isFormValid && (
-            <p className="text-xs text-ash text-center">
-              Please complete all required fields to submit
-            </p>
-          )}
+          <p className="text-xs text-ash text-center">
+            Only ratings are required. Everything else is optional.
+          </p>
         </div>
       </form>
     </motion.div>
