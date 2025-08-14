@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Filter } from 'lucide-react';
 import { Venue } from '../contracts/types';
-import { clubsService, getDistricts } from '../services/clubsService';
+import { clubsService, getDistricts, getThemes } from '../services/clubsService';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
 
-// Construction filters
+// Construction filters mapping to database fields
 const constructionFilters = [
   { key: 'outdoor-area', label: 'Outdoor Area' },
   { key: 'smoking-area', label: 'Smoking Area' },
@@ -17,7 +17,7 @@ const constructionFilters = [
   { key: 'cursing-area', label: 'Cursing Area' },
 ];
 
-// Payment filters
+// Payment filters mapping to database fields
 const paymentFilters = [
   { key: 'cash-only', label: 'Cash Only' },
   { key: 'card-accepted', label: 'Card Accepted' },
@@ -26,6 +26,7 @@ const paymentFilters = [
 const Clubs: React.FC = () => {
   const [clubs, setClubs] = useState<Venue[]>([]);
   const [districts, setDistricts] = useState<string[]>([]);
+  const [themes, setThemes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDistrict, setSelectedDistrict] = useState<string>('');
   const [selectedConstruction, setSelectedConstruction] = useState<string[]>([]);
@@ -34,16 +35,23 @@ const Clubs: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadDistricts();
+    loadInitialData();
+  }, []);
+
+  useEffect(() => {
     loadClubs();
   }, [selectedDistrict, selectedConstruction, selectedPayment]);
 
-  const loadDistricts = async () => {
+  const loadInitialData = async () => {
     try {
-      const districtList = await getDistricts();
+      const [districtList, themeList] = await Promise.all([
+        getDistricts(),
+        getThemes()
+      ]);
       setDistricts(districtList);
+      setThemes(themeList);
     } catch (error) {
-      console.error('Failed to load districts:', error);
+      console.error('Failed to load initial data:', error);
     }
   };
 
@@ -204,46 +212,49 @@ const Clubs: React.FC = () => {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card hover>
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <h3 className="font-space text-lg text-ink">{club.name}</h3>
-                        </div>
-                        <div className="flex items-center space-x-1 text-sm text-ash mb-2">
-                          <MapPin size={12} />
-                          <span>{club.district}</span>
-                        </div>
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <h3 className="font-space text-lg text-ink">{club.name}</h3>
+                        {club.hasLiveVibe && (
+                          <Badge variant="raven" size="sm">LIVE</Badge>
+                        )}
                       </div>
-                      <div className="ml-3">
-                        <Link to={`/clubs/${club.id}`}>
-                          <button className="px-3 py-1 text-xs bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap">
-                            Past reviews & Today's vibe
-                          </button>
-                        </Link>
+                      <div className="flex items-center space-x-1 text-sm text-ash mb-2">
+                        <MapPin size={12} />
+                        <span>{club.district}</span>
                       </div>
                     </div>
-
-                    {/* Description */}
-                    {club.description && (
-                      <p className="text-sm text-ash mb-3 leading-relaxed line-clamp-2">
-                        {club.description}
-                      </p>
-                    )}
-
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {club.tags.map(tag => (
-                        <Badge key={tag} size="sm">
-                          {tag}
-                        </Badge>
-                      ))}
+                    <div className="ml-3">
+                      <Link to={`/clubs/${club.id}`}>
+                        <button className="px-3 py-1 text-xs bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap">
+                          Past reviews & Today's vibe
+                        </button>
+                      </Link>
                     </div>
+                  </div>
 
-                    <div className="grid grid-cols-2 gap-3">
-                      <RatingBar label="Music" value={club.ratings.music} />
-                      <RatingBar label="Vibe" value={club.ratings.vibe} />
-                      <RatingBar label="Crowd" value={club.ratings.crowd} />
-                      <RatingBar label="Safety" value={club.ratings.safety} />
-                    </div>
+                  {/* Description */}
+                  {club.description && (
+                    <p className="text-sm text-ash mb-3 leading-relaxed line-clamp-2">
+                      {club.description}
+                    </p>
+                  )}
+
+                  <div className="flex flex-wrap gap-1 mb-3">
+                    {club.tags.map(tag => (
+                      <Badge key={tag} size="sm">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <RatingBar label="Music" value={club.ratings.music} />
+                    <RatingBar label="Vibe" value={club.ratings.vibe} />
+                    <RatingBar label="Crowd" value={club.ratings.crowd} />
+                    <RatingBar label="Safety" value={club.ratings.safety} />
+                  </div>
                 </Card>
               </motion.div>
             ))

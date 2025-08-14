@@ -21,6 +21,26 @@ export const getDistricts = async (): Promise<string[]> => {
   }
 };
 
+// 获取所有主题
+export const getThemes = async (): Promise<string[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('themes')
+      .select('name')
+      .order('name');
+    
+    if (error) {
+      console.error('Error fetching themes:', error);
+      return [];
+    }
+    
+    return data?.map(t => t.name) || [];
+  } catch (error) {
+    console.error('Failed to load themes:', error);
+    return [];
+  }
+};
+
 export const clubsService = {
   async listClubs(
     district?: string, 
@@ -54,7 +74,7 @@ export const clubsService = {
 
       // Apply district filter
       if (district) {
-        // Join with districts table and filter by district name
+        // First get the district ID
         const { data: districtData, error: districtError } = await supabase
           .from('districts')
           .select('id')
@@ -117,6 +137,7 @@ export const clubsService = {
 
       // Transform database data to Venue format
       const venues: Venue[] = clubsData.map(club => {
+        // Get ratings (already 0-100 in database)
         const ratings = club.club_ratings?.[0] || {
           music_rating: 0,
           vibe_rating: 0,
@@ -124,7 +145,10 @@ export const clubsService = {
           safety_rating: 0
         };
 
+        // Get themes
         const themes = club.club_themes?.map(ct => ct.themes?.name).filter(Boolean) || [];
+        
+        // Check if has live vibe
         const hasLiveVibe = club.club_tonight_vibe?.some(vibe => vibe.status === 'live') || false;
 
         // Build tags array from database boolean fields and themes
@@ -145,10 +169,10 @@ export const clubsService = {
           district: club.districts?.name || 'Unknown District',
           tags: tags as any[],
           ratings: {
-            music: Math.round((ratings.music_rating || 0) * 20), // Convert 0-5 to 0-100
-            vibe: Math.round((ratings.vibe_rating || 0) * 20),
-            crowd: Math.round((ratings.crowd_rating || 0) * 20),
-            safety: Math.round((ratings.safety_rating || 0) * 20),
+            music: Math.round(ratings.music_rating || 0),
+            vibe: Math.round(ratings.vibe_rating || 0),
+            crowd: Math.round(ratings.crowd_rating || 0),
+            safety: Math.round(ratings.safety_rating || 0),
           },
           hasLiveVibe,
           description: club.description,
@@ -171,6 +195,13 @@ export const clubsService = {
           id,
           name,
           description,
+          outdoor_area,
+          smoke_room,
+          awareness_room,
+          dark_room,
+          cursing_area,
+          cash_only,
+          card_accepted,
           districts!clubs_district_id_fkey(name),
           club_ratings(music_rating, vibe_rating, crowd_rating, safety_rating),
           club_themes(themes(name)),
@@ -190,6 +221,7 @@ export const clubsService = {
         return null;
       }
 
+      // Get ratings (already 0-100 in database)
       const ratings = clubData.club_ratings?.[0] || {
         music_rating: 0,
         vibe_rating: 0,
@@ -197,19 +229,34 @@ export const clubsService = {
         safety_rating: 0
       };
 
+      // Get themes
       const themes = clubData.club_themes?.map(ct => ct.themes?.name).filter(Boolean) || [];
+      
+      // Check if has live vibe
       const hasLiveVibe = clubData.club_tonight_vibe?.some(vibe => vibe.status === 'live') || false;
+
+      // Build tags array
+      const tags = [
+        ...themes,
+        ...(clubData.outdoor_area ? ['outdoor-area'] : []),
+        ...(clubData.smoke_room ? ['smoking-area'] : []),
+        ...(clubData.awareness_room ? ['awareness-room'] : []),
+        ...(clubData.dark_room ? ['dark-room'] : []),
+        ...(clubData.cursing_area ? ['cursing-area'] : []),
+        ...(clubData.cash_only ? ['cash-only'] : []),
+        ...(clubData.card_accepted ? ['card-accepted'] : []),
+      ];
 
       return {
         id: clubData.id.toString(),
         name: clubData.name,
         district: clubData.districts?.name || 'Unknown District',
-        tags: themes as any[],
+        tags: tags as any[],
         ratings: {
-          music: Math.round((ratings.music_rating || 0) * 20),
-          vibe: Math.round((ratings.vibe_rating || 0) * 20),
-          crowd: Math.round((ratings.crowd_rating || 0) * 20),
-          safety: Math.round((ratings.safety_rating || 0) * 20),
+          music: Math.round(ratings.music_rating || 0),
+          vibe: Math.round(ratings.vibe_rating || 0),
+          crowd: Math.round(ratings.crowd_rating || 0),
+          safety: Math.round(ratings.safety_rating || 0),
         },
         hasLiveVibe,
         description: clubData.description,
