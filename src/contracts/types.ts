@@ -82,6 +82,7 @@ export interface PlanRequest {
 
 export interface ReviewInput {
   venueId: string;
+  userId?: string; // Add userId for database insertion
   ratings: VenueRatings;
   comment: string;
   queueTime?: number;

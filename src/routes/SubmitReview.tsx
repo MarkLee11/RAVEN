@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Star, Upload, LogIn } from 'lucide-react';
 import { VenueRatings } from '../contracts/types';
 import { supabase } from '../lib/supabase';
+import { reviewsService } from '../services/reviewsService';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 
@@ -57,21 +58,14 @@ const SubmitReview: React.FC = () => {
     setError(null);
     
     try {
-      const { error: insertError } = await supabase
-        .from('club_reviews')
-        .insert({
-          club_id: parseInt(venueId),
-          user_id: user.id,
-          music_rating: ratings.music / 100 * 5, // Convert to 0-5 scale for database
-          vibe_rating: ratings.vibe / 100 * 5,
-          crowd_rating: ratings.crowd / 100 * 5,
-          safety_rating: ratings.safety / 100 * 5,
-          review_text: comment.trim() || null,
-        });
-
-      if (insertError) {
-        throw insertError;
-      }
+      // Use the reviewsService to create the review
+      await reviewsService.createReview({
+        venueId,
+        userId: user.id,
+        ratings,
+        comment,
+        isAnonymous: true,
+      });
       
       // Show success state
       setSuccess(true);
