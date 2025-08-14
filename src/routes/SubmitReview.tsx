@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Star, Upload } from 'lucide-react';
+import { ArrowLeft, Star } from 'lucide-react';
 import { VenueRatings, ReviewInput } from '../contracts/types';
 import { reviewsService } from '../services/reviewsService';
 import Button from '../components/ui/Button';
@@ -174,14 +174,6 @@ const SubmitReview: React.FC = () => {
             <span className={`text-xs ${comment.length >= 10 ? 'text-raven' : 'text-ash'}`}>
               {comment.length}/500
             </span>
-          </div>
-        </Card>
-
-        {/* Photo Upload Placeholder */}
-        <Card>
-          <div className="text-center py-8">
-            <Upload size={24} className="mx-auto text-ash mb-2" />
-            <p className="text-sm text-ash">Photo upload coming soon</p>
           </div>
         </Card>
 
