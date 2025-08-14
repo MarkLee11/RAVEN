@@ -168,6 +168,24 @@ const Profile: React.FC = () => {
             </div>
           </Card>
 
+          {/* Deathmarch */}
+          <Card>
+            <div className="text-center mb-4">
+              <h3 className="font-space text-lg text-ink mb-1">Deathmarch</h3>
+              <p className="text-xs text-ash">Every venue visited brings you closer to transcendence.</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-raven mb-1">0/128</div>
+                <div className="text-xs text-ash">Clubs</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-raven mb-1">0/342</div>
+                <div className="text-xs text-ash">Bars</div>
+              </div>
+            </div>
+          </Card>
+
           {/* Graveyard */}
           <Card>
             <h3 className="font-space text-lg text-ink mb-3">Graveyard</h3>
@@ -345,18 +363,15 @@ const Profile: React.FC = () => {
                 </>
               ) : (
                 <>
-          <div className="text-center mb-4">
-            <h3 className="font-space text-lg text-ink mb-1">Deathmarch</h3>
-            <p className="text-xs text-ash">Every venue visited brings you closer to transcendence.</p>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
+                  Already have an account?{' '}
+                  <button
                     onClick={() => setActiveTab('login')}
-              <div className="text-2xl font-bold text-raven mb-1">0/128</div>
-              <div className="text-xs text-ash">Clubs</div>
+                    className="text-raven hover:underline"
+                  >
                     Login
                   </button>
-              <div className="text-2xl font-bold text-raven mb-1">0/342</div>
-              <div className="text-xs text-ash">Bars</div>
+                </>
+              )}
             </p>
           </div>
         </Card>
