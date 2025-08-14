@@ -8,9 +8,10 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
 
-// These should eventually come from the database
+// Available districts from database
 const districts: District[] = ['Kreuzberg', 'Friedrichshain', 'Neukölln', 'Mitte', 'Prenzlauer Berg', 'Wedding', 'Lichtenberg'];
-const clubTags: VenueTag[] = ['techno', 'house', 'underground', 'queer-friendly', 'outdoor', 'cash-only', 'smoke-room', 'late-night', 'tourist-free'];
+// Available themes from database (mapped to tags)
+const clubTags: string[] = ['techno', 'house', 'underground', 'queer-friendly', 'outdoor', 'cash-only', 'smoke-room', 'late-night', 'tourist-free'];
 
 const Clubs: React.FC = () => {
   const [clubs, setClubs] = useState<Venue[]>([]);
@@ -18,6 +19,7 @@ const Clubs: React.FC = () => {
   const [selectedDistrict, setSelectedDistrict] = useState<string>('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadClubs();
@@ -25,6 +27,7 @@ const Clubs: React.FC = () => {
 
   const loadClubs = async () => {
     setLoading(true);
+    setError(null);
     try {
       const results = await clubsService.listClubs(
         selectedDistrict || undefined,
@@ -33,6 +36,7 @@ const Clubs: React.FC = () => {
       setClubs(results);
     } catch (error) {
       console.error('Failed to load clubs:', error);
+      setError('Failed to load clubs. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -128,6 +132,16 @@ const Clubs: React.FC = () => {
             <div className="text-center py-12">
               <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
               <p className="text-ash mt-2">Loading clubs...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <p className="text-blood mb-4">{error}</p>
+              <button 
+                onClick={loadClubs}
+                className="text-raven hover:text-ink transition-colors"
+              >
+                Try Again
+              </button>
             </div>
           ) : clubs.length === 0 ? (
             <div className="text-center py-12">
