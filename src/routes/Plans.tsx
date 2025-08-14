@@ -48,30 +48,30 @@ const Plans: React.FC = () => {
   // 获取营业时间显示
   const getOperatingHours = (barId: string): string => {
     const hours: Record<string, string> = {
-      'zur-letzten-instanz': '11:00 - 24:00',
-      'prater-garten': '12:00 - 24:00 (夏季延长)',
+      'zur-letzten-instanz': '11:00 AM - 12:00 AM',
+      'prater-garten': '12:00 PM - 12:00 AM (Extended in summer)',
       'hackescher-hof': '17:00 - 02:00',
       'zur-wilden-renate': '20:00 - 06:00',
       'monkey-bar': '12:00 - 02:00',
     };
-    return hours[barId] || '营业时间详询';
+    return hours[barId] || 'Hours vary';
   };
 
   // 获取推荐饮品
   const getRecommendedDrinks = (barId: string): string[] => {
     const drinks: Record<string, string[]> = {
-      'zur-letzten-instanz': ['柏林白啤', '传统德式香肠'],
-      'prater-garten': ['Prater特制啤酒', '烤猪肘'],
-      'hackescher-hof': ['经典马天尼', '威士忌品鉴'],
-      'zur-wilden-renate': ['创意鸡尾酒', '深夜特调'],
-      'monkey-bar': ['景观鸡尾酒', '精品威士忌'],
+      'zur-letzten-instanz': ['Berlin Weissbier', 'Traditional Bratwurst'],
+      'prater-garten': ['Prater Special Beer', 'Roasted Pork Knuckle'],
+      'hackescher-hof': ['Classic Martini', 'Whiskey Tasting'],
+      'zur-wilden-renate': ['Creative Cocktails', 'Late Night Specials'],
+      'monkey-bar': ['Panoramic Cocktails', 'Premium Whiskey'],
     };
-    return drinks[barId] || ['招牌饮品'];
+    return drinks[barId] || ['Signature Drinks'];
   };
 
   // 页面标题
   React.useEffect(() => {
-    document.title = 'RAVEN - 酒吧评价';
+    document.title = 'RAVEN - Bar Reviews';
   }, []);
 
   return (
@@ -83,13 +83,13 @@ const Plans: React.FC = () => {
       <div className="px-4 pt-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-space text-xl text-ink">酒吧评价</h2>
+          <h2 className="font-space text-xl text-ink">Bar Reviews</h2>
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center space-x-2 text-ash hover:text-ink transition-colors"
           >
             <Filter size={16} />
-            <span className="text-sm">筛选</span>
+            <span className="text-sm">Filters</span>
             {(selectedDistrict || selectedTags.length > 0) && (
               <Badge variant="raven" size="sm">
                 {(selectedDistrict ? 1 : 0) + selectedTags.length}
@@ -108,14 +108,14 @@ const Plans: React.FC = () => {
           >
             {/* Districts */}
             <div>
-              <h4 className="text-sm font-medium text-ink mb-2">区域</h4>
+              <h4 className="text-sm font-medium text-ink mb-2">District</h4>
               <div className="flex flex-wrap gap-2">
                 <Badge
                   variant={selectedDistrict === '' ? 'raven' : 'default'}
                   className="cursor-pointer"
                   onClick={() => setSelectedDistrict('')}
                 >
-                  全部
+                  All
                 </Badge>
                 {districts.map(district => (
                   <Badge
@@ -134,7 +134,7 @@ const Plans: React.FC = () => {
 
             {/* Tags */}
             <div>
-              <h4 className="text-sm font-medium text-ink mb-2">风格</h4>
+              <h4 className="text-sm font-medium text-ink mb-2">Style</h4>
               <div className="flex flex-wrap gap-2">
                 {tags.map(tag => (
                   <Badge
@@ -155,11 +155,11 @@ const Plans: React.FC = () => {
         {loading ? (
           <div className="text-center py-12">
             <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-ash mt-2">加载酒吧信息中...</p>
+            <p className="text-ash mt-2">Loading bars...</p>
           </div>
         ) : bars.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-ash">没有符合条件的酒吧。</p>
+            <p className="text-ash">No bars match your criteria.</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -178,7 +178,7 @@ const Plans: React.FC = () => {
                         <div className="flex items-center space-x-2 mb-1">
                           <h3 className="font-space text-lg text-ink">{bar.name}</h3>
                           {bar.hasLiveVibe && (
-                            <Badge variant="raven" size="sm">热门</Badge>
+                            <Badge variant="raven" size="sm">Hot</Badge>
                           )}
                         </div>
                         <div className="flex items-center space-x-1 text-sm text-ash mb-2">
@@ -201,7 +201,7 @@ const Plans: React.FC = () => {
                       </div>
                       <div className="flex items-center space-x-2 text-xs text-ash">
                         <Star size={12} />
-                        <span>推荐: {getRecommendedDrinks(bar.id).join(', ')}</span>
+                        <span>Recommended: {getRecommendedDrinks(bar.id).join(', ')}</span>
                       </div>
                     </div>
 
@@ -216,10 +216,10 @@ const Plans: React.FC = () => {
 
                     {/* Ratings */}
                     <div className="grid grid-cols-2 gap-3">
-                      <RatingBar label="音乐" value={bar.ratings.music} />
-                      <RatingBar label="氛围" value={bar.ratings.vibe} />
-                      <RatingBar label="人群" value={bar.ratings.crowd} />
-                      <RatingBar label="安全" value={bar.ratings.safety} />
+                      <RatingBar label="Music" value={bar.ratings.music} />
+                      <RatingBar label="Vibe" value={bar.ratings.vibe} />
+                      <RatingBar label="Crowd" value={bar.ratings.crowd} />
+                      <RatingBar label="Safety" value={bar.ratings.safety} />
                     </div>
 
                     {/* Decorative element */}
