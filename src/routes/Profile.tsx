@@ -9,8 +9,6 @@ import Badge from '../components/ui/Badge';
 interface UserProfile {
   id: string;
   email: string;
-  name?: string;
-  bio?: string;
   created_at: string;
 }
 
@@ -26,7 +24,6 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
@@ -38,33 +35,11 @@ const Profile: React.FC = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         setUser(user);
-        await fetchProfile(user.id);
       }
     } catch (error) {
       console.error('Error checking user:', error);
     } finally {
       setCheckingAuth(false);
-    }
-  };
-
-  const fetchProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching profile:', error);
-        return;
-      }
-
-      if (data) {
-        setProfile(data);
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
     }
   };
 
@@ -86,7 +61,6 @@ const Profile: React.FC = () => {
 
       if (data.user) {
         setUser(data.user);
-        await fetchProfile(data.user.id);
         // Clear form
         setEmail('');
         setPassword('');
@@ -117,7 +91,6 @@ const Profile: React.FC = () => {
 
       if (data.user) {
         setUser(data.user);
-        await fetchProfile(data.user.id);
         // Clear form
         setEmail('');
         setPassword('');
@@ -139,7 +112,6 @@ const Profile: React.FC = () => {
       }
       
       setUser(null);
-      setProfile(null);
       setEmail('');
       setPassword('');
     } catch (error) {
@@ -156,7 +128,7 @@ const Profile: React.FC = () => {
   }
 
   // Show authenticated user profile
-  if (user && profile) {
+  if (user) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -173,11 +145,11 @@ const Profile: React.FC = () => {
                 </div>
                 <div>
                   <h2 className="font-space text-xl text-ink">
-                    {profile.name || 'User'}
+                    User
                   </h2>
-                  <p className="text-sm text-ash">{profile.email}</p>
+                  <p className="text-sm text-ash">{user.email}</p>
                   <p className="text-xs text-ash mt-1">
-                    Member since {new Date(profile.created_at).toLocaleDateString()}
+                    Member since {new Date(user.created_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -194,12 +166,10 @@ const Profile: React.FC = () => {
           </Card>
 
           {/* Profile Bio */}
-          {profile.bio && (
-            <Card>
-              <h3 className="font-space text-lg text-ink mb-3">About</h3>
-              <p className="text-sm text-ash leading-relaxed">{profile.bio}</p>
-            </Card>
-          )}
+          <Card>
+            <h3 className="font-space text-lg text-ink mb-3">About</h3>
+            <p className="text-sm text-ash leading-relaxed">Welcome to Berlin's nightlife community!</p>
+          </Card>
 
           {/* Stats Placeholder */}
           <Card>
