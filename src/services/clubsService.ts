@@ -41,10 +41,10 @@ export const clubsService = {
           cursing_area,
           cash_only,
           card_accepted,
-          districts!clubs_district_id_fkey(name),
+          districts(name),
           club_ratings(music_rating, vibe_rating, crowd_rating, safety_rating),
           club_themes(themes(name)),
-          club_tonight_vibe!club_tonight_vibe_club_id_fkey(
+          club_tonight_vibe(
             door_strictness_pct,
             music_pct,
             crowd_pct,
@@ -54,7 +54,19 @@ export const clubsService = {
 
       // Apply district filter
       if (district) {
-        query = query.eq('districts.name', district);
+        // Join with districts table and filter by district name
+        const { data: districtData, error: districtError } = await supabase
+          .from('districts')
+          .select('id')
+          .eq('name', district)
+          .single();
+        
+        if (districtError || !districtData) {
+          console.error('District not found:', district);
+          return [];
+        }
+        
+        query = query.eq('district_id', districtData.id);
       }
 
       // Apply construction filters
@@ -130,7 +142,7 @@ export const clubsService = {
         return {
           id: club.id.toString(),
           name: club.name,
-          district: club.districts?.name || 'Unknown',
+          district: club.districts?.name || 'Unknown District',
           tags: tags as any[],
           ratings: {
             music: Math.round((ratings.music_rating || 0) * 20), // Convert 0-5 to 0-100
@@ -159,10 +171,10 @@ export const clubsService = {
           id,
           name,
           description,
-          districts!clubs_district_id_fkey(name),
+          districts(name),
           club_ratings(music_rating, vibe_rating, crowd_rating, safety_rating),
           club_themes(themes(name)),
-          club_tonight_vibe!club_tonight_vibe_club_id_fkey(
+          club_tonight_vibe(
             door_strictness_pct,
             music_pct,
             crowd_pct,
@@ -191,13 +203,13 @@ export const clubsService = {
       return {
         id: clubData.id.toString(),
         name: clubData.name,
-        district: clubData.districts?.name || 'Unknown',
+        district: clubData.districts?.name || 'Unknown District',
         tags: themes as any[],
         ratings: {
-          music: Math.round(ratings.music_rating || 0),
-          vibe: Math.round(ratings.vibe_rating || 0),
-          crowd: Math.round(ratings.crowd_rating || 0),
-          safety: Math.round(ratings.safety_rating || 0),
+          music: Math.round((ratings.music_rating || 0) * 20),
+          vibe: Math.round((ratings.vibe_rating || 0) * 20),
+          crowd: Math.round((ratings.crowd_rating || 0) * 20),
+          safety: Math.round((ratings.safety_rating || 0) * 20),
         },
         hasLiveVibe,
         description: clubData.description,
