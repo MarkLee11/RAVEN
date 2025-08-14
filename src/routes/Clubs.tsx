@@ -152,19 +152,6 @@ const Clubs: React.FC = () => {
                           <span>{club.district}</span>
                         </div>
                       </div>
-                      <Link 
-                        to={`/clubs/${club.id}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="ml-3 flex-shrink-0"
-                      >
-                        <Button 
-                          size="sm" 
-                          variant="ghost"
-                          className="text-xs px-2 py-1 h-auto whitespace-nowrap border border-ash/30 hover:border-raven/50 hover:bg-raven/10"
-                        >
-                          Past reviews & Today's vibe
-                        </Button>
-                      </Link>
                     </div>
 
                     <div className="flex flex-wrap gap-1 mb-3">
