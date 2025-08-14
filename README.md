@@ -17,284 +17,283 @@
 
 ---
 
-## 📖 项目简介
+## 📖 Project Overview
 
-**RAVEN** 是一个专为柏林夜生活文化打造的现代化 Web 应用程序，为用户提供沉浸式的俱乐部和酒吧发现体验。项目采用诗意化的设计语言，将传统的场所评价系统重新构想为一个充满情感共鸣的数字化夜生活生态系统。
+**RAVEN** is a modern web application specifically designed for Berlin's nightlife culture, providing an immersive club and bar discovery experience. The project adopts a poetic design language, reimagining traditional venue rating systems as an emotionally resonant digital nightlife ecosystem.
 
-### 🎯 核心愿景
-- **Discover**: 探索柏林最具特色的夜生活场所
-- **Experience**: 记录和分享真实的夜生活体验
-- **Transcend**: 通过"Deathmarch"进度系统激励用户探索更多场所
+### 🎯 Core Vision
+- **Discover**: Explore Berlin's most distinctive nightlife venues
+- **Experience**: Record and share authentic nightlife experiences
+- **Transcend**: Motivate users to explore more venues through the "Deathmarch" progress system
 
-### 🛠️ 技术栈
+### 🛠️ Technology Stack
 
-#### 前端技术
-- **React 18.3+** - 现代化用户界面框架
-- **TypeScript 5.0+** - 类型安全的 JavaScript 超集
-- **Vite** - 高性能前端构建工具
-- **Tailwind CSS** - 实用优先的 CSS 框架
-- **Framer Motion** - 流畅的动画库
-- **React Router** - 客户端路由管理
-- **Lucide React** - 现代图标库
+#### Frontend Technologies
+- **React 18.3+** - Modern user interface framework
+- **TypeScript 5.0+** - Type-safe JavaScript superset
+- **Vite** - High-performance frontend build tool
+- **Tailwind CSS** - Utility-first CSS framework
+- **Framer Motion** - Smooth animation library
+- **React Router** - Client-side routing management
+- **Lucide React** - Modern icon library
 
-#### 后端与数据库
-- **Supabase** - 全栈后端即服务平台
-  - PostgreSQL 数据库
-  - 实时数据同步
-  - 用户认证与授权
+#### Backend & Database
+- **Supabase** - Full-stack backend-as-a-service platform
+  - PostgreSQL database
+  - Real-time data synchronization
+  - User authentication & authorization
   - Row Level Security (RLS)
-  - 自动 API 生成
+  - Automatic API generation
 
-#### 开发工具
-- **ESLint** - 代码质量检查
-- **PostCSS** - CSS 后处理器
-- **Git** - 版本控制系统
-
----
-
-## ✨ 核心功能与亮点
-
-### 🎵 场所发现系统
-- **双重分类**: 支持 Clubs 和 Bars 两种场所类型
-- **智能过滤**: 基于地区、主题、风格的多维度过滤
-- **动态评分**: 基于用户评论的实时评分系统
-- **标签系统**: 丰富的主题分类（音乐、氛围、建筑、饮品等）
-
-**目标用户**: 柏林夜生活爱好者、游客、当地居民
-**解决问题**: 信息分散、缺乏可信评价、难以发现新场所
-
-### 🌟 用户评价系统
-- **匿名评论**: 保护用户隐私的匿名评价机制
-- **多维度评分**: 
-  - Clubs: Music, Vibe, Crowd, Safety (0-100分制)
-  - Bars: Quality, Vibe, Price, Friendliness (0-100分制)
-- **优化更新**: 提交评论后立即在详情页显示
-- **评分聚合**: 自动计算场所的平均评分
-
-**目标用户**: 有夜生活经验的用户
-**解决问题**: 缺乏真实评价、评分维度单一
-
-### 🏆 Deathmarch 进度系统
-- **游戏化体验**: "每个访问的场所都让你更接近超越"
-- **动态统计**: 实时显示用户访问进度 (例: 5/128 clubs, 12/342 bars)
-- **成就感**: 激励用户探索更多场所
-
-**目标用户**: 重度夜生活用户、收集爱好者
-**解决问题**: 缺乏持续探索动机
-
-### 📱 个人档案系统 (ID)
-- **简约身份**: 重新定义用户资料概念
-- **Echo 记忆**: 分页展示用户评论历史
-- **Graveyard 归档**: 收藏和历史记录管理
-- **实时统计**: 动态展示个人夜生活足迹
-
-**目标用户**: 所有注册用户
-**解决问题**: 传统用户资料页面缺乏吸引力
-
-### 🔒 安全与隐私
-- **Supabase 认证**: 安全的用户注册和登录
-- **匿名评论**: 保护用户身份隐私
-- **Row Level Security**: 数据库级别的权限控制
-- **数据加密**: 敏感信息安全存储
-
-**目标用户**: 所有用户
-**解决问题**: 隐私泄露风险、数据安全
+#### Development Tools
+- **ESLint** - Code quality checking
+- **PostCSS** - CSS post-processor
+- **Git** - Version control system
 
 ---
 
-## 📁 目录结构
+## ✨ Core Features & Highlights
+
+### 🎵 Venue Discovery System
+- **Dual Classification**: Support for both Clubs and Bars venue types
+- **Smart Filtering**: Multi-dimensional filtering based on districts, themes, and styles
+- **Dynamic Ratings**: Real-time rating system based on user reviews
+- **Tag System**: Rich theme categorization (music, vibe, architecture, drinks, etc.)
+
+**Target Users**: Berlin nightlife enthusiasts, tourists, local residents
+**Problems Solved**: Scattered information, lack of trustworthy reviews, difficulty discovering new venues
+
+### 🌟 User Review System
+- **Anonymous Reviews**: Privacy-protecting anonymous review mechanism
+- **Multi-dimensional Ratings**: 
+  - Clubs: Music, Vibe, Crowd, Safety (0-100 scale)
+  - Bars: Quality, Vibe, Price, Friendliness (0-100 scale)
+- **Optimistic Updates**: Immediate display on detail pages after review submission
+- **Rating Aggregation**: Automatic calculation of venue average ratings
+
+**Target Users**: Users with nightlife experience
+**Problems Solved**: Lack of authentic reviews, single-dimensional rating systems
+
+### 🏆 Deathmarch Progress System
+- **Gamified Experience**: "Every venue visited brings you closer to transcendence"
+- **Dynamic Statistics**: Real-time display of user visit progress (e.g., 5/128 clubs, 12/342 bars)
+- **Achievement Motivation**: Encourages users to explore more venues
+
+**Target Users**: Heavy nightlife users, collection enthusiasts
+**Problems Solved**: Lack of continuous exploration motivation
+
+### 📱 Personal Profile System (ID)
+- **Minimalist Identity**: Redefined user profile concept
+- **Echo Memory**: Paginated display of user review history
+- **Graveyard Archive**: Favorites and historical record management
+- **Real-time Statistics**: Dynamic display of personal nightlife footprint
+
+**Target Users**: All registered users
+**Problems Solved**: Lack of appeal in traditional user profile pages
+
+### 🔒 Security & Privacy
+- **Supabase Authentication**: Secure user registration and login
+- **Anonymous Reviews**: Protection of user identity privacy
+- **Row Level Security**: Database-level permission control
+- **Data Encryption**: Secure storage of sensitive information
+
+**Target Users**: All users
+**Problems Solved**: Privacy breach risks, data security
+
+---
+
+## 📁 Directory Structure
 
 ```
 E:\RAVEN\
-├── public/                     # 静态资源文件
-│   ├── favicon.ico            # 网站图标
-│   └── index.html             # HTML 模板
-├── src/                       # 源代码目录
-│   ├── components/            # 可复用组件
-│   │   ├── ui/               # 基础 UI 组件
-│   │   │   ├── Button.tsx    # 按钮组件
-│   │   │   ├── Card.tsx      # 卡片组件
-│   │   │   └── Badge.tsx     # 标签组件
-│   │   ├── Avatar.tsx        # 头像组件
-│   │   ├── Navigation.tsx    # 导航组件
-│   │   ├── RatingBar.tsx     # 评分条组件
-│   │   ├── VibeCard.tsx      # 氛围卡片组件
-│   │   └── WordStreamReviews.tsx # 评论流组件
-│   ├── contracts/            # 类型定义
-│   │   └── types.ts          # TypeScript 类型接口
-│   ├── lib/                  # 工具库
-│   │   ├── supabase.ts       # Supabase 客户端配置
-│   │   └── utils.ts          # 通用工具函数
-│   ├── routes/               # 路由页面
-│   │   ├── Landing.tsx       # 首页
-│   │   ├── Core.tsx          # 核心功能页
-│   │   ├── Clubs.tsx         # 俱乐部列表页
-│   │   ├── ClubDetail.tsx    # 俱乐部详情页
-│   │   ├── Bars.tsx          # 酒吧列表页
-│   │   ├── BarDetail.tsx     # 酒吧详情页
-│   │   ├── Profile.tsx       # 用户档案页
-│   │   └── SubmitReview.tsx  # 评论提交页
-│   ├── services/             # 业务逻辑层
-│   │   ├── clubsService.ts   # 俱乐部相关服务
-│   │   ├── barsService.ts    # 酒吧相关服务
-│   │   ├── reviewsService.ts # 评论相关服务
-│   │   ├── vibeService.ts    # 氛围相关服务
-│   │   └── favoritesService.ts # 收藏相关服务
-│   ├── styles/               # 样式文件
-│   │   ├── index.css         # 全局样式
-│   │   └── raven-bottom-nav.css # 底部导航样式
-│   ├── App.tsx               # 主应用组件
-│   └── main.tsx              # 应用入口文件
-├── sql/                      # 数据库脚本
-│   ├── bars_v2_00_create_all_bar_tables.sql # 酒吧相关表创建
-│   ├── bars_v2_01_create_bars_table.sql     # 酒吧主表
-│   ├── bars_v2_02_create_bar_ratings_table.sql # 酒吧评分表
-│   ├── bars_v2_03_create_bar_reviews_table.sql # 酒吧评论表
-│   ├── bars_v2_04_extend_themes_table.sql      # 主题表扩展
-│   ├── bars_v2_05_create_bar_themes_table.sql  # 酒吧主题关联表
-│   ├── bars_v2_06_create_bar_locations_table.sql # 酒吧位置表
-│   ├── bars_v2_07_seed_data.sql               # 种子数据
-│   └── bars_v2_08_fix_view_rls.sql            # 视图权限修复
-├── .env                      # 环境变量配置
-├── .gitignore               # Git 忽略文件
-├── package.json             # 项目依赖配置
-├── tsconfig.json            # TypeScript 配置
-├── tailwind.config.js       # Tailwind CSS 配置
-├── vite.config.ts           # Vite 构建配置
-├── CLAUDE.md                # 项目开发指南
-├── BARS_ARCHITECTURE.txt    # 酒吧功能架构文档
-└── README.md                # 项目说明文档
+├── public/                     # Static resource files
+│   ├── favicon.ico            # Website icon
+│   └── index.html             # HTML template
+├── src/                       # Source code directory
+│   ├── components/            # Reusable components
+│   │   ├── ui/               # Basic UI components
+│   │   │   ├── Button.tsx    # Button component
+│   │   │   ├── Card.tsx      # Card component
+│   │   │   └── Badge.tsx     # Badge component
+│   │   ├── Avatar.tsx        # Avatar component
+│   │   ├── Navigation.tsx    # Navigation component
+│   │   ├── RatingBar.tsx     # Rating bar component
+│   │   ├── VibeCard.tsx      # Vibe card component
+│   │   └── WordStreamReviews.tsx # Review stream component
+│   ├── contracts/            # Type definitions
+│   │   └── types.ts          # TypeScript type interfaces
+│   ├── lib/                  # Utility libraries
+│   │   ├── supabase.ts       # Supabase client configuration
+│   │   └── utils.ts          # Common utility functions
+│   ├── routes/               # Route pages
+│   │   ├── Landing.tsx       # Homepage
+│   │   ├── Core.tsx          # Core functionality page
+│   │   ├── Clubs.tsx         # Clubs listing page
+│   │   ├── ClubDetail.tsx    # Club detail page
+│   │   ├── Bars.tsx          # Bars listing page
+│   │   ├── BarDetail.tsx     # Bar detail page
+│   │   ├── Profile.tsx       # User profile page
+│   │   └── SubmitReview.tsx  # Review submission page
+│   ├── services/             # Business logic layer
+│   │   ├── clubsService.ts   # Club-related services
+│   │   ├── barsService.ts    # Bar-related services
+│   │   ├── reviewsService.ts # Review-related services
+│   │   ├── vibeService.ts    # Vibe-related services
+│   │   └── favoritesService.ts # Favorites-related services
+│   ├── styles/               # Style files
+│   │   ├── index.css         # Global styles
+│   │   └── raven-bottom-nav.css # Bottom navigation styles
+│   ├── App.tsx               # Main application component
+│   └── main.tsx              # Application entry file
+├── sql/                      # Database scripts
+│   ├── bars_v2_00_create_all_bar_tables.sql # Bar-related table creation
+│   ├── bars_v2_01_create_bars_table.sql     # Bar main table
+│   ├── bars_v2_02_create_bar_ratings_table.sql # Bar ratings table
+│   ├── bars_v2_03_create_bar_reviews_table.sql # Bar reviews table
+│   ├── bars_v2_04_extend_themes_table.sql      # Theme table extension
+│   ├── bars_v2_05_create_bar_themes_table.sql  # Bar themes association table
+│   ├── bars_v2_06_create_bar_locations_table.sql # Bar locations table
+│   ├── bars_v2_07_seed_data.sql               # Seed data
+│   └── bars_v2_08_fix_view_rls.sql            # View permission fixes
+├── .env                      # Environment variables configuration
+├── .gitignore               # Git ignore file
+├── package.json             # Project dependencies configuration
+├── tsconfig.json            # TypeScript configuration
+├── tailwind.config.js       # Tailwind CSS configuration
+├── vite.config.ts           # Vite build configuration
+├── CLAUDE.md                # Project development guide
+├── BARS_ARCHITECTURE.txt    # Bar functionality architecture documentation
+└── README.md                # Project documentation
 ```
 
-### 目录职责说明
+### Directory Responsibilities
 
-- **`/components`**: 可复用的 React 组件，按功能分类
-- **`/routes`**: 应用的主要页面组件，对应不同路由
-- **`/services`**: 业务逻辑层，处理数据获取和操作
-- **`/contracts`**: TypeScript 类型定义，确保类型安全
-- **`/lib`**: 工具函数和第三方库配置
-- **`/sql`**: 数据库结构和初始化脚本
-- **`/styles`**: 自定义样式文件
+- **`/components`**: Reusable React components, categorized by functionality
+- **`/routes`**: Main application page components corresponding to different routes
+- **`/services`**: Business logic layer handling data fetching and operations
+- **`/contracts`**: TypeScript type definitions ensuring type safety
+- **`/lib`**: Utility functions and third-party library configurations
+- **`/sql`**: Database structure and initialization scripts
+- **`/styles`**: Custom style files
 
 ---
 
-## 🚀 安装与运行
+## 🚀 Installation & Setup
 
-### 系统要求
+### System Requirements
 
-- **Node.js**: 16.0+ (推荐 18.0+)
-- **npm**: 8.0+ 或 **yarn**: 1.22+
-- **Git**: 版本控制工具
-- **现代浏览器**: Chrome 90+, Firefox 90+, Safari 14+
+- **Node.js**: 16.0+ (recommended 18.0+)
+- **npm**: 8.0+ or **yarn**: 1.22+
+- **Git**: Version control tool
+- **Modern Browser**: Chrome 90+, Firefox 90+, Safari 14+
 
-### 环境依赖
+### Environment Dependencies
 
-- **Supabase 账户**: 用于后端服务
-- **PostgreSQL**: 通过 Supabase 提供
+- **Supabase Account**: For backend services
+- **PostgreSQL**: Provided through Supabase
 
-### 安装步骤
+### Installation Steps
 
-#### 1. 克隆仓库
+#### 1. Clone Repository
 ```bash
 git clone <repository-url>
 cd RAVEN
 ```
 
-#### 2. 安装依赖
+#### 2. Install Dependencies
 ```bash
 npm install
-# 或
+# or
 yarn install
 ```
 
-#### 3. 环境变量配置
-复制环境变量模板并配置：
+#### 3. Environment Configuration
+Copy environment template and configure:
 ```bash
 cp .env.example .env
 ```
 
-在 `.env` 文件中配置以下变量：
+Configure the following variables in `.env` file:
 ```env
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-#### 4. 数据库初始化
-执行 SQL 脚本创建数据库结构：
+#### 4. Database Initialization
+Execute SQL scripts to create database structure:
 ```bash
-# 在 Supabase SQL Editor 中依次执行 sql/ 目录下的脚本
-# 建议按文件名顺序执行：
+# Execute scripts in Supabase SQL Editor in order:
 # 1. bars_v2_00_create_all_bar_tables.sql
 # 2. bars_v2_08_fix_view_rls.sql
 ```
 
-### 启动命令
+### Startup Commands
 
-#### 开发环境
+#### Development Environment
 ```bash
 npm run dev
-# 或
+# or
 yarn dev
 ```
-访问: http://localhost:5173
+Access: http://localhost:5173
 
-#### 生产构建
+#### Production Build
 ```bash
 npm run build
-# 或
+# or
 yarn build
 ```
 
-#### 预览生产版本
+#### Preview Production Version
 ```bash
 npm run preview
-# 或
+# or
 yarn preview
 ```
 
-#### 代码检查
+#### Code Linting
 ```bash
 npm run lint
-# 或
+# or
 yarn lint
 ```
 
 ---
 
-## 🔧 环境变量
+## 🔧 Environment Variables
 
-### 必需变量
+### Required Variables
 
-| 变量名 | 描述 | 获取方式 | 示例 |
-|--------|------|----------|------|
-| `VITE_SUPABASE_URL` | Supabase 项目 URL | Supabase Dashboard > Settings > API | `https://xxxxx.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | Supabase 匿名密钥 | Supabase Dashboard > Settings > API | `eyJhbGci...` |
+| Variable | Description | How to Obtain | Example |
+|----------|-------------|---------------|---------|
+| `VITE_SUPABASE_URL` | Supabase Project URL | Supabase Dashboard > Settings > API | `https://xxxxx.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY` | Supabase Anonymous Key | Supabase Dashboard > Settings > API | `eyJhbGci...` |
 
-### 获取步骤
+### Setup Steps
 
-1. **注册 Supabase 账户**: https://supabase.com/
-2. **创建新项目**: 选择地区和数据库密码
-3. **获取 API 凭据**: 
-   - 进入项目 Dashboard
-   - 导航到 Settings > API
-   - 复制 Project URL 和 anon public key
-4. **配置环境变量**: 将凭据添加到 `.env` 文件
+1. **Register Supabase Account**: https://supabase.com/
+2. **Create New Project**: Select region and database password
+3. **Get API Credentials**: 
+   - Go to Project Dashboard
+   - Navigate to Settings > API
+   - Copy Project URL and anon public key
+4. **Configure Environment Variables**: Add credentials to `.env` file
 
-### 安全注意事项
+### Security Notes
 
-- **不要提交** `.env` 文件到版本控制
-- **仅使用** `anon` 密钥，不要使用 `service_role` 密钥
-- **启用 RLS**: 确保 Supabase 中的 Row Level Security 已启用
+- **Do NOT commit** `.env` files to version control
+- **Only use** `anon` key, do NOT use `service_role` key
+- **Enable RLS**: Ensure Row Level Security is enabled in Supabase
 
 ---
 
-## 🗄️ 数据库结构
+## 🗄️ Database Structure
 
-### 核心数据表
+### Core Data Tables
 
-#### 场所相关表
+#### Venue Tables
 
-##### `clubs` - 俱乐部主表
+##### `clubs` - Clubs Main Table
 ```sql
 - id: BIGSERIAL PRIMARY KEY
 - name: TEXT NOT NULL
@@ -303,7 +302,7 @@ yarn lint
 - created_at: TIMESTAMPTZ DEFAULT NOW()
 ```
 
-##### `bars` - 酒吧主表
+##### `bars` - Bars Main Table
 ```sql
 - id: BIGSERIAL PRIMARY KEY
 - name: TEXT NOT NULL
@@ -314,16 +313,16 @@ yarn lint
 - created_at: TIMESTAMPTZ DEFAULT NOW()
 ```
 
-##### `districts` - 地区表
+##### `districts` - Districts Table
 ```sql
 - id: BIGSERIAL PRIMARY KEY
 - name: TEXT UNIQUE NOT NULL
 - description: TEXT
 ```
 
-#### 评分与评论表
+#### Ratings & Reviews Tables
 
-##### `club_reviews` - 俱乐部评论表
+##### `club_reviews` - Club Reviews Table
 ```sql
 - id: BIGSERIAL PRIMARY KEY
 - club_id: BIGINT NOT NULL (FK to clubs)
@@ -337,7 +336,7 @@ yarn lint
 - created_at: TIMESTAMPTZ DEFAULT NOW()
 ```
 
-##### `bar_reviews` - 酒吧评论表
+##### `bar_reviews` - Bar Reviews Table
 ```sql
 - id: BIGSERIAL PRIMARY KEY
 - bar_id: BIGINT NOT NULL (FK to bars)
@@ -351,9 +350,9 @@ yarn lint
 - created_at: TIMESTAMPTZ DEFAULT NOW()
 ```
 
-#### 主题与标签系统
+#### Theme & Tag System
 
-##### `themes` - 主题表
+##### `themes` - Themes Table
 ```sql
 - id: BIGSERIAL PRIMARY KEY
 - name: TEXT UNIQUE NOT NULL
@@ -361,7 +360,7 @@ yarn lint
 - created_at: TIMESTAMPTZ DEFAULT NOW()
 ```
 
-##### `bar_themes` - 酒吧主题关联表
+##### `bar_themes` - Bar Themes Association Table
 ```sql
 - id: BIGSERIAL PRIMARY KEY
 - bar_id: BIGINT NOT NULL (FK to bars)
@@ -370,9 +369,9 @@ yarn lint
 - UNIQUE(bar_id, theme_id)
 ```
 
-#### 位置信息表
+#### Location Information Table
 
-##### `bar_locations` - 酒吧位置表
+##### `bar_locations` - Bar Locations Table
 ```sql
 - id: BIGSERIAL PRIMARY KEY
 - bar_id: BIGINT NOT NULL (FK to bars)
@@ -382,9 +381,9 @@ yarn lint
 - created_at: TIMESTAMPTZ DEFAULT NOW()
 ```
 
-#### 收藏系统表
+#### Favorites System Table
 
-##### `favorites` - 收藏表
+##### `favorites` - Favorites Table
 ```sql
 - id: BIGSERIAL PRIMARY KEY
 - user_id: UUID NOT NULL (FK to auth.users)
@@ -394,9 +393,9 @@ yarn lint
 - UNIQUE(user_id, venue_id, venue_type)
 ```
 
-### 数据库视图
+### Database Views
 
-##### `themes_by_category` - 主题分类视图
+##### `themes_by_category` - Themes by Category View
 ```sql
 CREATE VIEW themes_by_category WITH (security_invoker = true) AS
 SELECT 
@@ -408,7 +407,7 @@ WHERE category IS NOT NULL
 GROUP BY category;
 ```
 
-##### `bar_themes_detailed` - 酒吧主题详情视图
+##### `bar_themes_detailed` - Bar Themes Detailed View
 ```sql
 CREATE VIEW bar_themes_detailed WITH (security_invoker = true) AS
 SELECT 
@@ -422,7 +421,7 @@ JOIN bars b ON bt.bar_id = b.id
 JOIN themes t ON bt.theme_id = t.id;
 ```
 
-### 表关系图 (ER 图概述)
+### Entity Relationship Diagram Overview
 
 ```
 Users (Supabase Auth)
@@ -440,31 +439,31 @@ Locations (bar_locations)
 Users ←→ Venues (N:N via favorites)
 ```
 
-### 索引策略
+### Index Strategy
 
-#### 性能优化索引
+#### Performance Optimization Indexes
 ```sql
--- 评论表索引
+-- Review table indexes
 CREATE INDEX idx_club_reviews_club_id ON club_reviews(club_id);
 CREATE INDEX idx_club_reviews_user_id ON club_reviews(user_id);
 CREATE INDEX idx_bar_reviews_bar_id ON bar_reviews(bar_id);
 CREATE INDEX idx_bar_reviews_user_id ON bar_reviews(user_id);
 
--- 主题关联索引
+-- Theme association indexes
 CREATE INDEX idx_bar_themes_bar_id ON bar_themes(bar_id);
 CREATE INDEX idx_bar_themes_theme_id ON bar_themes(theme_id);
 CREATE INDEX idx_themes_category ON themes(category);
 
--- 收藏表索引
+-- Favorites table indexes
 CREATE INDEX idx_favorites_user_id ON favorites(user_id);
 CREATE INDEX idx_favorites_venue ON favorites(venue_id, venue_type);
 ```
 
-### 数据约束
+### Data Constraints
 
-#### 评分约束
+#### Rating Constraints
 ```sql
--- 酒吧评分范围 (0-100)
+-- Bar rating ranges (0-100)
 ALTER TABLE bar_reviews ADD CONSTRAINT chk_quality_rating 
     CHECK (quality_rating >= 0 AND quality_rating <= 100);
 ALTER TABLE bar_reviews ADD CONSTRAINT chk_price_rating 
@@ -474,47 +473,47 @@ ALTER TABLE bar_reviews ADD CONSTRAINT chk_vibe_rating
 ALTER TABLE bar_reviews ADD CONSTRAINT chk_friendliness_rating 
     CHECK (friendliness_rating >= 0 AND friendliness_rating <= 100);
 
--- 俱乐部评分范围 (0-5)
+-- Club rating ranges (0-5)
 ALTER TABLE club_reviews ADD CONSTRAINT chk_music_rating 
     CHECK (music_rating >= 0 AND music_rating <= 5);
--- (类似的约束应用于其他评分字段)
+-- (Similar constraints applied to other rating fields)
 ```
 
-### Row Level Security (RLS) 策略
+### Row Level Security (RLS) Policies
 
-#### 公共读取策略
+#### Public Read Policies
 ```sql
--- 允许所有用户查看场所信息
+-- Allow all users to view venue information
 CREATE POLICY "Allow public read access" ON clubs FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON bars FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON themes FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON districts FOR SELECT USING (true);
 
--- 允许查看所有评论 (匿名)
+-- Allow viewing all reviews (anonymous)
 CREATE POLICY "Allow public read access" ON club_reviews FOR SELECT USING (true);
 CREATE POLICY "Allow public read access" ON bar_reviews FOR SELECT USING (true);
 ```
 
-#### 用户写入策略
+#### User Write Policies
 ```sql
--- 只允许认证用户创建评论
+-- Only allow authenticated users to create reviews
 CREATE POLICY "Users can create reviews" ON club_reviews 
     FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 CREATE POLICY "Users can create reviews" ON bar_reviews 
     FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 
--- 用户只能修改自己的收藏
+-- Users can only modify their own favorites
 CREATE POLICY "Users can manage own favorites" ON favorites 
     FOR ALL USING (auth.uid() = user_id);
 ```
 
 ---
 
-## 🧩 前端组件架构
+## 🧩 Frontend Component Architecture
 
-### 基础 UI 组件
+### Basic UI Components
 
-#### `Button.tsx` - 按钮组件
+#### `Button.tsx` - Button Component
 ```typescript
 interface ButtonProps {
   variant?: 'default' | 'ghost' | 'outline';
@@ -526,10 +525,10 @@ interface ButtonProps {
   onClick?: () => void;
 }
 ```
-**功能**: 统一的按钮样式和交互逻辑
-**特性**: 多种变体、加载状态、禁用状态
+**Function**: Unified button styling and interaction logic
+**Features**: Multiple variants, loading states, disabled states
 
-#### `Card.tsx` - 卡片组件
+#### `Card.tsx` - Card Component
 ```typescript
 interface CardProps {
   hover?: boolean;
@@ -537,10 +536,10 @@ interface CardProps {
   children: React.ReactNode;
 }
 ```
-**功能**: 内容容器，提供统一的卡片样式
-**特性**: 可选悬停效果、自定义样式
+**Function**: Content container providing unified card styling
+**Features**: Optional hover effects, custom styling
 
-#### `Badge.tsx` - 标签组件
+#### `Badge.tsx` - Badge Component
 ```typescript
 interface BadgeProps {
   variant?: 'default' | 'raven' | 'outline';
@@ -549,12 +548,12 @@ interface BadgeProps {
   children: React.ReactNode;
 }
 ```
-**功能**: 显示标签、分类、状态信息
-**特性**: 多种样式变体、可点击交互
+**Function**: Display tags, categories, status information
+**Features**: Multiple style variants, clickable interactions
 
-### 业务组件
+### Business Components
 
-#### `RatingBar.tsx` - 评分条组件
+#### `RatingBar.tsx` - Rating Bar Component
 ```typescript
 interface RatingBarProps {
   label: string;
@@ -562,51 +561,51 @@ interface RatingBarProps {
   showValue?: boolean;
 }
 ```
-**功能**: 可视化显示评分数据
-**特性**: 动态颜色、渐变效果
+**Function**: Visualize rating data
+**Features**: Dynamic colors, gradient effects
 
-#### `VibeCard.tsx` - 氛围卡片组件
+#### `VibeCard.tsx` - Vibe Card Component
 ```typescript
 interface VibeCardProps {
   summary: VibeSummary;
 }
 ```
-**功能**: 显示场所当前氛围信息
-**特性**: 实时数据、视觉化呈现
+**Function**: Display current venue atmosphere information
+**Features**: Real-time data, visual presentation
 
-#### `Navigation.tsx` - 导航组件
+#### `Navigation.tsx` - Navigation Component
 ```typescript
 interface NavigationProps {
   currentPath: string;
 }
 ```
-**功能**: 底部导航栏
-**特性**: 触摸优化、路由状态管理
+**Function**: Bottom navigation bar
+**Features**: Touch optimization, route state management
 
-### 状态管理策略
+### State Management Strategy
 
-#### 本地状态管理
-- **React useState**: 组件内部状态
-- **React useEffect**: 副作用处理
-- **React useContext**: 跨组件状态共享
+#### Local State Management
+- **React useState**: Component internal state
+- **React useEffect**: Side effect handling
+- **React useContext**: Cross-component state sharing
 
-#### 数据获取策略
-- **服务层抽象**: 通过 services/ 目录统一数据访问
-- **Promise 并发**: 使用 Promise.all 优化加载性能
-- **乐观更新**: 评论提交后立即更新 UI
+#### Data Fetching Strategy
+- **Service Layer Abstraction**: Unified data access through services/ directory
+- **Promise Concurrency**: Use Promise.all to optimize loading performance
+- **Optimistic Updates**: Immediate UI updates after review submission
 
-#### 缓存策略
-- **本地存储**: 用户偏好设置
-- **内存缓存**: 场所列表、主题数据
-- **Supabase 实时**: 自动数据同步
+#### Caching Strategy
+- **Local Storage**: User preference settings
+- **Memory Cache**: Venue lists, theme data
+- **Supabase Real-time**: Automatic data synchronization
 
 ---
 
-## 🎨 设计系统
+## 🎨 Design System
 
 ### Berlin-Themed Color Palette
 
-绿色符号是 **#8ACE00** (raven 主题色)！
+The green symbol is **#8ACE00** (raven theme color)!
 
 ```css
 :root {
@@ -619,260 +618,260 @@ interface NavigationProps {
 }
 ```
 
-### 视觉效果与动画
+### Visual Effects & Animations
 
-- **Scanline Animation** - CRT屏幕效果
-- **Glitch Button Effects** - 赛博朋克风格
-- **3D Card Transforms** - 透视旋转效果
-- **Floating Smoke Animations** - 有机浮动绿色光球
-- **WordStream Animation** - 物理基础浮动文本
-- **Dark Theme** - 一致的柏林夜生活美学
+- **Scanline Animation** - CRT screen effects
+- **Glitch Button Effects** - Cyberpunk-inspired styling
+- **3D Card Transforms** - Perspective rotation effects
+- **Floating Smoke Animations** - Organic floating green orbs
+- **WordStream Animation** - Physics-based floating text
+- **Dark Theme** - Consistent Berlin nightlife aesthetic
 
 ---
 
-## 🔄 核心业务流程
+## 🔄 Core Business Flows
 
-### 用户注册与认证流程
+### User Registration & Authentication Flow
 
 ```mermaid
 flowchart TD
-    A[用户访问Profile页面] --> B{用户是否已登录?}
-    B -->|是| C[显示用户档案]
-    B -->|否| D[显示登录/注册表单]
-    D --> E[用户输入邮箱密码]
-    E --> F[Supabase认证]
-    F --> G{认证成功?}
-    G -->|是| H[加载用户统计数据]
-    G -->|否| I[显示错误信息]
-    H --> J[显示Deathmarch进度]
-    H --> K[加载评论历史]
+    A[User visits Profile page] --> B{Is user logged in?}
+    B -->|Yes| C[Display user profile]
+    B -->|No| D[Display login/signup form]
+    D --> E[User enters email password]
+    E --> F[Supabase authentication]
+    F --> G{Authentication successful?}
+    G -->|Yes| H[Load user statistics]
+    G -->|No| I[Display error message]
+    H --> J[Display Deathmarch progress]
+    H --> K[Load review history]
     J --> C
     K --> C
 ```
 
-### 场所评论提交流程
+### Venue Review Submission Flow
 
 ```mermaid
 flowchart TD
-    A[用户点击"Add Review"按钮] --> B{用户是否已登录?}
-    B -->|否| C[跳转到登录页面]
-    B -->|是| D[进入评论提交页面]
-    D --> E[用户填写评分和评论]
-    E --> F[提交表单]
-    F --> G{场所类型判断}
-    G -->|Club| H[调用createReview]
-    G -->|Bar| I[调用createBarReview]
-    H --> J[保存到club_reviews表]
-    I --> K[保存到bar_reviews表]
-    J --> L[创建乐观更新Review]
+    A[User clicks "Add Review" button] --> B{Is user logged in?}
+    B -->|No| C[Redirect to login page]
+    B -->|Yes| D[Enter review submission page]
+    D --> E[User fills ratings and comment]
+    E --> F[Submit form]
+    F --> G{Venue type check}
+    G -->|Club| H[Call createReview]
+    G -->|Bar| I[Call createBarReview]
+    H --> J[Save to club_reviews table]
+    I --> K[Save to bar_reviews table]
+    J --> L[Create optimistic update Review]
     K --> L
-    L --> M[导航回详情页面]
-    M --> N[立即显示新评论]
-    N --> O[重新计算场所评分]
+    L --> M[Navigate back to detail page]
+    M --> N[Immediately display new review]
+    N --> O[Recalculate venue ratings]
 ```
 
-### Deathmarch 进度更新流程
+### Deathmarch Progress Update Flow
 
 ```mermaid
 flowchart TD
-    A[用户登录] --> B[获取用户ID]
-    B --> C[查询club_reviews表]
-    B --> D[查询bar_reviews表]
-    C --> E[统计不重复club_id数量]
-    D --> F[统计不重复bar_id数量]
-    E --> G[获取clubs总数]
-    F --> H[获取bars总数]
-    G --> I[计算clubs进度: visited/total]
-    H --> J[计算bars进度: visited/total]
-    I --> K[更新Deathmarch显示]
+    A[User login] --> B[Get user ID]
+    B --> C[Query club_reviews table]
+    B --> D[Query bar_reviews table]
+    C --> E[Count unique club_id entries]
+    D --> F[Count unique bar_id entries]
+    E --> G[Get total clubs count]
+    F --> H[Get total bars count]
+    G --> I[Calculate clubs progress: visited/total]
+    H --> J[Calculate bars progress: visited/total]
+    I --> K[Update Deathmarch display]
     J --> K
 ```
 
 ---
 
-## 🚀 部署与运维
+## 🚀 Deployment & Operations
 
-### 部署平台
+### Deployment Platforms
 
-#### 推荐部署平台
-1. **Vercel** (推荐)
-   - 零配置部署
-   - 自动CI/CD
-   - 边缘网络优化
-   - 与GitHub无缝集成
+#### Recommended Deployment Platforms
+1. **Vercel** (Recommended)
+   - Zero-configuration deployment
+   - Automatic CI/CD
+   - Edge network optimization
+   - Seamless GitHub integration
 
 2. **Netlify**
-   - 简单部署流程
-   - 表单处理
-   - CDN加速
+   - Simple deployment process
+   - Form handling
+   - CDN acceleration
 
-#### 部署配置
+#### Deployment Configuration
 
-##### Vercel部署
+##### Vercel Deployment
 ```bash
-# 安装Vercel CLI
+# Install Vercel CLI
 npm i -g vercel
 
-# 部署到Vercel
+# Deploy to Vercel
 vercel
 
-# 生产环境部署
+# Production deployment
 vercel --prod
 ```
 
-##### 环境变量配置
-在部署平台中配置以下环境变量：
+##### Environment Variable Configuration
+Configure the following environment variables in deployment platform:
 ```
 VITE_SUPABASE_URL=your_production_supabase_url
 VITE_SUPABASE_ANON_KEY=your_production_anon_key
 ```
 
-### 监控与日志
+### Monitoring & Logging
 
-#### 性能监控
-- **Vercel Analytics**: 页面性能和访问统计
-- **Google Analytics**: 用户行为分析
-- **Web Vitals**: 核心性能指标监控
+#### Performance Monitoring
+- **Vercel Analytics**: Page performance and access statistics
+- **Google Analytics**: User behavior analysis
+- **Web Vitals**: Core performance metrics monitoring
 
-#### 错误追踪
-- **Sentry**: 前端错误监控和报告
-- **Supabase Logs**: 后端API调用日志
+#### Error Tracking
+- **Sentry**: Frontend error monitoring and reporting
+- **Supabase Logs**: Backend API call logs
 
 ---
 
-## 🔒 安全与权限控制
+## 🔒 Security & Access Control
 
-### 用户认证机制
+### User Authentication Mechanism
 
 #### Supabase Auth
 ```typescript
-// 认证流程
+// Authentication flow
 const { data, error } = await supabase.auth.signInWithPassword({
   email: 'user@example.com',
   password: 'securePassword123'
 });
 
-// JWT Token管理
+// JWT Token management
 const { data: { session } } = await supabase.auth.getSession();
 const token = session?.access_token;
 ```
 
-### 权限控制矩阵
+### Permission Control Matrix
 
-| 资源 | 匿名用户 | 注册用户 | 管理员 |
-|------|----------|----------|--------|
-| 查看场所 | ✅ | ✅ | ✅ |
-| 查看评论 | ✅ | ✅ | ✅ |
-| 提交评论 | ❌ | ✅ | ✅ |
-| 收藏场所 | ❌ | ✅ | ✅ |
-| 修改场所 | ❌ | ❌ | ✅ |
-| 删除评论 | ❌ | ❌ | ✅ |
+| Resource | Anonymous Users | Registered Users | Admins |
+|----------|----------------|------------------|---------|
+| View venues | ✅ | ✅ | ✅ |
+| View reviews | ✅ | ✅ | ✅ |
+| Submit reviews | ❌ | ✅ | ✅ |
+| Favorite venues | ❌ | ✅ | ✅ |
+| Modify venues | ❌ | ❌ | ✅ |
+| Delete reviews | ❌ | ❌ | ✅ |
 
-### Row Level Security (RLS) 策略
+### Row Level Security (RLS) Policies
 
-#### 公共数据访问
+#### Public Data Access
 ```sql
--- 场所信息公开可读
+-- Venue information publicly readable
 CREATE POLICY "Allow public read access on clubs" ON clubs
     FOR SELECT USING (true);
 
--- 评论信息公开可读
+-- Review information publicly readable
 CREATE POLICY "Allow public read access on reviews" ON club_reviews
     FOR SELECT USING (true);
 ```
 
-#### 用户数据保护
+#### User Data Protection
 ```sql
--- 用户只能创建评论（需认证）
+-- Users can only create reviews (authentication required)
 CREATE POLICY "Users can create reviews" ON club_reviews
     FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 
--- 用户只能管理自己的收藏
+-- Users can only manage their own favorites
 CREATE POLICY "Users can manage own favorites" ON favorites
     FOR ALL USING (auth.uid() = user_id);
 ```
 
 ---
 
-## 🗺️ 未来规划 / Roadmap
+## 🗺️ Future Roadmap
 
-### Phase 1: 核心功能完善 (Q2 2024)
+### Phase 1: Core Feature Enhancement (Q2 2024)
 
-#### 🧪 测试与质量保证
-- [ ] **测试框架集成**: Vitest + React Testing Library
-- [ ] **单元测试覆盖**: 组件和服务层测试 >80%
-- [ ] **E2E测试**: 关键业务流程自动化测试
-- [ ] **性能测试**: 页面加载速度优化
+#### 🧪 Testing & Quality Assurance
+- [ ] **Test Framework Integration**: Vitest + React Testing Library
+- [ ] **Unit Test Coverage**: Component and service layer tests >80%
+- [ ] **E2E Testing**: Automated testing for critical business flows
+- [ ] **Performance Testing**: Page loading speed optimization
 
-#### 📱 移动体验优化
-- [ ] **PWA支持**: Service Worker + 离线缓存
-- [ ] **触摸优化**: 手势导航和交互改进
-- [ ] **性能优化**: 懒加载和代码分割
-- [ ] **响应式设计**: 更好的移动端适配
+#### 📱 Mobile Experience Optimization
+- [ ] **PWA Support**: Service Worker + offline caching
+- [ ] **Touch Optimization**: Gesture navigation and interaction improvements
+- [ ] **Performance Optimization**: Lazy loading and code splitting
+- [ ] **Responsive Design**: Better mobile adaptation
 
-#### 🔧 基础功能增强
-- [ ] **搜索功能**: 场所名称和描述全文搜索
-- [ ] **地图集成**: 场所位置可视化
-- [ ] **照片上传**: 用户可上传场所照片
-- [ ] **营业时间**: 显示场所开放时间信息
+#### 🔧 Basic Feature Enhancement
+- [ ] **Search Functionality**: Full-text search for venue names and descriptions
+- [ ] **Map Integration**: Venue location visualization
+- [ ] **Photo Upload**: User venue photo uploads
+- [ ] **Business Hours**: Display venue opening hours information
 
-### Phase 2: 社交功能 (Q3 2024)
+### Phase 2: Social Features (Q3 2024)
 
-#### 👥 用户社交系统
-- [ ] **用户关注**: 关注其他用户的评论动态
-- [ ] **评论互动**: 点赞、回复评论功能
-- [ ] **用户排行**: 基于贡献度的用户等级系统
-- [ ] **徽章系统**: 成就徽章和里程碑奖励
+#### 👥 User Social System
+- [ ] **User Following**: Follow other users' review activities
+- [ ] **Review Interactions**: Like and reply to reviews functionality
+- [ ] **User Rankings**: User level system based on contributions
+- [ ] **Badge System**: Achievement badges and milestone rewards
 
-#### 🎉 活动功能
-- [ ] **活动发现**: 场所举办的特殊活动信息
-- [ ] **活动日历**: 个人和场所活动日程
-- [ ] **活动评价**: 针对特定活动的评分系统
-- [ ] **朋友邀请**: 邀请朋友参加活动
+#### 🎉 Event Features
+- [ ] **Event Discovery**: Special event information at venues
+- [ ] **Event Calendar**: Personal and venue event schedules
+- [ ] **Event Reviews**: Rating system for specific events
+- [ ] **Friend Invitations**: Invite friends to events
 
-### Phase 3: 智能化与个性化 (Q4 2024)
+### Phase 3: Intelligence & Personalization (Q4 2024)
 
-#### 🤖 AI推荐系统
-- [ ] **个性化推荐**: 基于用户历史的场所推荐
-- [ ] **相似用户**: 发现品味相似的用户
-- [ ] **智能匹配**: AI匹配最适合的夜生活场所
-- [ ] **趋势分析**: 夜生活趋势和热门场所分析
+#### 🤖 AI Recommendation System
+- [ ] **Personalized Recommendations**: Venue recommendations based on user history
+- [ ] **Similar Users**: Discover users with similar tastes
+- [ ] **Smart Matching**: AI matching for optimal nightlife venues
+- [ ] **Trend Analysis**: Nightlife trends and popular venue analysis
 
-#### 🌐 多语言支持
-- [ ] **国际化**: 德语、英语多语言切换
-- [ ] **本地化**: 针对不同文化的界面适配
-- [ ] **自动翻译**: 评论自动翻译功能
+#### 🌐 Multi-language Support
+- [ ] **Internationalization**: German and English language switching
+- [ ] **Localization**: Interface adaptation for different cultures
+- [ ] **Auto Translation**: Automatic review translation functionality
 
-### Phase 4: 生态系统扩展 (2025)
+### Phase 4: Ecosystem Expansion (2025)
 
-#### 🏢 商家端功能
-- [ ] **商家入驻**: 场所管理者注册和认证
-- [ ] **场所管理**: 商家自主管理场所信息
-- [ ] **数据分析**: 为商家提供客户洞察
-- [ ] **营销工具**: 活动推广和优惠券系统
+#### 🏢 Business Features
+- [ ] **Business Registration**: Venue manager registration and verification
+- [ ] **Venue Management**: Business self-management of venue information
+- [ ] **Data Analytics**: Customer insights for businesses
+- [ ] **Marketing Tools**: Event promotion and coupon systems
 
-#### 🎵 内容生态
-- [ ] **音乐集成**: Spotify/SoundCloud播放列表
-- [ ] **视频内容**: 场所氛围视频分享
-- [ ] **直播功能**: 场所实时直播
+#### 🎵 Content Ecosystem
+- [ ] **Music Integration**: Spotify/SoundCloud playlists
+- [ ] **Video Content**: Venue atmosphere video sharing
+- [ ] **Live Streaming**: Real-time venue streaming
 
 ---
 
-## 🤝 贡献指南
+## 🤝 Contributing Guide
 
-### 如何参与开发
+### How to Participate in Development
 
-#### 准备工作
-1. **Fork仓库**: 在GitHub上fork本项目
-2. **克隆代码**: `git clone <your-fork-url>`
-3. **安装依赖**: `npm install`
-4. **创建分支**: `git checkout -b feature/your-feature-name`
+#### Preparation
+1. **Fork Repository**: Fork this project on GitHub
+2. **Clone Code**: `git clone <your-fork-url>`
+3. **Install Dependencies**: `npm install`
+4. **Create Branch**: `git checkout -b feature/your-feature-name`
 
-### 代码规范
+### Code Standards
 
-#### TypeScript规范
+#### TypeScript Standards
 ```typescript
-// ✅ 推荐
+// ✅ Recommended
 interface User {
   id: string;
   email: string;
@@ -895,21 +894,21 @@ const getUserById = async (id: string): Promise<User | null> => {
 };
 ```
 
-#### Commit消息规范
+#### Commit Message Standards
 ```bash
-# 功能添加
+# Feature addition
 feat(bars): add bar favorites functionality
 
-# 问题修复
+# Bug fix
 fix(reviews): resolve rating calculation error
 
-# 文档更新
+# Documentation update
 docs(readme): update installation instructions
 ```
 
 ---
 
-## 📄 许可协议
+## 📄 License
 
 ### MIT License
 
@@ -937,9 +936,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-### 第三方许可
+### Third-party Licenses
 
-#### 主要依赖库许可
+#### Main Dependency Library Licenses
 - **React**: MIT License
 - **TypeScript**: Apache License 2.0
 - **Vite**: MIT License
@@ -950,57 +949,57 @@ SOFTWARE.
 
 ---
 
-## 📞 联系方式
+## 📞 Contact Information
 
-### 项目维护
+### Project Maintenance
 
-#### 联系方式
+#### Contact Methods
 - **GitHub**: https://github.com/[username]/raven
-- **项目主页**: https://raven-berlin.vercel.app
-- **技术支持**: 通过GitHub Issues提交
+- **Project Homepage**: https://raven-berlin.vercel.app
+- **Technical Support**: Submit via GitHub Issues
 
-### 问题报告
-- **Bug报告**: GitHub Issues
-- **功能请求**: GitHub Issues
-- **安全问题**: [security@raven-berlin.com]
+### Issue Reporting
+- **Bug Reports**: GitHub Issues
+- **Feature Requests**: GitHub Issues
+- **Security Issues**: [security@raven-berlin.com]
 
 ---
 
-## 🎉 致谢
+## 🎉 Acknowledgments
 
-### 开源社区
+### Open Source Community
 
-感谢以下开源项目和社区的贡献：
+Thanks to the following open source projects and communities for their contributions:
 
-#### 核心技术栈
-- **[React Team](https://reactjs.org/)** - 现代化的用户界面框架
-- **[Vercel](https://vercel.com/)** - 优秀的前端部署平台
-- **[Supabase](https://supabase.com/)** - 强大的开源后端平台
-- **[Tailwind CSS](https://tailwindcss.com/)** - 实用优先的CSS框架
+#### Core Technology Stack
+- **[React Team](https://reactjs.org/)** - Modern user interface framework
+- **[Vercel](https://vercel.com/)** - Excellent frontend deployment platform
+- **[Supabase](https://supabase.com/)** - Powerful open source backend platform
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS framework
 
-#### 开发工具
-- **[Vite](https://vitejs.dev/)** - 快速的前端构建工具
-- **[TypeScript](https://www.typescriptlang.org/)** - 类型安全的JavaScript
-- **[ESLint](https://eslint.org/)** - 代码质量检查工具
-- **[Framer Motion](https://www.framer.com/motion/)** - 流畅的动画库
+#### Development Tools
+- **[Vite](https://vitejs.dev/)** - Fast frontend build tool
+- **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
+- **[ESLint](https://eslint.org/)** - Code quality checking tool
+- **[Framer Motion](https://www.framer.com/motion/)** - Smooth animation library
 
-#### 设计资源
-- **[Lucide](https://lucide.dev/)** - 美观的开源图标库
-- **[Unsplash](https://unsplash.com/)** - 高质量的免费图片资源
-- **[Google Fonts](https://fonts.google.com/)** - 免费的Web字体服务
+#### Design Resources
+- **[Lucide](https://lucide.dev/)** - Beautiful open source icon library
+- **[Unsplash](https://unsplash.com/)** - High-quality free image resources
+- **[Google Fonts](https://fonts.google.com/)** - Free web font service
 
-### 柏林夜生活社区
-- 感谢柏林当地的俱乐部和酒吧提供的场所信息
-- 感谢夜生活爱好者们分享的真实体验
-- 感谢柏林多元化的夜生活文化启发
+### Berlin Nightlife Community
+- Thanks to local Berlin clubs and bars for venue information
+- Thanks to nightlife enthusiasts for sharing authentic experiences
+- Thanks to Berlin's diverse nightlife culture for inspiration
 
 ---
 
 <div align="center">
 
-## 🌃 探索无限，体验超越
+## 🌃 Explore Infinity, Experience Transcendence
 
-**RAVEN - 让每一夜都成为传奇**
+**RAVEN - Make Every Night Legendary**
 
 Made with ❤️ in Berlin
 
@@ -1018,4 +1017,4 @@ Made with ❤️ in Berlin
 
 ---
 
-*最后更新: 2024年1月 | 版本: 1.0.0 | 文档版本: v1.0*
+*Last updated: January 2024 | Version: 1.0.0 | Documentation version: v1.0*
