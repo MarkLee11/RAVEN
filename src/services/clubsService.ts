@@ -41,7 +41,7 @@ export const clubsService = {
           cursing_area,
           cash_only,
           card_accepted,
-          districts(name),
+          districts!clubs_district_id_fkey(name),
           club_ratings(music_rating, vibe_rating, crowd_rating, safety_rating),
           club_themes(themes(name)),
           club_tonight_vibe(
@@ -171,7 +171,7 @@ export const clubsService = {
           id,
           name,
           description,
-          districts(name),
+          districts!clubs_district_id_fkey(name),
           club_ratings(music_rating, vibe_rating, crowd_rating, safety_rating),
           club_themes(themes(name)),
           club_tonight_vibe(
