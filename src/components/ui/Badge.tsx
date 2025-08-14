@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '../../lib/utils';
 
-interface BadgeProps {
+interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: 'default' | 'raven' | 'blood';
   size?: 'sm' | 'md';
   className?: string;
@@ -12,7 +12,9 @@ const Badge: React.FC<BadgeProps> = ({
   variant = 'default', 
   size = 'sm',
   className, 
-  children 
+  children,
+  onClick,
+  ...props
 }) => {
   const baseClasses = 'inline-flex items-center rounded-full font-medium';
   
@@ -27,14 +29,19 @@ const Badge: React.FC<BadgeProps> = ({
     md: 'px-3 py-1.5 text-sm',
   };
 
+  const clickableClasses = onClick ? 'cursor-pointer hover:opacity-80 transition-opacity' : '';
+
   return (
     <span
       className={cn(
         baseClasses,
         variantClasses[variant],
         sizeClasses[size],
+        clickableClasses,
         className
       )}
+      onClick={onClick}
+      {...props}
     >
       {children}
     </span>
