@@ -206,7 +206,7 @@ export const clubsService = {
         district: clubData.districts?.name || 'Unknown District',
         tags: themes as any[],
         ratings: {
-          music: Math.round((ratings.music_rating || 0) * 20), // Convert 0-5 to 0-100
+          music: Math.round((ratings.music_rating || 0) * 20),
           vibe: Math.round((ratings.vibe_rating || 0) * 20),
           crowd: Math.round((ratings.crowd_rating || 0) * 20),
           safety: Math.round((ratings.safety_rating || 0) * 20),
