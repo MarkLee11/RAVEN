@@ -148,8 +148,9 @@ const Landing: React.FC = () => {
   }}
 >
   <Link to="/bars">
-    <button className="bars-btn w-full justify-center items-center font-sora font-semibold pt-4">
-    </button>
+    <Button variant="ghost" size="lg" className="w-full justify-center items-center font-sora font-semibold pt-4">
+      BARS
+    </Button>
   </Link>
 </motion.div>
           </div>
