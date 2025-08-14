@@ -170,7 +170,7 @@ const Profile: React.FC = () => {
 
           {/* Deathmarch */}
           <Card>
-            <div className="text-center mb-4">
+            <div className="mb-4 text-left">
               <h3 className="font-space text-lg text-ink mb-1">Deathmarch</h3>
               <p className="text-xs text-ash">Every venue visited brings you closer to transcendence</p>
             </div>
