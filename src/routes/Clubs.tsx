@@ -8,7 +8,8 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
 
-const districts: District[] = ['Kreuzberg', 'Friedrichshain', 'Neukölln', 'Mitte', 'Prenzlauer Berg', 'Wedding'];
+// These should eventually come from the database
+const districts: District[] = ['Kreuzberg', 'Friedrichshain', 'Neukölln', 'Mitte', 'Prenzlauer Berg', 'Wedding', 'Lichtenberg'];
 const clubTags: VenueTag[] = ['techno', 'house', 'underground', 'queer-friendly', 'outdoor', 'cash-only', 'smoke-room', 'late-night', 'tourist-free'];
 
 const Clubs: React.FC = () => {
@@ -154,11 +155,18 @@ const Clubs: React.FC = () => {
                       <div className="ml-3">
                         <Link to={`/clubs/${club.id}`}>
                           <button className="px-3 py-1 text-xs bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap">
-                          Past reviews & Today's vibe
+                            Past reviews & Today's vibe
                           </button>
                         </Link>
                       </div>
                     </div>
+
+                    {/* Description */}
+                    {club.description && (
+                      <p className="text-sm text-ash mb-3 leading-relaxed line-clamp-2">
+                        {club.description}
+                      </p>
+                    )}
 
                     <div className="flex flex-wrap gap-1 mb-3">
                       {club.tags.map(tag => (
