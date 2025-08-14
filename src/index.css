@@ -186,6 +186,61 @@ p {
   100% { clip-path: var(--move1); transform: translate(0,0); }
 }
 
+/* BARS Button Style */
+.bars-btn {
+  display: inline-block;
+  width: 150px;
+  height: 50px;
+  border-radius: 10px;
+  border: 1px solid #4d7a0a; /* 深色绿边框 */
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s ease-in;
+  z-index: 1;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.bars-btn::before,
+.bars-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 100%;
+  transform: skew(15deg);
+  transition: all 0.5s;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.bars-btn::before {
+  left: -10px;
+  background: #6eb30d; /* 比主色深的绿 */
+}
+
+.bars-btn::after {
+  right: -10px;
+  background: #a3e64c; /* 比主色浅的绿 */
+}
+
+.bars-btn:hover::before,
+.bars-btn:hover::after {
+  width: 58%;
+}
+
+.bars-btn:hover span {
+  color: #eaffd1; /* 非常浅的绿黄，和主色搭配 */
+  transition: 0.3s;
+}
+
+.bars-btn span {
+  color: #1f3d00; /* 深绿文字 */
+  font-size: 18px;
+  transition: all 0.3s ease-in;
+  font-weight: 600;
+}
+
 /* Floating smoke animations */
 @keyframes float1 {
   0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.05; }
