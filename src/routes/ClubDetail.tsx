@@ -84,9 +84,6 @@ const ClubDetail: React.FC = () => {
           <div className="flex-1">
             <div className="flex items-center space-x-2">
               <h1 className="font-space text-xl text-ink">{club.name}</h1>
-              {club.hasLiveVibe && (
-                <Badge variant="raven" size="sm">LIVE</Badge>
-              )}
             </div>
             <div className="flex items-center space-x-1 text-sm text-ash">
               <MapPin size={12} />
