@@ -177,6 +177,7 @@ const ClubDetail: React.FC = () => {
                             Queue time: {review.queueTime} minutes
                           </div>
                         )}
+                    </div>
                   </Card>
                 </motion.div>
               ))}
