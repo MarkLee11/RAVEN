@@ -47,6 +47,32 @@ const ClubDetail: React.FC = () => {
     }
   };
 
+  // Calculate average ratings from reviews
+  const calculateAverageRatings = () => {
+    if (reviews.length === 0) {
+      return club?.ratings || { music: 0, vibe: 0, crowd: 0, safety: 0 };
+    }
+
+    const totals = reviews.reduce(
+      (acc, review) => ({
+        music: acc.music + review.ratings.music,
+        vibe: acc.vibe + review.ratings.vibe,
+        crowd: acc.crowd + review.ratings.crowd,
+        safety: acc.safety + review.ratings.safety,
+      }),
+      { music: 0, vibe: 0, crowd: 0, safety: 0 }
+    );
+
+    return {
+      music: Math.round(totals.music / reviews.length),
+      vibe: Math.round(totals.vibe / reviews.length),
+      crowd: Math.round(totals.crowd / reviews.length),
+      safety: Math.round(totals.safety / reviews.length),
+    };
+  };
+
+  const averageRatings = calculateAverageRatings();
+
   if (loading) {
     return (
       <div className="min-h-screen bg-berlin-black flex items-center justify-center">
@@ -115,10 +141,10 @@ const ClubDetail: React.FC = () => {
         <Card>
           <h3 className="font-space text-lg text-ink mb-4">Overall Ratings</h3>
           <div className="grid grid-cols-2 gap-4">
-            <RatingBar label="Music" value={club.ratings.music} />
-            <RatingBar label="Vibe" value={club.ratings.vibe} />
-            <RatingBar label="Crowd" value={club.ratings.crowd} />
-            <RatingBar label="Safety" value={club.ratings.safety} />
+            <RatingBar label="Music" value={averageRatings.music} />
+            <RatingBar label="Vibe" value={averageRatings.vibe} />
+            <RatingBar label="Crowd" value={averageRatings.crowd} />
+            <RatingBar label="Safety" value={averageRatings.safety} />
           </div>
         </Card>
 
