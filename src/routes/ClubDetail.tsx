@@ -152,20 +152,12 @@ const ClubDetail: React.FC = () => {
                   transition={{ delay: index * 0.1 }}
                 >
                   <Card>
-                    <div className="flex items-start space-x-3">
-                      <Avatar
-                        name={review.authorName || 'Anonymous'}
-                        isAnonymous={review.isAnonymous}
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm text-ink font-medium">
-                            {review.isAnonymous ? 'Anonymous' : review.authorName}
-                          </span>
-                          <span className="text-xs text-ash">
-                            {formatTimeAgo(review.createdAt)}
-                          </span>
-                        </div>
+                    <div>
+                      <div className="flex justify-end mb-2">
+                        <span className="text-xs text-ash">
+                          {formatTimeAgo(review.createdAt)}
+                        </span>
+                      </div>
                         
                         <p className="text-sm text-ash mb-3 leading-relaxed">
                           {review.comment}
@@ -185,8 +177,6 @@ const ClubDetail: React.FC = () => {
                             Queue time: {review.queueTime} minutes
                           </div>
                         )}
-                      </div>
-                    </div>
                   </Card>
                 </motion.div>
               ))}
