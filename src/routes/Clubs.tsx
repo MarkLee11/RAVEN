@@ -140,7 +140,8 @@ const Clubs: React.FC = () => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: index * 0.1 }}
               >
-                  <Card>
+                <Link to={`/clubs/${club.id}`}>
+                  <Card hover>
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-1">
@@ -152,11 +153,9 @@ const Clubs: React.FC = () => {
                         </div>
                       </div>
                       <div className="ml-3">
-                        <Link to={`/clubs/${club.id}`}>
-                          <button className="px-3 py-1 text-xs bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap">
+                        <button className="px-3 py-1 text-xs bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven/20 transition-colors whitespace-nowrap">
                           Past reviews & Today's vibe
-                          </button>
-                        </Link>
+                        </button>
                       </div>
                     </div>
 
@@ -175,6 +174,7 @@ const Clubs: React.FC = () => {
                       <RatingBar label="Safety" value={club.ratings.safety} />
                     </div>
                   </Card>
+                </Link>
               </motion.div>
             ))
           )}
