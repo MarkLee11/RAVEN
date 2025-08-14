@@ -375,17 +375,3 @@ const Profile: React.FC = () => {
             </p>
           </div>
         </Card>
-
-        {/* Privacy Notice */}
-        <div className="mt-6 text-center">
-          <p className="text-xs text-ash">
-            By signing up, you agree to our privacy policy.<br />
-            Your data is secure and never shared.
-          </p>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-export default Profile;
