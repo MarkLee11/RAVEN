@@ -50,7 +50,7 @@ const Profile: React.FC = () => {
   const fetchProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('profiles')
+        .from('users')
         .select('*')
         .eq('id', userId)
         .single();
@@ -116,22 +116,6 @@ const Profile: React.FC = () => {
       }
 
       if (data.user) {
-        // Create profile entry
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: data.user.id,
-              email: data.user.email,
-              name: email.split('@')[0], // Use email prefix as default name
-              created_at: new Date().toISOString(),
-            }
-          ]);
-
-        if (profileError) {
-          console.error('Error creating profile:', profileError);
-        }
-
         setUser(data.user);
         await fetchProfile(data.user.id);
         // Clear form
