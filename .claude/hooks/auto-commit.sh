@@ -52,12 +52,12 @@ echo "📦 Staging changes..."
 git add .
 
 # Generate commit message based on changed files
-CHANGED_FILES=$(git diff --cached --name-only | head -n 5)
+CHANGED_FILES=$(git diff --cached --name-only | head -5)
 CHANGE_COUNT=$(git diff --cached --name-only | wc -l)
 
 # Create descriptive commit message
 if [ "$CHANGE_COUNT" -eq 1 ]; then
-    MAIN_FILE=$(echo "$CHANGED_FILES" | head -n 1)
+    MAIN_FILE=$(echo "$CHANGED_FILES" | head -1)
     if [[ "$MAIN_FILE" == *.tsx ]]; then
         COMMIT_MSG="Update React component: $(basename "$MAIN_FILE" .tsx)"
     elif [[ "$MAIN_FILE" == *.ts ]]; then
@@ -69,9 +69,9 @@ if [ "$CHANGE_COUNT" -eq 1 ]; then
     fi
 else
     # Multiple files changed
-    if echo "$CHANGED_FILES" | grep -E "\.(tsx|ts)$" >/dev/null 2>&1; then
+    if echo "$CHANGED_FILES" | grep -q "\.tsx\|\.ts"; then
         COMMIT_MSG="Update React components and TypeScript files"
-    elif echo "$CHANGED_FILES" | grep -F "package.json" >/dev/null 2>&1; then
+    elif echo "$CHANGED_FILES" | grep -q "package\.json"; then
         COMMIT_MSG="Update project dependencies and configuration"
     else
         COMMIT_MSG="Update multiple project files"
@@ -79,11 +79,11 @@ else
 fi
 
 # Add more context if it's a feature/component change
-if echo "$CHANGED_FILES" | grep -F "src/components/" >/dev/null 2>&1; then
+if echo "$CHANGED_FILES" | grep -q "src/components/"; then
     COMMIT_MSG="$COMMIT_MSG - enhance UI components"
-elif echo "$CHANGED_FILES" | grep -F "src/routes/" >/dev/null 2>&1; then
+elif echo "$CHANGED_FILES" | grep -q "src/routes/"; then
     COMMIT_MSG="$COMMIT_MSG - improve page routing"
-elif echo "$CHANGED_FILES" | grep -F "src/services/" >/dev/null 2>&1; then
+elif echo "$CHANGED_FILES" | grep -q "src/services/"; then
     COMMIT_MSG="$COMMIT_MSG - update business logic"
 fi
 
@@ -136,3 +136,4 @@ fi
 # Show brief summary
 echo ""
 echo "📊 Changes summary:"
+git show --stat --oneline HEAD | head -10
