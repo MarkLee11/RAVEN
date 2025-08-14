@@ -275,14 +275,6 @@ const SubmitReview: React.FC = () => {
           </div>
         </Card>
 
-        {/* Photo Upload Placeholder */}
-        <Card>
-          <div className="text-center py-8">
-            <Upload size={24} className="mx-auto text-ash mb-2" />
-            <p className="text-sm text-ash">Photo upload coming soon (Optional)</p>
-          </div>
-        </Card>
-
         {/* Submit Button */}
         <div className="space-y-3">
           <Button
@@ -297,7 +289,7 @@ const SubmitReview: React.FC = () => {
           </Button>
           
           <p className="text-xs text-ash text-center">
-            Only ratings are required. Your review will be anonymous to other users.
+            All REVIEWS ARE <span className="font-bold text-raven">ANONYMOUS</span>
           </p>
         </div>
       </form>
