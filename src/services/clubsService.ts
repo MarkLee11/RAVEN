@@ -41,8 +41,8 @@ export const clubsService = {
           cursing_area,
           cash_only,
           card_accepted,
-          districts!clubs_district_id_fkey(name),
-          club_ratings(music_rating, vibe_rating, crowd_rating, safety_rating),
+          districts!fk_clubs_district(name),
+          club_ratings!club_ratings_club_id_fkey(music_rating, vibe_rating, crowd_rating, safety_rating),
           club_themes(themes(name)),
           club_tonight_vibe(
             door_strictness_pct,
@@ -117,7 +117,7 @@ export const clubsService = {
 
       // Transform database data to Venue format
       const venues: Venue[] = clubsData.map(club => {
-        const ratings = club.club_ratings?.[0] || {
+        const ratings = club.club_ratings || {
           music_rating: 0,
           vibe_rating: 0,
           crowd_rating: 0,
@@ -145,10 +145,10 @@ export const clubsService = {
           district: club.districts?.name || 'Unknown District',
           tags: tags as any[],
           ratings: {
-            music: Math.round((ratings.music_rating || 0) * 20), // Convert 0-5 to 0-100
-            vibe: Math.round((ratings.vibe_rating || 0) * 20),
-            crowd: Math.round((ratings.crowd_rating || 0) * 20),
-            safety: Math.round((ratings.safety_rating || 0) * 20),
+            music: Math.round((ratings?.music_rating || 0) * 20), // Convert 0-5 to 0-100
+            vibe: Math.round((ratings?.vibe_rating || 0) * 20),
+            crowd: Math.round((ratings?.crowd_rating || 0) * 20),
+            safety: Math.round((ratings?.safety_rating || 0) * 20),
           },
           hasLiveVibe,
           description: club.description,
@@ -171,8 +171,8 @@ export const clubsService = {
           id,
           name,
           description,
-          districts!clubs_district_id_fkey(name),
-          club_ratings(music_rating, vibe_rating, crowd_rating, safety_rating),
+          districts!fk_clubs_district(name),
+          club_ratings!club_ratings_club_id_fkey(music_rating, vibe_rating, crowd_rating, safety_rating),
           club_themes(themes(name)),
           club_tonight_vibe(
             door_strictness_pct,
@@ -190,7 +190,7 @@ export const clubsService = {
         return null;
       }
 
-      const ratings = clubData.club_ratings?.[0] || {
+      const ratings = clubData.club_ratings || {
         music_rating: 0,
         vibe_rating: 0,
         crowd_rating: 0,
@@ -206,10 +206,10 @@ export const clubsService = {
         district: clubData.districts?.name || 'Unknown District',
         tags: themes as any[],
         ratings: {
-          music: Math.round((ratings.music_rating || 0) * 20),
-          vibe: Math.round((ratings.vibe_rating || 0) * 20),
-          crowd: Math.round((ratings.crowd_rating || 0) * 20),
-          safety: Math.round((ratings.safety_rating || 0) * 20),
+          music: Math.round((ratings?.music_rating || 0) * 20),
+          vibe: Math.round((ratings?.vibe_rating || 0) * 20),
+          crowd: Math.round((ratings?.crowd_rating || 0) * 20),
+          safety: Math.round((ratings?.safety_rating || 0) * 20),
         },
         hasLiveVibe,
         description: clubData.description,
