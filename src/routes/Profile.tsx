@@ -140,9 +140,6 @@ const Profile: React.FC = () => {
           <Card>
             <div className="flex items-start justify-between">
               <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 bg-raven/20 rounded-full flex items-center justify-center">
-                  <User size={24} className="text-raven" />
-                </div>
                 <div>
                   <h2 className="font-space text-xl text-ink">
                     User
@@ -153,22 +150,7 @@ const Profile: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleLogout}
-                className="flex items-center space-x-2"
-              >
-                <LogOut size={16} />
-                <span>Logout</span>
-              </Button>
             </div>
-          </Card>
-
-          {/* Profile Bio */}
-          <Card>
-            <h3 className="font-space text-lg text-ink mb-3">About</h3>
-            <p className="text-sm text-ash leading-relaxed">Welcome to Berlin's nightlife community!</p>
           </Card>
 
           {/* Stats Placeholder */}
@@ -186,24 +168,54 @@ const Profile: React.FC = () => {
             </div>
           </Card>
 
-          {/* Coming Soon Features */}
+          {/* Graveyard */}
           <Card>
-            <h3 className="font-space text-lg text-ink mb-3">Coming Soon</h3>
+            <h3 className="font-space text-lg text-ink mb-3">Graveyard</h3>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
-                <Badge size="sm">Profile Editing</Badge>
-                <span className="text-xs text-ash">Customize your profile</span>
+                <Badge size="sm">Closed Venues</Badge>
+                <span className="text-xs text-ash">Venues that are no longer open</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Badge size="sm">Favorite Venues</Badge>
-                <span className="text-xs text-ash">Save your favorite spots</span>
+                <Badge size="sm">Lost Reviews</Badge>
+                <span className="text-xs text-ash">Reviews from venues that closed</span>
               </div>
               <div className="flex items-center space-x-2">
-                <Badge size="sm">Review History</Badge>
-                <span className="text-xs text-ash">View your past reviews</span>
+                <Badge size="sm">Memory Lane</Badge>
+                <span className="text-xs text-ash">Archived nightlife memories</span>
               </div>
             </div>
           </Card>
+
+          {/* Echo */}
+          <Card>
+            <h3 className="font-space text-lg text-ink mb-3">Echo</h3>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Badge size="sm">Sound Waves</Badge>
+                <span className="text-xs text-ash">Track your music journey</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Badge size="sm">Reverb</Badge>
+                <span className="text-xs text-ash">Echoes of past nights</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Badge size="sm">Frequency</Badge>
+                <span className="text-xs text-ash">Your nightlife patterns</span>
+              </div>
+            </div>
+          </Card>
+
+          {/* Logout Button at Bottom */}
+          <Button
+            variant="ghost"
+            size="lg"
+            onClick={handleLogout}
+            className="w-full justify-center flex items-center space-x-2"
+          >
+            <LogOut size={16} />
+            <span>Logout</span>
+          </Button>
         </div>
       </motion.div>
     );
