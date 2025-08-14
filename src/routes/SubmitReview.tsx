@@ -31,7 +31,7 @@ const SubmitReview: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!venueId) {
+    if (!venueId || comment.trim().length < 10) {
       return;
     }
 
@@ -41,7 +41,7 @@ const SubmitReview: React.FC = () => {
       const reviewInput: ReviewInput = {
         venueId,
         ratings,
-        comment: comment.trim() || '', // Allow empty comments
+        comment: comment.trim(),
         queueTime,
         isAnonymous: true, // All reviews are anonymous
       };
@@ -69,7 +69,7 @@ const SubmitReview: React.FC = () => {
     return 'bg-blood';
   };
 
-  const isFormValid = true; // Form is always valid since all fields are optional
+  const isFormValid = comment.trim().length >= 10;
 
   if (!venueId) {
     return (
@@ -164,10 +164,12 @@ const SubmitReview: React.FC = () => {
             placeholder="Share your experience... What was the vibe? How was the music? Any tips for others?"
             rows={4}
             className="w-full bg-berlin-black border border-ash/30 rounded-md px-3 py-2 text-ink placeholder-ash focus:border-raven focus:outline-none resize-none"
+            minLength={10}
+            required
           />
           <div className="flex justify-between items-center mt-2">
             <span className="text-xs text-ash">
-              Optional - share your thoughts
+              Minimum 10 characters
             </span>
             <span className={`text-xs ${comment.length >= 10 ? 'text-raven' : 'text-ash'}`}>
               {comment.length}/500
@@ -181,11 +183,18 @@ const SubmitReview: React.FC = () => {
             type="submit"
             size="lg"
             className="w-full justify-center"
+            disabled={!isFormValid}
             isLoading={isSubmitting}
           >
             <Star size={16} className="mr-2" />
             Submit Review
           </Button>
+          
+          {!isFormValid && (
+            <p className="text-xs text-ash text-center">
+              Please complete all required fields to submit
+            </p>
+          )}
         </div>
       </form>
     </motion.div>
