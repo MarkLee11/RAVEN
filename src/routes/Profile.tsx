@@ -262,15 +262,20 @@ const Profile: React.FC = () => {
             Sign Up
           </button>
         </div>
-        {/* Deathmarch Achievement Widget */}
+
         <Card>
-          <h3 className="font-space text-lg text-ink mb-3">Deathmarch</h3>
-          <p className="text-xs text-ash mb-4">Every venue visited brings you closer to transcendence.</p>
-          <div className="text-center">
-            <div className="font-mono text-lg text-raven">
-              <span className="tabular-nums">0</span>
-              <span className="text-ash mx-1">/</span>
-              <span className="tabular-nums text-ash">128</span>
+          {/* Deathmarch Achievement Widget */}
+          <Card>
+            <h3 className="font-space text-lg text-ink mb-3">Deathmarch</h3>
+            <p className="text-xs text-ash mb-4">Every venue visited brings you closer to transcendence.</p>
+            <div className="text-center">
+              <div className="font-mono text-lg text-raven">
+                <span className="tabular-nums">0</span>
+                <span className="text-ash mx-1">/</span>
+                <span className="tabular-nums text-ash">128</span>
+              </div>
+            </div>
+          </Card>
 
           <form onSubmit={activeTab === 'login' ? handleLogin : handleSignup}>
             <div className="space-y-4">
