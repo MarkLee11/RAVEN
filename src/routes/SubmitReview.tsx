@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Star, Upload, User, UserCheck } from 'lucide-react';
+import { ArrowLeft, Star, Upload } from 'lucide-react';
 import { VenueRatings, ReviewInput } from '../contracts/types';
 import { reviewsService } from '../services/reviewsService';
 import Button from '../components/ui/Button';
@@ -22,7 +22,6 @@ const SubmitReview: React.FC = () => {
   
   const [comment, setComment] = useState('');
   const [queueTime, setQueueTime] = useState<number | undefined>();
-  const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRatingChange = (aspect: keyof VenueRatings, value: number) => {
@@ -44,7 +43,7 @@ const SubmitReview: React.FC = () => {
         ratings,
         comment: comment.trim(),
         queueTime,
-        isAnonymous,
+        isAnonymous: true, // All reviews are anonymous
       };
 
       await reviewsService.createReview(reviewInput);
@@ -183,40 +182,6 @@ const SubmitReview: React.FC = () => {
           <div className="text-center py-8">
             <Upload size={24} className="mx-auto text-ash mb-2" />
             <p className="text-sm text-ash">Photo upload coming soon</p>
-          </div>
-        </Card>
-
-        {/* Anonymous Toggle */}
-        <Card>
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-space text-lg text-ink">Anonymous Review</h3>
-              <p className="text-sm text-ash">Post without showing your name</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsAnonymous(!isAnonymous)}
-              className={`relative w-12 h-6 rounded-full transition-colors ${
-                isAnonymous ? 'bg-raven' : 'bg-ash/30'
-              }`}
-            >
-              <motion.div
-                className="absolute top-1 w-4 h-4 bg-white rounded-full shadow"
-                animate={{ x: isAnonymous ? 24 : 4 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              />
-            </button>
-          </div>
-          
-          <div className="flex items-center space-x-2 mt-3">
-            {isAnonymous ? (
-              <User size={16} className="text-ash" />
-            ) : (
-              <UserCheck size={16} className="text-raven" />
-            )}
-            <span className="text-sm text-ash">
-              {isAnonymous ? 'Posting as Anonymous' : 'Posting with your name'}
-            </span>
           </div>
         </Card>
 
