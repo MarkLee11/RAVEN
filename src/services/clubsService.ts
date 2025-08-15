@@ -85,7 +85,7 @@ export const clubsService = {
             case 'dark-room':
               query = query.eq('dark_room', true);
               break;
-            case 'cursing-area':
+            case 'crusing-area':
               query = query.eq('crusing_area', true);
               break;
           }
@@ -171,7 +171,7 @@ export const clubsService = {
           ...(club.smoke_room ? ['smoking-area'] : []),
           ...(club.awareness_room ? ['awareness-room'] : []),
           ...(club.dark_room ? ['dark-room'] : []),
-          ...(club.crusing_area ? ['cursing-area'] : []),
+          ...(club.crusing_area ? ['crusing-area'] : []),
           ...(club.cash_only ? ['cash-only'] : []),
           ...(club.card_accepted ? ['card-accepted'] : []),
         ];

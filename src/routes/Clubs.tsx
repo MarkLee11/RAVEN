@@ -15,7 +15,7 @@ const constructionFilters = [
   { key: 'smoking-area', label: 'Smoking Area' },
   { key: 'awareness-room', label: 'Awareness Room' },
   { key: 'dark-room', label: 'Dark Room' },
-  { key: 'cursing-area', label: 'Cursing Area' },
+  { key: 'crusing-area', label: 'Crusing Area' },
 ];
 
 // Payment filters
