@@ -1,6 +1,17 @@
 # 🌃 RAVEN - Berlin Nightlife Discovery Platform
 
 <div align="center">
+
+# 🚀 [RAVEN](https://ravenberlin.netlify.app/)  
+### *Best experienced on your phone 📱 – because Berlin’s nightlife doesn’t fit on desktop.*
+
+---
+
+</div>
+
+
+
+<div align="center">
   <img src="./RAVEN.png" alt="RAVEN Logo" width="200"/>
 
   **Discover. Experience. Transcend.**
@@ -651,7 +662,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[User clicks "Add Review" button] --> B{Is user logged in?}
+    A[User clicks Add Review button] --> B{Is user logged in?}
     B -->|No| C[Redirect to login page]
     B -->|Yes| D[Enter review submission page]
     D --> E[User fills ratings and comment]
@@ -692,30 +703,13 @@ flowchart TD
 ### Deployment Platforms
 
 #### Recommended Deployment Platforms
-1. **Vercel** (Recommended)
-   - Zero-configuration deployment
-   - Automatic CI/CD
-   - Edge network optimization
-   - Seamless GitHub integration
-
-2. **Netlify**
+  **Netlify**
    - Simple deployment process
    - Form handling
    - CDN acceleration
 
 #### Deployment Configuration
 
-##### Vercel Deployment
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy to Vercel
-vercel
-
-# Production deployment
-vercel --prod
-```
 
 ##### Environment Variable Configuration
 Configure the following environment variables in deployment platform:
@@ -793,7 +787,7 @@ CREATE POLICY "Users can manage own favorites" ON favorites
 
 ## 🗺️ Future Roadmap
 
-### Phase 1: Core Feature Enhancement (Q2 2024)
+### Phase 1: Core Feature Enhancement (Q3 2025)
 
 #### 🧪 Testing & Quality Assurance
 - [ ] **Test Framework Integration**: Vitest + React Testing Library
@@ -813,7 +807,7 @@ CREATE POLICY "Users can manage own favorites" ON favorites
 - [ ] **Photo Upload**: User venue photo uploads
 - [ ] **Business Hours**: Display venue opening hours information
 
-### Phase 2: Social Features (Q3 2024)
+### Phase 2: Social Features (Q4 2025)
 
 #### 👥 User Social System
 - [ ] **User Following**: Follow other users' review activities
@@ -827,7 +821,7 @@ CREATE POLICY "Users can manage own favorites" ON favorites
 - [ ] **Event Reviews**: Rating system for specific events
 - [ ] **Friend Invitations**: Invite friends to events
 
-### Phase 3: Intelligence & Personalization (Q4 2024)
+### Phase 3: Intelligence & Personalization (Q1 2026)
 
 #### 🤖 AI Recommendation System
 - [ ] **Personalized Recommendations**: Venue recommendations based on user history
@@ -840,7 +834,7 @@ CREATE POLICY "Users can manage own favorites" ON favorites
 - [ ] **Localization**: Interface adaptation for different cultures
 - [ ] **Auto Translation**: Automatic review translation functionality
 
-### Phase 4: Ecosystem Expansion (2025)
+### Phase 4: Ecosystem Expansion (Q2 2026)
 
 #### 🏢 Business Features
 - [ ] **Business Registration**: Venue manager registration and verification
@@ -913,7 +907,7 @@ docs(readme): update installation instructions
 ```
 MIT License
 
-Copyright (c) 2024 RAVEN Berlin Nightlife Platform
+Copyright (c) 2025 RAVEN Berlin Nightlife Platform
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -952,14 +946,14 @@ SOFTWARE.
 ### Project Maintenance
 
 #### Contact Methods
-- **GitHub**: https://github.com/[username]/raven
-- **Project Homepage**: https://raven-berlin.vercel.app
+- **GitHub**: https://github.com/[MarkLee11]/raven
+- **Project Homepage**: https://ravenberlin.netlify.app/
 - **Technical Support**: Submit via GitHub Issues
 
 ### Issue Reporting
 - **Bug Reports**: GitHub Issues
 - **Feature Requests**: GitHub Issues
-- **Security Issues**: [security@raven-berlin.com]
+- **Security Issues**: [aa1439422778@gmail.com]
 
 ---
 
@@ -980,6 +974,9 @@ Thanks to the following open source projects and communities for their contribut
 - **[TypeScript](https://www.typescriptlang.org/)** - Type-safe JavaScript
 - **[ESLint](https://eslint.org/)** - Code quality checking tool
 - **[Framer Motion](https://www.framer.com/motion/)** - Smooth animation library
+- **[Bolt.new](https://bolt.new/)** - AI-powered rapid web app prototyping platform
+- **[Cursor](https://cursor.com/)** - AI-assisted code editor for faster development
+- **[Claude Code](https://claude.ai/)** - AI coding assistant for generating and refactoring code
 
 #### Design Resources
 - **[Lucide](https://lucide.dev/)** - Beautiful open source icon library
@@ -1006,13 +1003,13 @@ Made with ❤️ in Berlin
 [![GitHub issues](https://img.shields.io/github/issues/username/raven)](https://github.com/username/raven/issues)
 [![GitHub license](https://img.shields.io/github/license/username/raven)](https://github.com/username/raven/blob/main/LICENSE)
 
-**[🚀 Live Demo](https://raven-berlin.vercel.app)** | 
-**[📖 Documentation](https://github.com/username/raven/wiki)** | 
-**[🐛 Report Bug](https://github.com/username/raven/issues)** | 
-**[✨ Request Feature](https://github.com/username/raven/issues)**
+**[🚀 Live Demo](https://ravenberlin.netlify.app/)** | 
+**[📖 Documentation](https://github.com/MarkLee11/RAVEN/tree/main)** | 
+**[🐛 Report Bug](Aa1439422778@gmail.com)** | 
+**[✨ Request Feature](Aa1439422778@gmail.com)**
 
 </div>
 
 ---
 
-*Last updated: January 2024 | Version: 1.0.0 | Documentation version: v1.0*
+*Last updated: August 2025 | Version: 1.0.0 | Documentation version: v1.0*
