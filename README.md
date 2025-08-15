@@ -2,7 +2,7 @@
 
 <div align="center">
 
-# 🚀 [RAVEN](https://ravenberlin.netlify.app/)  
+# 🐦‍⬛ [RAVEN](https://ravenberlin.netlify.app/)  
 ### *Best experienced on your phone 📱 – because Berlin’s nightlife doesn’t fit on desktop.*
 
 ---
