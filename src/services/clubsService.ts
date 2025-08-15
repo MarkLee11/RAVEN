@@ -38,7 +38,7 @@ export const clubsService = {
           smoke_room,
           awareness_room,
           dark_room,
-          cursing_area,
+          crusing_area,
           cash_only,
           card_accepted,
           districts!fk_clubs_district(name),
@@ -86,7 +86,7 @@ export const clubsService = {
               query = query.eq('dark_room', true);
               break;
             case 'cursing-area':
-              query = query.eq('cursing_area', true);
+              query = query.eq('crusing_area', true);
               break;
           }
         });
@@ -171,7 +171,7 @@ export const clubsService = {
           ...(club.smoke_room ? ['smoking-area'] : []),
           ...(club.awareness_room ? ['awareness-room'] : []),
           ...(club.dark_room ? ['dark-room'] : []),
-          ...(club.cursing_area ? ['cursing-area'] : []),
+          ...(club.crusing_area ? ['cursing-area'] : []),
           ...(club.cash_only ? ['cash-only'] : []),
           ...(club.card_accepted ? ['card-accepted'] : []),
         ];
