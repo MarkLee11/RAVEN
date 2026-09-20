@@ -687,3 +687,26 @@
 - Unauthenticated ID copy is ritual, not SaaS: `Leave a mark.` / `Enter` / `Enlist`.
 - Mobile UX review raised wordmark above WordStream (`z-40`) and added safe-area padding so LINGER clears the home indicator.
 - Checks: `npm run check-all` ✅ 30/30; `npm run test:e2e` after updating auth-guard heading assertion.
+
+## Session Checkpoint (2026-09-20 22:54 Europe/Berlin)
+
+### Frozen state
+- Git: `main` == `origin/main`, working tree clean.
+- HEAD: `53a287d` `feat: restore CORE ritual first impression and door hierarchy`
+- Production: `https://raven-berlin1.netlify.app`
+- Last production Release: GitHub Actions run `35536819166` (quality-gate + deploy-production PASS)
+- Live smoke after deploy: homepage has RAVEN wordmark, `DESCEND`, `LINGER`
+
+### Done this session
+- Signup format false-positive (`pattern`) fixed and shipped.
+- Production `Failed to fetch` root-caused: bundle pointed at `placeholder.supabase.co` because `VITE_SUPABASE_*` were missing from GitHub secrets. Secrets set, empty production builds blocked, redeployed.
+- Ritual first impression implemented and published:
+  - CORE: wordmark + hook + DESCEND/LINGER hierarchy + live venue counts
+  - Clubs/Bars: `Last Words` / `Final Sip`, star top-right, CTA below title
+  - Unauth ID: `Leave a mark.` / `Enter` / `Enlist`
+
+### Paused / next if resuming
+- iOS App Store plan remains PAUSED (`doc/苹果商店上架执行计划书.txt`).
+- FavoriteClubs still says `Last Words Echohall` (list pages were updated; favorites were out of scope).
+- Submit-review gate still says `Login / Sign Up` (intentionally unchanged).
+- No open code bugs from this session. Resume by opening the live URL and deciding the next surface to refine.
