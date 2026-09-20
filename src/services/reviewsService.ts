@@ -23,6 +23,37 @@ export interface UserReviewHistoryResult {
   totalPages: number;
 }
 
+interface PaginatedReviewHistoryRpcRow {
+  review_id: string;
+  venue_id: string;
+  venue_name: string;
+  venue_type: 'club' | 'bar';
+  music_rating: number;
+  vibe_rating: number;
+  crowd_rating: number;
+  safety_rating: number;
+  review_text: string | null;
+  queue_time: number | null;
+  created_at: string;
+  total_count: number;
+}
+
+const isPaginatedReviewHistoryRpcRows = (value: unknown): value is PaginatedReviewHistoryRpcRow[] => {
+  if (!Array.isArray(value)) {
+    return false;
+  }
+
+  return value.every((row) =>
+    row !== null &&
+    typeof row === 'object' &&
+    typeof row.review_id === 'string' &&
+    typeof row.venue_id === 'string' &&
+    typeof row.venue_name === 'string' &&
+    (row.venue_type === 'club' || row.venue_type === 'bar') &&
+    typeof row.created_at === 'string'
+  );
+};
+
 export const reviewsService = {
   async listReviews(venueId: string): Promise<Review[]> {
     try {
@@ -238,6 +269,51 @@ export const reviewsService = {
 
   // Get user's review history with pagination
   async getUserReviewHistory(userId: string, page: number = 1, limit: number = 3): Promise<UserReviewHistoryResult> {
+    const normalizedPage = Math.max(1, page);
+    const normalizedLimit = Math.max(1, limit);
+
+    try {
+      const rpcResult = await supabase.rpc('get_user_review_history_paginated', {
+        p_user_id: userId,
+        p_page: normalizedPage,
+        p_limit: normalizedLimit,
+      });
+
+      if (rpcResult.error) {
+        throw rpcResult.error;
+      }
+
+      if (!isPaginatedReviewHistoryRpcRows(rpcResult.data)) {
+        throw new Error('Invalid paginated review history RPC payload');
+      }
+
+      const rows = rpcResult.data;
+      const totalCount = rows.length > 0 ? Number(rows[0].total_count) || 0 : 0;
+      const totalPages = totalCount > 0 ? Math.ceil(totalCount / normalizedLimit) : 0;
+
+      return {
+        reviews: rows.map((row) => ({
+          id: row.review_id,
+          venueId: row.venue_id,
+          venueName: row.venue_name,
+          venueType: row.venue_type,
+          ratings: {
+            music: Math.round(row.music_rating || 0),
+            vibe: Math.round(row.vibe_rating || 0),
+            crowd: Math.round(row.crowd_rating || 0),
+            safety: Math.round(row.safety_rating || 0),
+          },
+          comment: row.review_text || '',
+          queueTime: row.queue_time ?? undefined,
+          createdAt: new Date(row.created_at),
+        })),
+        totalCount,
+        totalPages,
+      };
+    } catch (rpcError) {
+      console.error('Error fetching paginated review history via RPC, falling back to in-memory merge:', rpcError);
+    }
+
     try {
       const [clubReviewsResult, barReviewsResult] = await Promise.all([
         supabase
@@ -338,9 +414,9 @@ export const reviewsService = {
 
       // Calculate pagination
       const totalCount = allReviews.length;
-      const totalPages = Math.ceil(totalCount / limit);
-      const offset = (page - 1) * limit;
-      const paginatedReviews = allReviews.slice(offset, offset + limit);
+      const totalPages = Math.ceil(totalCount / normalizedLimit);
+      const offset = (normalizedPage - 1) * normalizedLimit;
+      const paginatedReviews = allReviews.slice(offset, offset + normalizedLimit);
 
       return {
         reviews: paginatedReviews,

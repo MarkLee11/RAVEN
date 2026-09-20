@@ -395,3 +395,39 @@
 - [x] Residual risk list
   - `getUserReviewHistory` currently merges two review tables in service layer and paginates in memory after merge; for very large per-user histories, a DB-level unified view/materialized strategy would scale better.
   - E2E coverage still focuses on auth guards and browse smoke; dedicated UI-level Echo pagination E2E remains optional future enhancement.
+
+## Kernel Refactor Phase 2 (2026-09-20)
+
+### Plan
+- [x] Phase 2A: Implement DB-level paginated review history query path for Echo (single contract, minimal service change).
+- [x] Phase 2B: Add fallback strategy when DB-level path is unavailable (keep current in-memory merge as safe fallback).
+- [x] Phase 2C: Add focused unit tests for DB path + fallback path in `reviewsService`.
+- [x] Phase 2D: Add Playwright E2E coverage for Profile Echo pagination behavior.
+- [x] Phase 2E: Run change-related gates (`typecheck`, `lint`, `reviewsService` tests, `test:e2e`) and update review notes.
+
+### Acceptance Targets
+- [x] Echo history remains functionally unchanged in UI while query path is more scalable.
+- [x] No regression in auth redirect, profile load states, or existing browse flows.
+- [x] All change-related quality gates remain green.
+
+### Review (Kernel Refactor Phase 2 - DB Pagination Path)
+- Added migration `supabase/migrations/add_get_user_review_history_paginated_function.sql`:
+  - Introduces `public.get_user_review_history_paginated(p_user_id, p_page, p_limit)`.
+  - Merges `club_reviews` + `bar_reviews` with venue names, sorts by `created_at DESC`, paginates in SQL, and returns `total_count` via window function.
+- Updated `src/services/reviewsService.ts`:
+  - `getUserReviewHistory` now attempts `supabase.rpc('get_user_review_history_paginated', ...)` first.
+  - Added strict payload guard and mapping to existing `UserReviewHistoryResult` contract.
+  - On RPC failure/invalid payload, automatically falls back to existing in-memory merge+pagination logic.
+- Updated `src/services/reviewsService.test.ts`:
+  - Added RPC success-path unit test.
+  - Added RPC failure fallback-path unit test.
+- Added `e2e/profile-echo-pagination.spec.ts`:
+  - Mocks Supabase auth + REST/RPC via Playwright `page.route` (no real Supabase dependency).
+  - Verifies Echo first-page render (`Echo` block + `Page 1 / 2 · 4 total`).
+  - Verifies `Next` moves to page 2 and content changes (`Venue Alpha` -> `Venue Delta`).
+  - Verifies `Previous` returns to page 1 content.
+- Verification commands:
+  - `npm run typecheck` ✅
+  - `npm run lint` ✅
+  - `npm run test -- src/services/reviewsService.test.ts` ✅ (5/5 passed)
+  - `npm run test:e2e` ✅ (6/6 passed, including new Echo pagination spec)
