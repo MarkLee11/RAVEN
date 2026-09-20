@@ -1,0 +1,17 @@
+RAVEN 停机续做备忘
+日期：2026-09-20 夜
+
+明天打开项目：
+1. 打开文件夹 E:\RAVEN
+2. 先看 tasks/todo.md 里的 Session Checkpoint
+3. 线上确认：https://raven-berlin1.netlify.app
+
+当前已保存：
+- GitHub：https://github.com/MarkLee11/RAVEN
+- 最新提交：c61fcb9
+- 功能发布：53a287d（仪式感首页已上线）
+
+明天可选下一步（都不是必须）：
+- 收藏页 Last Words Echohall 与列表文案对齐
+- 评论页 Login / Sign Up 改成 Enter / Enlist
+- 苹果上架计划仍暂停

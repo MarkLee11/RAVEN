@@ -710,3 +710,10 @@
 - FavoriteClubs still says `Last Words Echohall` (list pages were updated; favorites were out of scope).
 - Submit-review gate still says `Login / Sign Up` (intentionally unchanged).
 - No open code bugs from this session. Resume by opening the live URL and deciding the next surface to refine.
+
+## Closed for the night (2026-09-20 22:56)
+
+- Project is safe to close. All work is saved locally and on GitHub (`origin/main`).
+- Tomorrow: open folder `E:\RAVEN`, read this file from the Session Checkpoint down.
+- Live site stays up: `https://raven-berlin1.netlify.app`
+- No local dev server is running. No unpublished edits.
