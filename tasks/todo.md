@@ -591,3 +591,40 @@
 ### Residual Risk (Final)
 - E2E is generally stable but has shown occasional transient flake on initial page-render locators under parallel load; rerun clears it, and no deterministic regression is present.
 - Very large per-user cross-table review histories still use fallback merge path when RPC is unavailable; current DB-level RPC path mitigates primary scale risk.
+
+## iOS App Store Launch Plan (2026-09-20)
+
+### Plan
+- [x] Create detailed Apple App Store launch plan for solo developer in `doc/苹果商店上架执行计划书.txt`.
+- [ ] Step 1: Activate personal Apple Developer Program membership and verify App Store Connect access. (PAUSED)
+- [ ] Step 2: Prepare App Store metadata package (name/description/keywords/privacy policy URL/reviewer notes draft).
+- [ ] Step 3: Initialize iOS packaging pipeline (Capacitor first-pass), configure bundle/signing/build metadata.
+- [ ] Step 4: Run iOS smoke + quality gates + TestFlight dry-run and document release checklist.
+
+### Review
+- Added a complete end-to-end execution plan with:
+  - phased schedule,
+  - per-step acceptance criteria,
+  - rollback ideas,
+  - required manual inputs,
+  - cost/risk guidance for solo developer constraints.
+- Waiting for user confirmation before starting Step 1 execution support.
+
+## Public Web Launch Plan (2026-09-20)
+
+### Plan
+- [x] Pause iOS App Store execution plan for now.
+- [x] Create public internet + mobile-access launch plan in `doc/公网发布与手机端访问计划书.txt`.
+- [x] Step 1: Run release gate (`npm run release:rehearsal`) and confirm deploy readiness.
+- [x] Step 2: Verify Netlify production env vars and site binding.
+- [x] Step 3: Perform production deploy and capture public URL.
+- [x] Step 4: Execute mobile browser acceptance checklist and record outcomes.
+- [x] Step 5: Update release rollback record with live commit/hash and release notes.
+
+### Review
+- iOS track is intentionally paused by user request.
+- Public web release track is prepared as the active execution path.
+- Production release executed via GitHub workflow `Release` run `35531948647` with successful `deploy-production`.
+- Public production URL confirmed reachable: `https://raven-berlin1.netlify.app`.
+- Unique deploy URL recorded: `https://6ab032637a3d3dc48cbf8210--raven-berlin1.netlify.app`.
+- Mobile emulation smoke (iPhone 13 viewport) passed for `/`, `/clubs`, `/bars`, `/submit` (auth guard redirect).

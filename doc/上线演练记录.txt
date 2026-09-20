@@ -37,4 +37,14 @@ Step 4: 回滚检查点固化
 - 本次演练通过，具备上线前质量与安全证据。
 - 回滚锚点明确，可执行性满足 SOP 要求。
 
+四、公网发布执行记录（2026-09-20）
+-------------------------------------------------------------------------------
+- 发布方式：GitHub Actions `Release` workflow_dispatch（target=production）
+- Run ID：`35531948647`
+- 结果：PASS（quality-gate / preflight-secrets / deploy-production 全成功）
+- Production URL：`https://raven-berlin1.netlify.app`
+- Unique Deploy URL：`https://6ab032637a3d3dc48cbf8210--raven-berlin1.netlify.app`
+- 手机端冒烟（iPhone 13 视口）：
+  - `/`、`/clubs`、`/bars`、`/submit`（跳转 `/profile`）全部通过
+
 ===============================================================================
