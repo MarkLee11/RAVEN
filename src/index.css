@@ -146,6 +146,11 @@ body {
   box-shadow: 0 0 25px #8ACE0080;
 }
 
+.pour-words-button:focus-visible {
+  outline: 2px solid #8ACE00;
+  outline-offset: 2px;
+}
+
 .pour-words-button:hover .star-1 {
   position: absolute;
   top: -80%;
@@ -225,8 +230,9 @@ body {
   cursor: pointer;
 }
 
-.cta:focus {
-  outline: none;
+.cta:focus-visible {
+  outline: 2px solid #8ACE00;
+  outline-offset: 2px;
 }
 
 .cta:hover {
@@ -751,6 +757,11 @@ p {
 .spill-button:active {
   transform: scale(0.97);
   transition-duration: .2s;
+}
+
+.spill-button:focus-visible {
+  outline: 2px solid #8ACE00;
+  outline-offset: 3px;
 }
 
 .spill-button:hover .spill-svgIcon {

@@ -112,7 +112,8 @@ const BarDetail: React.FC = () => {
         <div className="flex items-center space-x-3">
           <button
             onClick={() => navigate(-1)}
-            className="text-ash hover:text-ink transition-colors"
+            aria-label="Go back"
+            className="text-ash hover:text-ink transition-colors -m-2 p-3 tap-fast"
           >
             <ArrowLeft size={20} />
           </button>
@@ -130,6 +131,7 @@ const BarDetail: React.FC = () => {
           </div>
           <button
             aria-label="Toggle favorite"
+            aria-pressed={isFavorite}
             onClick={async () => {
               if (!bar) return;
               const success = await favoritesService.toggleFavorite(bar.id, 'bar');
@@ -137,7 +139,7 @@ const BarDetail: React.FC = () => {
                 setIsFavorite(prev => !prev);
               }
             }}
-            className="p-1.5"
+            className="-m-2 p-3 tap-fast"
           >
             <svg
               width="20"
@@ -182,8 +184,8 @@ const BarDetail: React.FC = () => {
         </Card>
 
         {/* Add Review Button */}
-        <Link to="/submit" state={{ venueId: bar.id, venueName: bar.name, venueType: 'bar' }} className="flex justify-center">
-          <button className="pour-words-button">
+        <div className="flex justify-center">
+          <Link to="/submit" state={{ venueId: bar.id, venueName: bar.name, venueType: 'bar' }} className="pour-words-button" aria-label="Pour Words">
             Pour Words
             <div className="star-1">
               <svg
@@ -287,8 +289,8 @@ const BarDetail: React.FC = () => {
                 </g>
               </svg>
             </div>
-          </button>
-        </Link>
+          </Link>
+        </div>
 
         {/* Reviews */}
         <div>

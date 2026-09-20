@@ -21,7 +21,13 @@ const AsyncStateView: React.FC<AsyncStateViewProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="text-center py-12">
+      <div
+        className="text-center py-12"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+        aria-atomic="true"
+      >
         <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
         <p className="text-ash mt-2">{loadingText}</p>
       </div>
@@ -30,11 +36,16 @@ const AsyncStateView: React.FC<AsyncStateViewProps> = ({
 
   if (errorMessage) {
     return (
-      <div className="text-center py-12">
+      <div
+        className="text-center py-12"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
         <p className="text-blood mb-4">{errorMessage}</p>
         <button
           onClick={onRetry}
-          className="text-raven hover:text-ink transition-colors"
+          className="inline-flex min-h-11 items-center justify-center px-4 py-2 text-raven hover:text-ink transition-colors"
         >
           {retryLabel}
         </button>
@@ -44,7 +55,7 @@ const AsyncStateView: React.FC<AsyncStateViewProps> = ({
 
   if (empty) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-12" role="status" aria-live="polite" aria-atomic="true">
         <p className="text-ash">{emptyText}</p>
       </div>
     );

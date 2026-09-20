@@ -122,12 +122,13 @@ const Bars: React.FC = () => {
         {/* Filters Toggle */}
         <div className="flex items-center justify-between mb-4">
           <button
-            onPointerDown={(e) => { e.preventDefault(); setShowFilters(prev => !prev); }}
+            onClick={() => setShowFilters(prev => !prev)}
             aria-expanded={showFilters}
             aria-controls="filters-panel"
-            className={`group flex items-center transition-colors filters-touch ${showFilters ? 'text-raven' : 'text-ash filters-hover'}`}
+            aria-label="Toggle filters"
+            className={`group -m-2 p-3 tap-fast flex items-center transition-colors filters-touch ${showFilters ? 'text-raven' : 'text-ash filters-hover'}`}
           >
-            <span className="-mx-3 px-3 py-2 flex items-center">
+            <span className="flex items-center">
               <Filter size={16} />
               <span className="text-sm ml-2">Filters</span>
             </span>
@@ -193,7 +194,7 @@ const Bars: React.FC = () => {
                          <div className="flex justify-between items-center pt-2">
                <button
                  onClick={() => setShowFilters(false)}
-                 className="flex items-center space-x-2 text-raven hover:text-raven/80 transition-colors"
+                 className="min-h-11 px-2 flex items-center space-x-2 text-raven hover:text-raven/80 transition-colors tap-fast"
                  aria-label="Close filters"
                >
                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -203,7 +204,7 @@ const Bars: React.FC = () => {
                </button>
               <button
                 onClick={clearAllFilters}
-                className="px-3 py-1 text-xs bg-raven text-berlin-black rounded-md"
+                className="min-h-11 px-4 py-2 text-sm bg-raven text-berlin-black rounded-md tap-fast"
               >
                 clear all filters
               </button>
@@ -254,16 +255,17 @@ const Bars: React.FC = () => {
                         </div>
                       </div>
                       <div className="ml-3 flex flex-col items-end">
-                                                 <button
-                           onPointerDown={(e) => { e.preventDefault(); navigate(`/bars/${bar.id}`); }}
-                           className="px-4 py-2 text-sm bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap"
+                         <button
+                           onClick={() => navigate(`/bars/${bar.id}`)}
+                           className="min-h-11 px-4 py-2 text-sm bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap tap-fast"
                          >
                            Final Sip
                          </button>
                         <button
                           aria-label="Toggle favorite"
+                          aria-pressed={!!favoriteBarIds[bar.id]}
                           onClick={() => toggleFavorite(bar.id)}
-                          className="mt-2 p-1.5"
+                          className="mt-1 -m-2 p-3 tap-fast"
                         >
                           <svg
                             width="20"

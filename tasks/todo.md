@@ -494,3 +494,72 @@
   - `npm run typecheck` ✅
 - Residual risk:
   - `PageStateView` currently targets full-page state scenes; if future routes require inline/section-level state rendering, a compact layout variant may be needed.
+
+## Kernel Refactor Phase 5 (2026-09-20)
+
+### Plan
+- [x] Enhance accessibility semantics in `src/components/ui/AsyncStateView.tsx` and `src/components/ui/PageStateView.tsx` with state-appropriate ARIA roles/live regions and loading busy-state semantics.
+- [x] Improve touch target size for retry/primary actions in state components with minimal style-only changes (targeting ~44px tap area).
+- [x] Re-verify route integrations for `Bars`, `Clubs`, `BarDetail`, `ClubDetail`, and `SubmitReview` to ensure no copy/flow regressions.
+- [x] Add minimal component test coverage for async state accessibility semantics and retry click behavior.
+- [x] Run required checks:
+  - `npm run test -- src/routes/VenueLists.resilience.test.tsx src/routes/VenueDetails.retry.test.tsx src/routes/SubmitReview.auth-flow.test.tsx`
+  - `npm run lint`
+  - `npm run typecheck`
+
+### Review (Kernel Refactor Phase 5 - A11y Semantics & Touch Targets)
+- Updated `src/components/ui/AsyncStateView.tsx`:
+  - Loading state now uses `role="status"` + `aria-live="polite"` + `aria-busy="true"` + `aria-atomic="true"`.
+  - Error state now uses `role="alert"` + `aria-live="assertive"` + `aria-atomic="true"`.
+  - Empty state now uses `role="status"` + `aria-live="polite"` + `aria-atomic="true"`.
+  - Retry button tap area enlarged with `min-h-11` and horizontal padding while preserving visual style and behavior.
+- Updated `src/components/ui/PageStateView.tsx`:
+  - Loading state now uses `role="status"` + `aria-live="polite"` + `aria-busy="true"` + `aria-atomic="true"`.
+  - Message/action state now announces as `alert/assertive` when a `Try Again` action is present; otherwise remains `status/polite`.
+  - Primary/secondary action buttons now include `min-h-11` for mobile-friendly tap targets.
+- Added `src/components/ui/AsyncStateView.test.tsx`:
+  - Verifies loading semantics (`role=status`, `aria-live=polite`, `aria-busy=true`).
+  - Verifies error semantics (`role=alert`, `aria-live=assertive`) and retry click callback execution.
+- Route integration re-check:
+  - `src/routes/Bars.tsx`, `src/routes/Clubs.tsx`, `src/routes/BarDetail.tsx`, `src/routes/ClubDetail.tsx`, `src/routes/SubmitReview.tsx` required no business-flow or copy changes in this phase.
+
+### Residual Risk
+- `PageStateView` currently infers alert semantics from a `Try Again` label; if future locales or retry labels change, explicit semantic intent via prop would be more robust.
+
+### Review Addendum (Mobile UX Fixes)
+- Applied minimal mobile UX fixes in:
+  - `src/routes/Bars.tsx`
+  - `src/routes/Clubs.tsx`
+  - `src/routes/BarDetail.tsx`
+  - `src/routes/ClubDetail.tsx`
+  - `src/routes/SubmitReview.tsx`
+- Fix scope:
+  - Enlarged touch targets for filters toggle, favorite star buttons, clear-all-filters buttons, and detail-page back/favorite/pagination actions using minimal class-level changes (`-m-2`, `p-3`, `min-h-11`, `tap-fast` where appropriate).
+  - Added/confirmed `aria-label` on back/toggle/pagination controls touched by this change.
+  - Updated `Clubs` filters panel to match `Bars` mobile scroll behavior (`max-h-96 overflow-y-auto overscroll-contain`).
+  - Fixed `ClubDetail` Spill CTA contrast by switching arrow fills to `currentColor` and forcing CTA foreground to dark text color.
+- Verification commands for this patch:
+  - `npm run test -- src/routes/VenueLists.resilience.test.tsx src/routes/VenueDetails.retry.test.tsx src/routes/SubmitReview.auth-flow.test.tsx`
+  - `npm run lint`
+  - `npm run typecheck`
+
+### Review Addendum 2 (A11y Semantics Hardening)
+- Applied additional minimal accessibility fixes after mobile UX audit findings:
+  - `src/components/ui/Badge.tsx`
+  - `src/routes/Bars.tsx`
+  - `src/routes/Clubs.tsx`
+  - `src/routes/BarDetail.tsx`
+  - `src/routes/ClubDetail.tsx`
+  - `src/routes/SubmitReview.tsx`
+  - `src/index.css`
+- Fix scope:
+  - `Badge` now renders a semantic `button` when clickable, preserving existing styling while restoring keyboard/accessibility semantics.
+  - Added `aria-pressed` to favorite toggle buttons across list/detail routes.
+  - Replaced remaining pointer-only handlers with click handlers on major controls.
+  - Removed nested interactive anti-patterns (`Link` wrapping `button`) in detail CTA sections.
+  - Added visible focus indicators for `.cta`, `.pour-words-button`, and `.spill-button` interactive styles.
+  - Added `label`/`input` binding (`htmlFor`/`id`) for review sliders in `SubmitReview`.
+- Follow-up polish:
+  - Increased `Bars` filter panel close-button tap area to align with the same `min-h-11` mobile target used elsewhere.
+- Residual risk:
+  - Motion-heavy CTA styles (`pour-words`, `cta`, `spill`) do not yet include a `prefers-reduced-motion` fallback and may be refined in a dedicated accessibility pass.

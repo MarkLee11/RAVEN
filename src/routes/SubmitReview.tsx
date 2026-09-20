@@ -114,7 +114,8 @@ const SubmitReview: React.FC = () => {
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate(-1)}
-              className="text-ash hover:text-ink transition-colors"
+              aria-label="Go back"
+              className="text-ash hover:text-ink transition-colors -m-2 p-3 tap-fast"
             >
               <ArrowLeft size={20} />
             </button>
@@ -172,7 +173,8 @@ const SubmitReview: React.FC = () => {
         <div className="flex items-center space-x-3">
           <button
             onClick={() => navigate(-1)}
-            className="text-ash hover:text-ink transition-colors"
+            aria-label="Go back"
+            className="text-ash hover:text-ink transition-colors -m-2 p-3 tap-fast"
           >
             <ArrowLeft size={20} />
           </button>
@@ -199,6 +201,7 @@ const SubmitReview: React.FC = () => {
           
           <div className="space-y-6">
             {Object.entries(ratings).map(([aspect, value]) => {
+              const sliderId = `rating-${venueType}-${aspect}`;
               // Map rating aspects to appropriate labels based on venue type
               const getAspectLabel = (aspect: string, venueType: string) => {
                 if (venueType === 'bar') {
@@ -217,7 +220,7 @@ const SubmitReview: React.FC = () => {
               return (
                 <div key={aspect} className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <label className="text-sm font-medium text-ink">
+                    <label htmlFor={sliderId} className="text-sm font-medium text-ink">
                       {getAspectLabel(aspect, venueType)}
                     </label>
                   <span className="text-sm text-raven font-semibold">
@@ -227,6 +230,7 @@ const SubmitReview: React.FC = () => {
                 
                 <div className="relative">
                   <input
+                    id={sliderId}
                     type="range"
                     min="0"
                     max="100"

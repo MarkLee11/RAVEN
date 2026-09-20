@@ -139,12 +139,13 @@ const Clubs: React.FC = () => {
         {/* Filters Toggle */}
         <div className="flex items-center justify-between mb-4">
           <button
-            onPointerDown={(e) => { e.preventDefault(); setShowFilters(prev => !prev); }}
+            onClick={() => setShowFilters(prev => !prev)}
             aria-expanded={showFilters}
             aria-controls="filters-panel"
-            className={`group flex items-center transition-colors filters-touch ${showFilters ? 'text-raven' : 'text-ash filters-hover'}`}
+            aria-label="Toggle filters"
+            className={`group -m-2 p-3 tap-fast flex items-center transition-colors filters-touch ${showFilters ? 'text-raven' : 'text-ash filters-hover'}`}
           >
-            <span className="-mx-3 px-3 py-2 flex items-center">
+            <span className="flex items-center">
               <Filter size={16} />
               <span className="text-sm ml-2">Filters</span>
             </span>
@@ -163,7 +164,7 @@ const Clubs: React.FC = () => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="mb-6 space-y-4 overflow-hidden"
+            className="mb-6 max-h-96 overflow-y-auto overscroll-contain space-y-4"
           >
             {/* Districts */}
             <div>
@@ -224,7 +225,7 @@ const Clubs: React.FC = () => {
             <div className="flex justify-end pt-2">
               <button
                 onClick={clearAllFilters}
-                className="px-3 py-1 text-xs bg-raven text-berlin-black rounded-md"
+                className="min-h-11 px-4 py-2 text-sm bg-raven text-berlin-black rounded-md tap-fast"
               >
                 clear all filters
               </button>
@@ -276,15 +277,16 @@ const Clubs: React.FC = () => {
                       </div>
                       <div className="ml-3 flex flex-col items-end">
                         <button
-                          onPointerDown={(e) => { e.preventDefault(); navigate(`/clubs/${club.id}`); }}
-                          className="px-4 py-2 text-sm bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap"
+                          onClick={() => navigate(`/clubs/${club.id}`)}
+                          className="min-h-11 px-4 py-2 text-sm bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap tap-fast"
                         >
                           Last Words Echohall
                         </button>
                         <button
                           aria-label="Toggle favorite"
+                          aria-pressed={!!favoriteClubIds[club.id]}
                           onClick={() => toggleFavorite(club.id)}
-                          className="mt-2 p-1.5"
+                          className="mt-1 -m-2 p-3 tap-fast"
                         >
                           <svg
                             width="20"

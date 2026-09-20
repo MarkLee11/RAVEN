@@ -29,7 +29,26 @@ const Badge: React.FC<BadgeProps> = ({
     md: 'px-3 py-1.5 text-sm',
   };
 
-  const clickableClasses = onClick ? 'cursor-pointer hover:opacity-80 transition-opacity duration-0 tap-fast' : '';
+  const clickableClasses = onClick ? 'cursor-pointer hover:opacity-80 transition-opacity duration-0 tap-fast min-h-11' : '';
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        className={cn(
+          baseClasses,
+          variantClasses[variant],
+          sizeClasses[size],
+          clickableClasses,
+          className
+        )}
+        onClick={onClick}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  }
 
   return (
     <span
