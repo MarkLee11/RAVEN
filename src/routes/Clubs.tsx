@@ -8,6 +8,7 @@ import { favoritesService } from '../services/favoritesService';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
+import AsyncStateView from '../components/ui/AsyncStateView';
 
 // Construction filters
 const constructionFilters = [
@@ -234,24 +235,26 @@ const Clubs: React.FC = () => {
         {/* Clubs List */}
         <div className="space-y-4">
           {loading ? (
-            <div className="text-center py-12">
-              <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
-              <p className="text-ash mt-2">Loading clubs...</p>
-            </div>
+            <AsyncStateView
+              loading
+              loadingText="Loading clubs..."
+              emptyText="No clubs match your filters."
+              onRetry={loadClubs}
+            />
           ) : error ? (
-            <div className="text-center py-12">
-              <p className="text-blood mb-4">{error}</p>
-              <button 
-                onClick={loadClubs}
-                className="text-raven hover:text-ink transition-colors"
-              >
-                Try Again
-              </button>
-            </div>
+            <AsyncStateView
+              errorMessage={error}
+              loadingText="Loading clubs..."
+              emptyText="No clubs match your filters."
+              onRetry={loadClubs}
+            />
           ) : clubs.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-ash">No clubs match your filters.</p>
-            </div>
+            <AsyncStateView
+              empty
+              loadingText="Loading clubs..."
+              emptyText="No clubs match your filters."
+              onRetry={loadClubs}
+            />
           ) : (
             clubs.map((club, index) => (
               <motion.div

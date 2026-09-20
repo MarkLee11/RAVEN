@@ -8,6 +8,7 @@ import { favoritesService } from '../services/favoritesService';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
+import AsyncStateView from '../components/ui/AsyncStateView';
 
 const Bars: React.FC = () => {
   const navigate = useNavigate();
@@ -213,24 +214,26 @@ const Bars: React.FC = () => {
         {/* Bars List */}
         <div className="space-y-4">
           {loading ? (
-            <div className="text-center py-12">
-              <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
-              <p className="text-ash mt-2">Loading bars...</p>
-            </div>
+            <AsyncStateView
+              loading
+              loadingText="Loading bars..."
+              emptyText="No bars match your filters."
+              onRetry={loadBars}
+            />
           ) : error ? (
-            <div className="text-center py-12">
-              <p className="text-blood mb-4">{error}</p>
-              <button 
-                onClick={loadBars}
-                className="text-raven hover:text-ink transition-colors"
-              >
-                Try Again
-              </button>
-            </div>
+            <AsyncStateView
+              errorMessage={error}
+              loadingText="Loading bars..."
+              emptyText="No bars match your filters."
+              onRetry={loadBars}
+            />
           ) : bars.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-ash">No bars match your filters.</p>
-            </div>
+            <AsyncStateView
+              empty
+              loadingText="Loading bars..."
+              emptyText="No bars match your filters."
+              onRetry={loadBars}
+            />
           ) : (
             bars.map((bar, index) => (
               <motion.div

@@ -431,3 +431,35 @@
   - `npm run lint` ✅
   - `npm run test -- src/services/reviewsService.test.ts` ✅ (5/5 passed)
   - `npm run test:e2e` ✅ (6/6 passed, including new Echo pagination spec)
+
+## Kernel Refactor Phase 3 (2026-09-20)
+
+### Plan
+- [x] Add a lightweight shared async-state component at `src/components/ui/AsyncStateView.tsx` for loading/error/empty states.
+- [x] Integrate shared state component into `src/routes/Bars.tsx` without changing business behavior, text, or interactions.
+- [x] Integrate shared state component into `src/routes/Clubs.tsx` without changing business behavior, text, or interactions.
+- [x] Update related tests only if required and keep existing state-copy assertions stable.
+- [x] Run required checks:
+  - `npm run test -- src/routes/VenueLists.resilience.test.tsx`
+  - `npm run lint`
+  - `npm run typecheck`
+- [x] Append review summary and residual risk.
+
+### Review (Kernel Refactor Phase 3 - Async State Kernel Unification)
+- Added new reusable UI kernel component:
+  - `src/components/ui/AsyncStateView.tsx`
+  - Covers list-page `loading` (spinner + loading text), `error` (error text + `Try Again` retry), and `empty` (empty text) states.
+- Refactored routes with minimal behavior-preserving integration:
+  - `src/routes/Bars.tsx`: replaced duplicated loading/error/empty JSX with `AsyncStateView`.
+  - `src/routes/Clubs.tsx`: replaced duplicated loading/error/empty JSX with `AsyncStateView`.
+- Behavior and copy preserved exactly:
+  - `Loading bars...`, `Loading clubs...`
+  - `Try Again`
+  - `No bars match your filters.`, `No clubs match your filters.`
+  - No changes to filters, favorites, or navigation logic.
+- Verification commands:
+  - `npm run test -- src/routes/VenueLists.resilience.test.tsx` ✅ (1 file, 4 tests passed)
+  - `npm run lint` ✅
+  - `npm run typecheck` ✅
+- Residual risk:
+  - `AsyncStateView` currently targets list-style state containers used by `Bars`/`Clubs`; if future pages require layout variants (inline states, compact cards), an additional variant prop may be needed.
