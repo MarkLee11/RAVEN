@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, LogOut, Eye, EyeOff, MessageCircle } from 'lucide-react';
+import { Mail, Lock, LogOut, Eye, EyeOff, MessageCircle, AlertCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { clubsService } from '../services/clubsService';
-import { barsService } from '../services/barsService';
-import { reviewsService } from '../services/reviewsService';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import { useAuth } from '../contexts/useAuth';
+import { useProfileKernelData } from '../hooks/useProfileKernelData';
 
 interface AuthRedirectState {
   returnTo?: string;
@@ -20,47 +18,21 @@ interface AuthRedirectState {
   };
 }
 
-interface LatestReview {
-  id: string;
-  venueName: string;
-  venueType: 'club' | 'bar';
-  createdAt: Date;
-  reviewText: string;
-  ratings: {
-    music: number;
-    vibe: number;
-    crowd: number;
-    safety: number;
-  };
-}
-
-interface LatestClubReviewRow {
-  id: number | string;
-  created_at: string;
-  review_text: string | null;
-  music_rating: number | null;
-  crowd_rating: number | null;
-  vibe_rating: number | null;
-  safety_rating: number | null;
-  clubs?: { name?: string } | Array<{ name?: string }>;
-}
-
-interface LatestBarReviewRow {
-  id: number | string;
-  created_at: string;
-  review_text: string | null;
-  quality_rating: number | null;
-  price_rating: number | null;
-  vibe_rating: number | null;
-  friendliness_rating: number | null;
-  bars?: { name?: string } | Array<{ name?: string }>;
-}
-
 const isAuthRedirectState = (state: unknown): state is AuthRedirectState => {
   if (!state || typeof state !== 'object') return false;
   const candidate = state as Record<string, unknown>;
   if (candidate.returnTo !== undefined && typeof candidate.returnTo !== 'string') return false;
   return true;
+};
+
+const RATING_LABELS: Record<'club' | 'bar', readonly string[]> = {
+  club: ['Music', 'Crowd', 'Vibe', 'Safety'],
+  bar: ['Quality', 'Price', 'Vibe', 'Friendliness'],
+};
+
+const truncateReviewText = (text: string, maxLength: number = 140): string => {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength)}...`;
 };
 
 const Profile: React.FC = () => {
@@ -73,158 +45,9 @@ const Profile: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [clubsTotal, setClubsTotal] = useState<number>(0);
-  const [barsTotal, setBarsTotal] = useState<number>(0);
-  const [loadingCounts, setLoadingCounts] = useState(true);
-  const [userClubsVisited, setUserClubsVisited] = useState<number>(0);
-  const [userBarsVisited, setUserBarsVisited] = useState<number>(0);
-  const [loadingUserCounts, setLoadingUserCounts] = useState(true);
-  const [latestReview, setLatestReview] = useState<LatestReview | null>(null);
-  const [loadingReviews, setLoadingReviews] = useState(false);
-
-  useEffect(() => {
-    loadCounts();
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      loadUserCounts(user.id);
-      loadLatestReview(user.id);
-    } else {
-      setUserClubsVisited(0);
-      setUserBarsVisited(0);
-      setLoadingUserCounts(false);
-      setLatestReview(null);
-    }
-  }, [user]);
-
-  const loadCounts = async () => {
-    setLoadingCounts(true);
-    try {
-      const [clubsCount, barsCount] = await Promise.all([
-        clubsService.getTotalCount(),
-        barsService.getTotalCount()
-      ]);
-      setClubsTotal(clubsCount);
-      setBarsTotal(barsCount);
-    } catch (error) {
-      console.error('Failed to load venue counts:', error);
-    } finally {
-      setLoadingCounts(false);
-    }
-  };
-
-  const loadUserCounts = async (userId: string) => {
-    setLoadingUserCounts(true);
-    try {
-      const [userClubsCount, userBarsCount] = await Promise.all([
-        reviewsService.getUserClubsVisited(userId),
-        reviewsService.getUserBarsVisited(userId)
-      ]);
-      setUserClubsVisited(userClubsCount);
-      setUserBarsVisited(userBarsCount);
-    } catch (error) {
-      console.error('Failed to load user visit counts:', error);
-    } finally {
-      setLoadingUserCounts(false);
-    }
-  };
-
-  const loadLatestReview = async (userId: string) => {
-    setLoadingReviews(true);
-    try {
-      // Query both club_reviews and bar_reviews for the latest review
-      const { data: clubReviews, error: clubError } = await supabase
-        .from('club_reviews')
-        .select(`
-          id,
-          created_at,
-          review_text,
-          music_rating,
-          crowd_rating,
-          vibe_rating,
-          safety_rating,
-          clubs!inner(name)
-        `)
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .returns<LatestClubReviewRow[]>();
-
-      const { data: barReviews, error: barError } = await supabase
-        .from('bar_reviews')
-        .select(`
-          id,
-          created_at,
-          review_text,
-          quality_rating,
-          price_rating,
-          vibe_rating,
-          friendliness_rating,
-          bars!inner(name)
-        `)
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .returns<LatestBarReviewRow[]>();
-
-      if (clubError) console.error('Club reviews error:', clubError);
-      if (barError) console.error('Bar reviews error:', barError);
-
-      // Find the most recent review between clubs and bars
-      let mostRecentReview: LatestReview | null = null;
-      
-      if (clubReviews && clubReviews.length > 0) {
-        const row = clubReviews[0];
-        const clubName = Array.isArray(row.clubs)
-          ? row.clubs[0]?.name
-          : row.clubs?.name;
-        mostRecentReview = {
-          id: String(row.id),
-          venueName: clubName || 'Unknown Club',
-          venueType: 'club' as const,
-          createdAt: new Date(row.created_at),
-          reviewText: row.review_text || '',
-          ratings: {
-            music: Math.round((row.music_rating || 0) * 20),
-            crowd: Math.round((row.crowd_rating || 0) * 20),
-            vibe: Math.round((row.vibe_rating || 0) * 20),
-            safety: Math.round((row.safety_rating || 0) * 20),
-          }
-        };
-      }
-      
-      if (barReviews && barReviews.length > 0) {
-        const row = barReviews[0];
-        const barName = Array.isArray(row.bars)
-          ? row.bars[0]?.name
-          : row.bars?.name;
-        const barReview = {
-          id: String(row.id),
-          venueName: barName || 'Unknown Bar',
-          venueType: 'bar' as const,
-          createdAt: new Date(row.created_at),
-          reviewText: row.review_text || '',
-          ratings: {
-            music: Math.round(row.quality_rating || 0),
-            crowd: Math.round(row.price_rating || 0),
-            vibe: Math.round(row.vibe_rating || 0),
-            safety: Math.round(row.friendliness_rating || 0),
-          }
-        };
-        
-        if (!mostRecentReview || barReview.createdAt > mostRecentReview.createdAt) {
-          mostRecentReview = barReview;
-        }
-      }
-      
-      setLatestReview(mostRecentReview);
-    } catch (error) {
-      console.error('Failed to load latest review:', error);
-    } finally {
-      setLoadingReviews(false);
-    }
-  };
+  const profileKernel = useProfileKernelData({
+    userId: user?.id ?? null,
+  });
 
   const redirectAfterAuth = () => {
     const redirectState = isAuthRedirectState(location.state) ? location.state : null;
@@ -371,20 +194,40 @@ const Profile: React.FC = () => {
               <h3 className="font-space text-lg text-ink mb-1">Deathmarch</h3>
               <p className="text-xs text-ash">Every venue visited brings you closer to transcendence</p>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-raven mb-1">
-                  {loadingCounts || loadingUserCounts ? '...' : `${userClubsVisited}/${clubsTotal}`}
-                </div>
-                <div className="text-xs text-ash">Clubs</div>
+            {profileKernel.deathmarch.state === 'loading' ? (
+              <div className="text-center py-6">
+                <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-xs text-ash mt-2">Loading progress...</p>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-raven mb-1">
-                  {loadingCounts || loadingUserCounts ? '...' : `${userBarsVisited}/${barsTotal}`}
-                </div>
-                <div className="text-xs text-ash">Bars</div>
+            ) : profileKernel.deathmarch.state === 'error' ? (
+              <div className="text-center py-4">
+                <AlertCircle size={24} className="text-blood mx-auto mb-2" />
+                <p className="text-xs text-ash mb-3">{profileKernel.deathmarch.error ?? 'Failed to load data.'}</p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={profileKernel.deathmarch.retry}
+                  className="mx-auto text-xs"
+                >
+                  Retry
+                </Button>
               </div>
-            </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-raven mb-1">
+                    {`${profileKernel.deathmarch.data.userClubsVisited}/${profileKernel.deathmarch.data.clubsTotal}`}
+                  </div>
+                  <div className="text-xs text-ash">Clubs</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-raven mb-1">
+                    {`${profileKernel.deathmarch.data.userBarsVisited}/${profileKernel.deathmarch.data.barsTotal}`}
+                  </div>
+                  <div className="text-xs text-ash">Bars</div>
+                </div>
+              </div>
+            )}
           </Card>
 
           {/* Graveyard */}
@@ -508,13 +351,26 @@ const Profile: React.FC = () => {
             <div className="echo-card">
               <div className="echo-card-info">
                 <h3 className="title">Echo</h3>
-                
-                {loadingReviews ? (
+
+                {profileKernel.echo.state === 'loading' ? (
                   <div className="text-center py-8 flex-1 flex flex-col justify-center">
                     <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
-                    <p className="text-gray-300 mt-2 text-sm">Loading latest review...</p>
+                    <p className="text-gray-300 mt-2 text-sm">Loading review history...</p>
                   </div>
-                ) : !latestReview ? (
+                ) : profileKernel.echo.state === 'error' ? (
+                  <div className="text-center py-8 flex-1 flex flex-col justify-center">
+                    <AlertCircle size={32} className="text-blood mx-auto mb-3 opacity-80" />
+                    <p className="text-gray-200 text-sm mb-2">{profileKernel.echo.error ?? 'Failed to load Echo history.'}</p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={profileKernel.echo.retry}
+                      className="mx-auto"
+                    >
+                      Retry
+                    </Button>
+                  </div>
+                ) : profileKernel.echo.state === 'empty' ? (
                   <div className="text-center py-8 flex-1 flex flex-col justify-center">
                     <MessageCircle size={32} className="text-gray-400 mx-auto mb-3 opacity-50" />
                     <p className="text-gray-300 text-sm mb-2">No reviews yet</p>
@@ -522,120 +378,80 @@ const Profile: React.FC = () => {
                   </div>
                 ) : (
                   <div className="space-y-4 flex-1">
-                    {/* Venue Info */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <p className="font-medium text-white text-lg">{latestReview.venueName}</p>
-                        <div className="flex items-center space-x-2 mt-1">
-                          <span className="text-xs px-2 py-1 bg-gradient-to-r from-raven/20 to-raven/30 text-raven rounded">
-                            {latestReview.venueType.toUpperCase()}
-                          </span>
-                          <span className="text-xs text-gray-300">
-                            {latestReview.createdAt.toLocaleDateString()}
-                          </span>
-                        </div>
-                      </div>
-                      <MessageCircle size={16} className="text-gray-400 opacity-50" />
-                    </div>
-                    
-                    {/* Review Text */}
-                    {latestReview.reviewText && (
-                      <div className="border-t border-gray-600 pt-3">
-                        <p className="text-sm text-gray-200 leading-relaxed">
-                          {latestReview.reviewText.length > 100 
-                            ? `${latestReview.reviewText.substring(0, 100)}...` 
-                            : latestReview.reviewText
-                          }
-                        </p>
-                      </div>
-                    )}
-                    
-                    {/* Ratings with Progress Bars */}
-                    {latestReview.ratings && (
-                      <div className="border-t border-gray-600 pt-3">
-                        <div className="space-y-3">
-                          {latestReview.venueType === 'club' ? (
-                            <>
-                              <div>
-                                <div className="flex justify-between items-center mb-1">
-                                  <span className="text-xs text-gray-300">Music</span>
-                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.music.toFixed(0)}%</span>
-                                </div>
-                                <div className="progress-bar">
-                                  <div className="progress-fill" style={{width: `${latestReview.ratings.music}%`}}></div>
-                                </div>
+                    {profileKernel.echo.reviews.map((review) => {
+                      const values = [
+                        review.ratings.music,
+                        review.ratings.crowd,
+                        review.ratings.vibe,
+                        review.ratings.safety,
+                      ];
+                      return (
+                        <div key={review.id} className="border border-gray-700/70 rounded-lg p-3 bg-black/20 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <p className="font-medium text-white text-base">{review.venueName}</p>
+                              <div className="flex items-center space-x-2 mt-1">
+                                <span className="text-xs px-2 py-1 bg-gradient-to-r from-raven/20 to-raven/30 text-raven rounded">
+                                  {review.venueType.toUpperCase()}
+                                </span>
+                                <span className="text-xs text-gray-300">
+                                  {review.createdAt.toLocaleDateString()}
+                                </span>
                               </div>
-                              <div>
-                                <div className="flex justify-between items-center mb-1">
-                                  <span className="text-xs text-gray-300">Crowd</span>
-                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.crowd.toFixed(0)}%</span>
-                                </div>
-                                <div className="progress-bar">
-                                  <div className="progress-fill" style={{width: `${latestReview.ratings.crowd}%`}}></div>
-                                </div>
-                              </div>
-                              <div>
-                                <div className="flex justify-between items-center mb-1">
-                                  <span className="text-xs text-gray-300">Vibe</span>
-                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.vibe.toFixed(0)}%</span>
-                                </div>
-                                <div className="progress-bar">
-                                  <div className="progress-fill" style={{width: `${latestReview.ratings.vibe}%`}}></div>
-                                </div>
-                              </div>
-                              <div>
-                                <div className="flex justify-between items-center mb-1">
-                                  <span className="text-xs text-gray-300">Safety</span>
-                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.safety.toFixed(0)}%</span>
-                                </div>
-                                <div className="progress-bar">
-                                  <div className="progress-fill" style={{width: `${latestReview.ratings.safety}%`}}></div>
-                                </div>
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div>
-                                <div className="flex justify-between items-center mb-1">
-                                  <span className="text-xs text-gray-300">Quality</span>
-                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.music.toFixed(0)}%</span>
-                                </div>
-                                <div className="progress-bar">
-                                  <div className="progress-fill" style={{width: `${latestReview.ratings.music}%`}}></div>
-                                </div>
-                              </div>
-                              <div>
-                                <div className="flex justify-between items-center mb-1">
-                                  <span className="text-xs text-gray-300">Price</span>
-                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.crowd.toFixed(0)}%</span>
-                                </div>
-                                <div className="progress-bar">
-                                  <div className="progress-fill" style={{width: `${latestReview.ratings.crowd}%`}}></div>
-                                </div>
-                              </div>
-                              <div>
-                                <div className="flex justify-between items-center mb-1">
-                                  <span className="text-xs text-gray-300">Vibe</span>
-                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.vibe.toFixed(0)}%</span>
-                                </div>
-                                <div className="progress-bar">
-                                  <div className="progress-fill" style={{width: `${latestReview.ratings.vibe}%`}}></div>
-                                </div>
-                              </div>
-                              <div>
-                                <div className="flex justify-between items-center mb-1">
-                                  <span className="text-xs text-gray-300">Friendliness</span>
-                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.safety.toFixed(0)}%</span>
-                                </div>
-                                <div className="progress-bar">
-                                  <div className="progress-fill" style={{width: `${latestReview.ratings.safety}%`}}></div>
-                                </div>
-                              </div>
-                            </>
+                            </div>
+                            <MessageCircle size={16} className="text-gray-400 opacity-50" />
+                          </div>
+
+                          {review.comment && (
+                            <div className="border-t border-gray-600 pt-3">
+                              <p className="text-sm text-gray-200 leading-relaxed">
+                                {truncateReviewText(review.comment)}
+                              </p>
+                            </div>
                           )}
+
+                          <div className="border-t border-gray-600 pt-3">
+                            <div className="space-y-3">
+                              {RATING_LABELS[review.venueType].map((label, index) => (
+                                <div key={`${review.id}-${label}`}>
+                                  <div className="flex justify-between items-center mb-1">
+                                    <span className="text-xs text-gray-300">{label}</span>
+                                    <span className="text-xs text-raven font-medium">{values[index].toFixed(0)}%</span>
+                                  </div>
+                                  <div className="progress-bar">
+                                    <div className="progress-fill" style={{ width: `${values[index]}%` }}></div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      );
+                    })}
+
+                    <div className="border-t border-gray-600 pt-3 flex items-center justify-between">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={profileKernel.echo.goToPreviousPage}
+                        disabled={!profileKernel.echo.hasPreviousPage}
+                        className="text-xs"
+                      >
+                        Previous
+                      </Button>
+                      <p className="text-xs text-gray-300">
+                        Page {profileKernel.echo.page} / {Math.max(profileKernel.echo.totalPages, 1)} · {profileKernel.echo.totalCount} total
+                      </p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={profileKernel.echo.goToNextPage}
+                        disabled={!profileKernel.echo.hasNextPage}
+                        className="text-xs"
+                      >
+                        Next
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>

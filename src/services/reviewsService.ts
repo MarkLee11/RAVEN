@@ -1,6 +1,28 @@
 import { Review, ReviewInput } from '../contracts/types';
 import { supabase } from '../lib/supabase';
 
+export interface UserReviewHistoryItem {
+  id: string;
+  venueId: string;
+  venueName: string;
+  venueType: 'club' | 'bar';
+  ratings: {
+    music: number;
+    vibe: number;
+    crowd: number;
+    safety: number;
+  };
+  comment: string;
+  queueTime?: number;
+  createdAt: Date;
+}
+
+export interface UserReviewHistoryResult {
+  reviews: UserReviewHistoryItem[];
+  totalCount: number;
+  totalPages: number;
+}
+
 export const reviewsService = {
   async listReviews(venueId: string): Promise<Review[]> {
     try {
@@ -215,25 +237,7 @@ export const reviewsService = {
   },
 
   // Get user's review history with pagination
-  async getUserReviewHistory(userId: string, page: number = 1, limit: number = 3): Promise<{
-    reviews: Array<{
-      id: string;
-      venueId: string;
-      venueName: string;
-      venueType: 'club' | 'bar';
-      ratings: {
-        music: number;
-        vibe: number;
-        crowd: number;
-        safety: number;
-      };
-      comment: string;
-      queueTime?: number;
-      createdAt: Date;
-    }>;
-    totalCount: number;
-    totalPages: number;
-  }> {
+  async getUserReviewHistory(userId: string, page: number = 1, limit: number = 3): Promise<UserReviewHistoryResult> {
     try {
       const [clubReviewsResult, barReviewsResult] = await Promise.all([
         supabase
@@ -285,21 +289,7 @@ export const reviewsService = {
         ((barsLookupResult.data || []) as Array<{ id: number; name: string }>).map((bar) => [Number(bar.id), bar.name])
       );
 
-      const allReviews: Array<{
-        id: string;
-        venueId: string;
-        venueName: string;
-        venueType: 'club' | 'bar';
-        ratings: {
-          music: number;
-          vibe: number;
-          crowd: number;
-          safety: number;
-        };
-        comment: string;
-        queueTime?: number;
-        createdAt: Date;
-      }> = [];
+      const allReviews: UserReviewHistoryItem[] = [];
 
       // Add club reviews
       if (clubReviewsResult.data && clubReviewsResult.data.length > 0) {

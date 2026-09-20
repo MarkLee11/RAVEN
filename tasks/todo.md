@@ -355,3 +355,43 @@
   - `npm run lint` ✅
 - 残余风险：
   - 仍有部分 Supabase 数据 shape 通过 `as` 断言适配（主要在 venue service 层），若后端字段变更，可能出现静态类型无法及时暴露的问题。
+
+## Kernel Refactor Plan (2026-09-20)
+
+### Purpose Understanding (from code + docs)
+- RAVEN is a mobile-first Berlin nightlife product centered on:
+  - discovery (`Clubs`/`Bars`)
+  - participation (`SubmitReview`)
+  - identity-memory (`Profile` with `Deathmarch` + `Echo`)
+- `Echo` in `ID` is intended as a user's review memory stream (not just a single latest card).
+- Current gap: `Profile` shows only latest review while service layer already supports paginated review history.
+
+### Planned Re-architecture (minimal-risk incremental)
+- [x] Phase A: Define canonical product kernel in docs (`domain model + core flows + data contracts`)
+- [x] Phase B: Rebuild `Echo` into paginated history module backed by `reviewsService.getUserReviewHistory`
+- [x] Phase C: Add reusable profile data hooks (stats + echo history) to reduce route-level coupling
+- [x] Phase D: Normalize user-facing states (loading/error/empty) across Profile/Echo/Graveyard
+- [x] Phase E: Add focused tests for Echo history + profile data loading + auth fallback
+- [x] Phase F: DB/API sanity pass for review history query shape and indexes used by Echo
+- [x] Phase G: Regression + release rehearsal (`check-all`, `test:e2e`, audit) and docs sync
+
+### Deliverables
+- [x] `doc/内核模型与流程图.txt`
+- [x] Refactored `Profile` Echo module with history pagination and retry behavior
+- [x] New tests for Echo/profile kernel paths
+- [x] Updated runbook sections in existing release/uat docs
+
+### Review Section (to be filled after execution)
+- [x] Summary of changed files
+  - Added `src/hooks/useProfileKernelData.ts` to centralize profile kernel loading, paging, and retry behavior.
+  - Updated `src/routes/Profile.tsx` to consume kernel hook and render paginated Echo history stream.
+  - Enhanced `src/services/reviewsService.ts` with exported `UserReviewHistoryItem` / `UserReviewHistoryResult` types.
+- [x] Verification evidence
+  - `npm run typecheck` passed for current workspace state after this refactor.
+  - `npm run lint` passed for current workspace state after this refactor.
+  - `npm run test` passed with 23/23 tests.
+  - `npm run check-all` passed.
+  - `npm run test:e2e` passed with 5/5 tests.
+- [x] Residual risk list
+  - `getUserReviewHistory` currently merges two review tables in service layer and paginates in memory after merge; for very large per-user histories, a DB-level unified view/materialized strategy would scale better.
+  - E2E coverage still focuses on auth guards and browse smoke; dedicated UI-level Echo pagination E2E remains optional future enhancement.

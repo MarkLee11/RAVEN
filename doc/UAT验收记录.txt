@@ -16,6 +16,9 @@ RAVEN UAT 验收记录
   - Bar/Club 详情加载失败后可重试
 - 服务层容错：
   - bars/clubs/reviews/favorites 服务失败回退与数据映射
+- ID 内核能力：
+  - Echo 历史评论分页展示（Previous/Next）
+  - Deathmarch 与 Echo 的 loading/error/empty 状态一致化
 
 二、自动化验收结果
 -------------------------------------------------------------------------------
@@ -24,7 +27,7 @@ RAVEN UAT 验收记录
 2) `npm run test:e2e`
 
 结果：
-- Unit Tests: 21/21 通过
+- Unit Tests: 23/23 通过
 - E2E Tests: 5/5 通过
 - Lint / Typecheck / Build: 全通过
 
@@ -35,6 +38,8 @@ RAVEN UAT 验收记录
 - [PASS] 详情页失败后重试恢复
 - [PASS] 服务层映射、fallback、失败回退
 - [PASS] 路由级懒加载后功能回归稳定
+- [PASS] ID 页 Echo 历史流分页与重试行为
+- [PASS] ID 页 Deathmarch/Echo 状态机（loading/error/empty/ready）一致
 
 四、结论
 -------------------------------------------------------------------------------

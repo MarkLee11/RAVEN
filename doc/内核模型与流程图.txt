@@ -1,0 +1,96 @@
+===============================================================================
+RAVEN 内核模型与流程图
+===============================================================================
+日期：2026-09-20
+
+一、产品内核定义
+-------------------------------------------------------------------------------
+RAVEN 的核心不是“评分页面集合”，而是一个夜生活探索闭环：
+
+1) Discover（发现）
+- 用户按地区/标签筛选 Clubs 与 Bars，进入场馆详情。
+
+2) Experience（体验）
+- 用户提交结构化评价（四维评分 + 文本）。
+
+3) Memory（记忆）
+- 评价沉淀到 ID 页的 Echo 历史流，形成可回看的夜生活轨迹。
+
+4) Motivation（驱动）
+- Deathmarch 进度（已访问/总量）推动下一次探索与贡献。
+
+二、内核域模型
+-------------------------------------------------------------------------------
+核心实体：
+- User
+- Venue（club|bar）
+- Review（club_reviews|bar_reviews）
+- Favorite
+- Progress（由 review 聚合计算，不单独存储）
+- EchoHistory（由用户 Review 按时间排序得到）
+
+关键关系：
+- User 1:N Review
+- User N:N Venue（Favorites）
+- Venue 1:N Review
+- User 1:1 ProfileKernelView（运行时聚合视图）
+
+三、Profile Kernel 数据契约
+-------------------------------------------------------------------------------
+Deathmarch：
+- clubsTotal
+- barsTotal
+- userClubsVisited
+- userBarsVisited
+
+EchoHistory（分页）：
+- reviews: UserReviewHistoryItem[]
+  - id
+  - venueId
+  - venueName
+  - venueType
+  - ratings { music, crowd, vibe, safety }
+  - comment
+  - queueTime?
+  - createdAt
+- totalCount
+- totalPages
+- page
+
+状态模型：
+- loading / ready / empty / error
+
+四、核心流程图（文字版）
+-------------------------------------------------------------------------------
+Flow A（未登录触发受限功能）：
+Submit/Favorites -> RequireAuth -> /profile -> 登录成功 -> returnTo 原路径
+
+Flow B（提交评论后进入记忆）：
+Detail -> SubmitReview -> createReview/createBarReview -> 返回 Detail
+-> Profile Echo 通过 getUserReviewHistory 读取并展示
+
+Flow C（成长反馈）：
+登录 -> 聚合用户 club/bar 已访问数 -> Deathmarch 更新 -> 继续探索
+
+五、当前实现边界与后续优化
+-------------------------------------------------------------------------------
+已完成：
+- Echo 从“单条最新评论”改为“分页历史流”；
+- Profile 数据聚合迁移到 Hook（useProfileKernelData）；
+- loading/error/empty 状态统一。
+
+待持续优化：
+- 进一步将 review history 的分页下推到数据库层（跨表合并分页）；
+- 追加 Echo 历史相关 E2E 用例（登录后 Profile 历史流翻页）。
+
+六、数据库存取与性能基线
+-------------------------------------------------------------------------------
+Echo 查询关键条件：
+- user_id 过滤
+- created_at 倒序
+
+推荐索引（已按迁移加固）：
+- club_reviews(user_id, created_at DESC)
+- bar_reviews(user_id, created_at DESC)
+
+===============================================================================
