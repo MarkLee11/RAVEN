@@ -672,3 +672,18 @@
 - Fix: set `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` as repo secrets, fail production builds that still use placeholders, skip Netlify git builds without env, sync env to Netlify on release.
 - After production release `35533410849`, the same real-user signup path hits `gwwahjmagznitbsgtlid.supabase.co/auth/v1/signup` with CORS allowed. `Failed to fetch` is gone.
 - Follow-up real-user checks: login returns `Invalid login credentials` from the real auth API; `/clubs` shows RSO.Berlin; club detail `/clubs/50` loads reviews.
+
+## Ritual First Impression (2026-09-20)
+
+### Plan
+- [x] Rebuild CORE first impression: wordmark, hook, DESCEND/LINGER hierarchy, real bars count.
+- [x] Shorten list entry buttons to Last Words / Final Sip and tighten placement.
+- [x] Rewrite unauthenticated Profile copy and Enter/Enlist buttons.
+- [x] Run targeted tests plus mobile UX check; keep reduced-motion and existing flows intact.
+
+### Review
+- CORE `/` now opens with giant `RAVEN`, hook `Unfiltered Berlin. Lived, not listed.`, manifesto as atmosphere, then a louder `DESCEND` (clubs) and offset `LINGER` (bars). Bars count is live, not hardcoded.
+- Clubs/Bars cards: favorite star stays top-right; entry buttons sit below the title as `Last Words` / `Final Sip`.
+- Unauthenticated ID copy is ritual, not SaaS: `Leave a mark.` / `Enter` / `Enlist`.
+- Mobile UX review raised wordmark above WordStream (`z-40`) and added safe-area padding so LINGER clears the home indicator.
+- Checks: `npm run check-all` ✅ 30/30; `npm run test:e2e` after updating auth-guard heading assertion.

@@ -9,177 +9,140 @@ import { supabase } from '../lib/supabase';
 const Landing: React.FC = () => {
   const cardsRef = React.useRef<HTMLDivElement>(null);
   const [clubsCount, setClubsCount] = useState<number | null>(null);
+  const [barsCount, setBarsCount] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchClubsCount = async () => {
+    const fetchVenueCounts = async () => {
       try {
-        const { count, error } = await supabase
-          .from('clubs')
-          .select('id', { count: 'exact', head: true });
-        if (error) {
-          console.error('Error fetching clubs count:', error);
-          return;
+        const [clubsResult, barsResult] = await Promise.all([
+          supabase.from('clubs').select('id', { count: 'exact', head: true }),
+          supabase.from('bars').select('id', { count: 'exact', head: true }),
+        ]);
+        if (clubsResult.error) {
+          console.error('Error fetching clubs count:', clubsResult.error);
+        } else {
+          setClubsCount(clubsResult.count ?? 0);
         }
-        setClubsCount(count ?? 0);
+        if (barsResult.error) {
+          console.error('Error fetching bars count:', barsResult.error);
+        } else {
+          setBarsCount(barsResult.count ?? 0);
+        }
       } catch (err) {
-        console.error('Failed to fetch clubs count:', err);
+        console.error('Failed to fetch venue counts:', err);
       }
     };
-    fetchClubsCount();
+    fetchVenueCounts();
   }, []);
 
   return (
     <div className="fixed inset-0 bg-berlin-black overflow-hidden">
-    
-      {/* Animated scanline */}
       <div className="scanline absolute inset-0 pointer-events-none" />
-      
-      <div className="relative z-10 px-4 h-full flex flex-col pt-16 pb-20">
-        <div className="max-w-md mx-auto flex-1 flex flex-col -mt-80">
-          {/* Upper half - Centered RAVEN and Berlin Nightlife */}
-           {/* Upper half - Top bar image fill (RAVEN removed, keep only subtitle) */}
-        
-          <div className="flex-1 flex items-end justify-center pb-8">
-          </div>
 
-          {/* Word Stream Reviews */}
-          <WordStreamReviews
-            anchorBottomRef={cardsRef}
-            density={48}
-            laneHeight={96}
-            colorsBase="#8ACE00"
-            positiveRate={0.6}
-          />
+      <div className="relative z-10 px-4 h-full flex flex-col pt-16 pb-[calc(5rem+env(safe-area-inset-bottom))]">
+        <div className="landing-wordmark relative z-40 text-center pt-3 pb-2">
+          <h1 className="font-space text-6xl font-bold tracking-tight text-ink leading-none">
+            RAVE<span className="text-raven">N</span>
+          </h1>
+          <p className="mt-3 text-sm text-ash tracking-wide">
+            Unfiltered Berlin. Lived, not listed.
+          </p>
+        </div>
 
-          {/* Lower half - Three stacked cards centered with rotations */}
-          <div ref={cardsRef} className="flex-1 flex items-start justify-center pt-8">
-            <div className="relative flex flex-col items-center space-y-4 w-full max-w-sm">
-            {/* Vibe Teaser Card */}
+        <WordStreamReviews
+          anchorBottomRef={cardsRef}
+          density={48}
+          laneHeight={96}
+          colorsBase="#8ACE00"
+          positiveRate={0.6}
+        />
+
+        <div ref={cardsRef} className="relative z-20 mt-auto flex justify-center pb-2">
+          <div className="relative flex flex-col items-center w-full max-w-sm">
             <motion.div
-              initial={{ y: 30, opacity: 0 }}
+              initial={{ y: 24, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="transition-transform duration-300 w-[80vw] md:w-full perspective-1000 hover:scale-105"
+              transition={{ delay: 0.25 }}
+              className="w-[78vw] md:w-[88%] mb-5"
               style={{
-                transform: 'rotateZ(6deg) rotateX(5deg) rotateY(-2deg)',
-                boxShadow: '8px 12px 24px rgba(0, 0, 0, 0.4), 4px 6px 12px rgba(138, 206, 0, 0.1)'
+                transform: 'rotateZ(3deg)',
+                boxShadow: '6px 8px 18px rgba(0, 0, 0, 0.35), 2px 4px 10px rgba(138, 206, 0, 0.08)',
               }}
             >
-              <Card hover className="text-left relative overflow-hidden bg-black">
-                {/* Dynamic green smoke background */}
+              <Card hover className="text-left relative overflow-hidden bg-black py-1">
                 <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute w-32 h-32 bg-raven/5 rounded-full blur-xl animate-pulse" 
-                       style={{ 
-                         top: '20%', 
-                         left: '10%',
-                         animation: 'float1 8s ease-in-out infinite'
-                       }} />
-                  <div className="absolute w-24 h-24 bg-raven/8 rounded-full blur-lg" 
-                       style={{ 
-                         top: '60%', 
-                         right: '15%',
-                         animation: 'float2 6s ease-in-out infinite 2s'
-                       }} />
-                  <div className="absolute w-20 h-20 bg-raven/4 rounded-full blur-2xl" 
-                       style={{ 
-                         bottom: '30%', 
-                         left: '70%',
-                         animation: 'float3 10s ease-in-out infinite 4s'
-                       }} />
+                  <div
+                    className="absolute w-28 h-28 bg-raven/5 rounded-full blur-xl"
+                    style={{ top: '18%', left: '8%', animation: 'float1 8s ease-in-out infinite' }}
+                  />
+                  <div
+                    className="absolute w-20 h-20 bg-raven/8 rounded-full blur-lg"
+                    style={{ top: '58%', right: '12%', animation: 'float2 6s ease-in-out infinite 2s' }}
+                  />
                 </div>
-                
-                {/* Content with relative positioning to stay above smoke */}
+
                 <div className="relative z-10">
-                {/* Dynamic green smoke background */}
-                <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute w-32 h-32 bg-raven/5 rounded-full blur-xl animate-pulse" 
-                       style={{ 
-                         top: '20%', 
-                         left: '10%',
-                         animation: 'float1 8s ease-in-out infinite'
-                       }} />
-                  <div className="absolute w-24 h-24 bg-raven/8 rounded-full blur-lg" 
-                       style={{ 
-                         top: '60%', 
-                         right: '15%',
-                         animation: 'float2 6s ease-in-out infinite 2s'
-                       }} />
-                  <div className="absolute w-20 h-20 bg-raven/4 rounded-full blur-2xl" 
-                       style={{ 
-                         bottom: '30%', 
-                         left: '70%',
-                         animation: 'float3 10s ease-in-out infinite 4s'
-                       }} />
-                </div>
-                
-                {/* Content with relative positioning to stay above smoke */}
-                <div className="relative z-10">
-                <div className="flex items-center mb-12">
-                  <Zap size={16} className="text-raven animate-pulse" />
-                  <div className="flex-1 flex items-center justify-between px-2 text-xs text-raven font-medium">
-                    <span>NO CARE</span>
-                    <span>WE DARE</span>
-                    <span>LAID BARE</span>
+                  <div className="flex items-center mb-4">
+                    <Zap size={14} className="text-raven animate-pulse" />
+                    <div className="flex-1 flex items-center justify-between px-2 text-[11px] text-raven font-medium tracking-wide">
+                      <span>NO CARE</span>
+                      <span>WE DARE</span>
+                      <span>LAID BARE</span>
+                    </div>
+                    <Zap size={14} className="text-raven animate-pulse" />
                   </div>
-                  <Zap size={16} className="text-raven animate-pulse" />
-                </div>
-                
-                {/* Removed NO guest lists / NO secrets / NO mercy / NO boundaries line as requested */}
-                <div className="text-ash mb-12 font-playfair text-base font-semibold text-center">
-                  <div>Unfiltered truth of Berlin</div>
-                  <div>from those who lived it</div>
-                </div>
-                <div className="flex justify-between text-xs text-ash">
-                  <span><span className="text-raven">Clubs</span> tracked: <span className="text-raven">{clubsCount ?? '—'}</span></span>
-                  <span><span className="text-raven">Bars</span> tracked: <span className="text-raven">342</span></span>
-                </div>
-                </div>
+                  <div className="flex justify-between text-xs text-ash">
+                    <span>
+                      <span className="text-raven">Clubs</span> tracked:{' '}
+                      <span className="text-raven">{clubsCount ?? '—'}</span>
+                    </span>
+                    <span>
+                      <span className="text-raven">Bars</span> tracked:{' '}
+                      <span className="text-raven">{barsCount ?? '—'}</span>
+                    </span>
+                  </div>
                 </div>
               </Card>
             </motion.div>
 
-            {/* Explore Venues Button */}
-    {/* Explore Venues Button */}
-<motion.div
-  initial={{ y: 30, opacity: 0 }}
-  animate={{ y: 0, opacity: 1 }}
-  transition={{ delay: 0.6 }}
-  className="transition-transform duration-300 w-[80vw] md:w-full hover:scale-105"
-  style={{
-    transform: 'rotateZ(-20deg) rotateX(-8deg) rotateY(12deg)',
-    boxShadow: '-6px 10px 20px rgba(0, 0, 0, 0.5), -3px 5px 10px rgba(138, 206, 0, 0.15)'
-  }}
->
-  <Link to="/clubs">
-    <button 
-      className="glitch-btn w-full justify-center items-center font-sora font-semibold pt-4"
-      data-label="CLUBS"
-    >
-      CLUBS
-    </button>
-  </Link>
-</motion.div>
-            
-            {/* Find Tonight's Crew Button */}
-           <motion.div
-  initial={{ y: 30, opacity: 0 }}
-  animate={{ y: 0, opacity: 1 }}
-  transition={{ delay: 0.8 }}
-  className="transition-transform duration-300 w-[80vw] md:w-full hover:scale-105"
-  style={{
-    transform: 'rotateZ(15deg) rotateX(8deg) rotateY(-6deg)',
-    boxShadow: '10px 8px 28px rgba(0, 0, 0, 0.6), 5px 4px 14px rgba(138, 206, 0, 0.2)'
-  }}
->
-  <Link to="/bars">
-    <button className="bars-btn w-full justify-center items-center font-sora font-semibold">
-      <span>BARS</span>
-    </button>
-  </Link>
-</motion.div>
-          </div>
-          </div>
+            <motion.div
+              initial={{ y: 24, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="w-full mb-3"
+            >
+              <Link
+                to="/clubs"
+                className="glitch-btn landing-descend tap-fast"
+                data-label="DESCEND"
+                aria-label="Descend into clubs"
+              >
+                <span className="flex flex-col items-center leading-none">
+                  <span>DESCEND</span>
+                  <span className="landing-door-sub">clubs</span>
+                </span>
+              </Link>
+            </motion.div>
 
+            <motion.div
+              initial={{ y: 24, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.55 }}
+              className="w-[78%] self-end"
+              style={{ transform: 'rotateZ(6deg)' }}
+            >
+              <Link
+                to="/bars"
+                className="bars-btn landing-linger tap-fast"
+                aria-label="Linger in bars"
+              >
+                <span className="flex flex-col items-center leading-none">
+                  <span>LINGER</span>
+                  <span className="landing-door-sub">bars</span>
+                </span>
+              </Link>
+            </motion.div>
+          </div>
         </div>
       </div>
     </div>

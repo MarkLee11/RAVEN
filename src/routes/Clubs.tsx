@@ -266,27 +266,20 @@ const Clubs: React.FC = () => {
               >
                 <Card hover>
                     <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-2 mb-1">
                           <h3 className="font-space text-lg text-ink">{club.name}</h3>
                         </div>
-                        <div className="flex items-center space-x-1 text-sm text-ash mb-2">
+                        <div className="flex items-center space-x-1 text-sm text-ash">
                           <MapPin size={12} />
                           <span>{club.district}</span>
                         </div>
                       </div>
-                      <div className="ml-3 flex flex-col items-end">
-                        <button
-                          onClick={() => navigate(`/clubs/${club.id}`)}
-                          className="min-h-11 px-4 py-2 text-sm bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap tap-fast"
-                        >
-                          Last Words Echohall
-                        </button>
-                        <button
+                      <button
                           aria-label="Toggle favorite"
                           aria-pressed={!!favoriteClubIds[club.id]}
                           onClick={() => toggleFavorite(club.id)}
-                          className="mt-1 -m-2 p-3 tap-fast"
+                          className="-mt-1 -mr-1 p-3 tap-fast"
                         >
                           <svg
                             width="20"
@@ -301,7 +294,14 @@ const Clubs: React.FC = () => {
                             <polygon points="12 2 14.85 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 9.15 8.26 12 2" />
                           </svg>
                         </button>
-                      </div>
+                    </div>
+                    <div className="flex justify-end mb-3">
+                      <button
+                        onClick={() => navigate(`/clubs/${club.id}`)}
+                        className="min-h-11 px-4 py-2 text-sm bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors whitespace-nowrap tap-fast"
+                      >
+                        Last Words
+                      </button>
                     </div>
 
                     {/* Description */}

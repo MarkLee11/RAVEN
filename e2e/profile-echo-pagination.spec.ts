@@ -171,7 +171,7 @@ test.describe('Profile Echo pagination', () => {
 
     await page.locator('input[type="email"]').fill('echo.tester@example.com');
     await page.locator('input[type="password"]').fill('123456');
-    await page.locator('form').getByRole('button', { name: 'Login' }).click();
+    await page.locator('form').getByRole('button', { name: 'Enter' }).click();
 
     await expect(page.getByRole('heading', { name: 'Echo' })).toBeVisible();
     await expect(page.getByText('Page 1 / 2 · 4 total')).toBeVisible();

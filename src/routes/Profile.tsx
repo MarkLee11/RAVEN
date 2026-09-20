@@ -484,10 +484,10 @@ const Profile: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="font-space text-2xl text-ink mb-2">
-            Welcome to RAVE<span className="text-raven">N</span>
+            Leave a mark.
           </h1>
           <p className="text-sm text-ash">
-            Join Berlin's nightlife community
+            The city only remembers who spoke.
           </p>
         </div>
 
@@ -501,7 +501,7 @@ const Profile: React.FC = () => {
                 : 'border-ash/20 text-ash hover:text-ink'
             }`}
           >
-            Login
+            Enter
           </button>
           <button
             onClick={() => setActiveTab('signup')}
@@ -511,7 +511,7 @@ const Profile: React.FC = () => {
                 : 'border-ash/20 text-ash hover:text-ink'
             }`}
           >
-            Sign Up
+            Enlist
           </button>
         </div>
 
@@ -577,7 +577,7 @@ const Profile: React.FC = () => {
                 isLoading={loading}
                 disabled={!email || !password}
               >
-                {activeTab === 'login' ? 'Login' : 'Sign Up'}
+                {activeTab === 'login' ? 'Enter' : 'Enlist'}
               </Button>
             </div>
           </form>
@@ -587,22 +587,22 @@ const Profile: React.FC = () => {
             <p className="text-xs text-ash text-center">
               {activeTab === 'login' ? (
                 <>
-                  Don't have an account?{' '}
+                  New to the night?{' '}
                   <button
                     onClick={() => setActiveTab('signup')}
                     className="text-raven hover:underline"
                   >
-                    Sign up
+                    Enlist
                   </button>
                 </>
               ) : (
                 <>
-                  Already have an account?{' '}
+                  Already marked?{' '}
                   <button
                     onClick={() => setActiveTab('login')}
                     className="text-raven hover:underline"
                   >
-                    Login
+                    Enter
                   </button>
                 </>
               )}
@@ -610,11 +610,9 @@ const Profile: React.FC = () => {
           </div>
         </Card>
 
-        {/* Privacy Notice */}
         <div className="mt-6 text-center">
           <p className="text-xs text-ash">
-            By signing up, you agree to our privacy policy.<br />
-            Your data is secure and never shared.
+            Speak once. The city keeps the echo.
           </p>
         </div>
       </div>

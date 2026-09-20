@@ -4,7 +4,7 @@ test.describe('Auth guard protected routes', () => {
   test('redirects /submit to /profile when unauthenticated', async ({ page }) => {
     await page.goto('/submit');
     await expect(page).toHaveURL(/\/profile$/);
-    await expect(page.getByRole('heading', { name: /welcome to raven/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /leave a mark/i })).toBeVisible();
   });
 
   test('redirects /favorites/bars to /profile when unauthenticated', async ({ page }) => {

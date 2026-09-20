@@ -110,7 +110,7 @@ describe('Profile login redirect flow', () => {
     });
     const submitButton = within(screen.getByPlaceholderText('••••••••').closest('form') as HTMLFormElement).getByRole(
       'button',
-      { name: 'Login' }
+      { name: 'Enter' }
     );
     fireEvent.click(submitButton);
 
@@ -139,7 +139,7 @@ describe('Profile login redirect flow', () => {
       </MemoryRouter>
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Sign Up' }));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Enlist' })[0]);
 
     const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement;
     const passwordInput = screen.getByPlaceholderText('••••••••') as HTMLInputElement;
@@ -154,7 +154,7 @@ describe('Profile login redirect flow', () => {
     expect(emailInput.checkValidity()).toBe(true);
 
     const submitButton = within(passwordInput.closest('form') as HTMLFormElement).getByRole('button', {
-      name: 'Sign Up',
+      name: 'Enlist',
     });
     fireEvent.click(submitButton);
 
