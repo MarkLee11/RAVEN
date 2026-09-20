@@ -655,3 +655,19 @@
   - pushed commit `0a2a1ac` to `main`
   - GitHub Actions `Release` run `35532546947` ✅
   - online verification at `https://raven-berlin1.netlify.app/profile`: email input has no `pattern`; uppercase email validity check passed.
+
+## Signup Failed to Fetch — Real User Simulation (2026-09-20)
+
+### Plan
+- [x] Reproduce signup as a real user on production (`/profile` Sign Up, fill email/password, submit).
+- [x] Capture the visible error plus actual network requests (URL, status, CORS, body).
+- [x] Also smoke clubs/bars list and login on the same origin to see if all Supabase calls fail.
+- [x] Find root cause (wrong baked-in URL, CORS, paused project, auth settings) and fix it.
+- [ ] Re-test the same real-user signup path until it no longer shows Failed to fetch.
+
+### Review
+- Real-user probe on `https://raven-berlin1.netlify.app/profile` reproduced `Failed to fetch` on the Sign Up button.
+- Browser network log showed signup POST to `https://placeholder.supabase.co/auth/v1/signup` with `net::ERR_NAME_NOT_RESOLVED`.
+- Console warning: production bundle was built without `VITE_SUPABASE_*`.
+- GitHub repo secrets originally had Netlify tokens only; `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` were missing.
+- Real Supabase API works: clubs 200, signup 200 for a normal email domain. `@example.com` is rejected by Supabase as invalid.

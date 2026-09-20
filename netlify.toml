@@ -2,6 +2,8 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  # Skip git auto-builds when Supabase env is missing so they cannot overwrite a working deploy.
+  ignore = "node -e \"process.exit(!process.env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL.includes('placeholder') ? 0 : 1)\""
 
 [dev]
   command = "npm run dev"  # 启动 Vite 开发服务器

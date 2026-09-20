@@ -12,8 +12,35 @@ on:
           - production
 
 jobs:
-  quality-gate:
+  preflight-secrets:
     runs-on: ubuntu-latest
+    steps:
+      - name: Validate required release secrets
+        shell: bash
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID_STAGING: ${{ secrets.NETLIFY_SITE_ID_STAGING }}
+          NETLIFY_SITE_ID_PRODUCTION: ${{ secrets.NETLIFY_SITE_ID_PRODUCTION }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          missing=0
+          if [ -z "$NETLIFY_AUTH_TOKEN" ]; then echo "Missing secret: NETLIFY_AUTH_TOKEN"; missing=1; fi
+          if [ -z "$NETLIFY_SITE_ID_STAGING" ]; then echo "Missing secret: NETLIFY_SITE_ID_STAGING"; missing=1; fi
+          if [ -z "$NETLIFY_SITE_ID_PRODUCTION" ]; then echo "Missing secret: NETLIFY_SITE_ID_PRODUCTION"; missing=1; fi
+          if [ -z "$VITE_SUPABASE_URL" ]; then echo "Missing secret: VITE_SUPABASE_URL"; missing=1; fi
+          if [ -z "$VITE_SUPABASE_ANON_KEY" ]; then echo "Missing secret: VITE_SUPABASE_ANON_KEY"; missing=1; fi
+          if [ "$missing" -ne 0 ]; then
+            echo "Release preflight failed due to missing secrets."
+            exit 1
+          fi
+
+  quality-gate:
+    needs: preflight-secrets
+    runs-on: ubuntu-latest
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -26,29 +53,9 @@ jobs:
       - run: npm run test:e2e
       - run: npm audit --audit-level=high
 
-  preflight-secrets:
-    needs: quality-gate
-    runs-on: ubuntu-latest
-    steps:
-      - name: Validate required release secrets
-        shell: bash
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID_STAGING: ${{ secrets.NETLIFY_SITE_ID_STAGING }}
-          NETLIFY_SITE_ID_PRODUCTION: ${{ secrets.NETLIFY_SITE_ID_PRODUCTION }}
-        run: |
-          missing=0
-          if [ -z "$NETLIFY_AUTH_TOKEN" ]; then echo "Missing secret: NETLIFY_AUTH_TOKEN"; missing=1; fi
-          if [ -z "$NETLIFY_SITE_ID_STAGING" ]; then echo "Missing secret: NETLIFY_SITE_ID_STAGING"; missing=1; fi
-          if [ -z "$NETLIFY_SITE_ID_PRODUCTION" ]; then echo "Missing secret: NETLIFY_SITE_ID_PRODUCTION"; missing=1; fi
-          if [ "$missing" -ne 0 ]; then
-            echo "Release preflight failed due to missing secrets."
-            exit 1
-          fi
-
   deploy-staging:
     if: ${{ github.event.inputs.target == 'staging' }}
-    needs: preflight-secrets
+    needs: quality-gate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -58,6 +65,18 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      - name: Sync staging frontend env to Netlify
+        run: |
+          npx netlify env:set VITE_SUPABASE_URL "$VITE_SUPABASE_URL" --site "$NETLIFY_SITE_ID_STAGING" --auth "$NETLIFY_AUTH_TOKEN" --context deploy-preview
+          npx netlify env:set VITE_SUPABASE_ANON_KEY "$VITE_SUPABASE_ANON_KEY" --site "$NETLIFY_SITE_ID_STAGING" --auth "$NETLIFY_AUTH_TOKEN" --context deploy-preview
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID_STAGING: ${{ secrets.NETLIFY_SITE_ID_STAGING }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
       - name: Deploy to Netlify Staging
         run: npx netlify deploy --dir=dist --site="$NETLIFY_SITE_ID_STAGING" --auth="$NETLIFY_AUTH_TOKEN"
         env:
@@ -66,7 +85,7 @@ jobs:
 
   deploy-production:
     if: ${{ github.event.inputs.target == 'production' }}
-    needs: preflight-secrets
+    needs: quality-gate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -76,6 +95,18 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      - name: Sync production frontend env to Netlify
+        run: |
+          npx netlify env:set VITE_SUPABASE_URL "$VITE_SUPABASE_URL" --site "$NETLIFY_SITE_ID_PRODUCTION" --auth "$NETLIFY_AUTH_TOKEN" --context production
+          npx netlify env:set VITE_SUPABASE_ANON_KEY "$VITE_SUPABASE_ANON_KEY" --site "$NETLIFY_SITE_ID_PRODUCTION" --auth "$NETLIFY_AUTH_TOKEN" --context production
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID_PRODUCTION: ${{ secrets.NETLIFY_SITE_ID_PRODUCTION }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
       - name: Deploy to Netlify Production
         run: npx netlify deploy --prod --dir=dist --site="$NETLIFY_SITE_ID_PRODUCTION" --auth="$NETLIFY_AUTH_TOKEN"
         env:
