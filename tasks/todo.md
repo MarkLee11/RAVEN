@@ -628,3 +628,23 @@
 - Public production URL confirmed reachable: `https://raven-berlin1.netlify.app`.
 - Unique deploy URL recorded: `https://6ab032637a3d3dc48cbf8210--raven-berlin1.netlify.app`.
 - Mobile emulation smoke (iPhone 13 viewport) passed for `/`, `/clubs`, `/bars`, `/submit` (auth guard redirect).
+
+## Profile Signup Email Format Fix (2026-09-20)
+
+### Plan
+- [x] Inspect `src/routes/Profile.tsx` email input validation and identify root cause.
+- [x] Remove strict email `pattern` while keeping `type="email"` and existing interactions unchanged.
+- [x] Add signup regression test in `src/routes/Profile.auth-redirect.test.tsx` using uppercase email.
+- [x] Run required checks:
+  - `npm run test -- src/routes/Profile.auth-redirect.test.tsx`
+  - `npm run lint`
+  - `npm run typecheck`
+
+### Review
+- Root cause: email input had a lowercase-only regex `pattern`, which rejects valid emails containing uppercase characters (for example, `User+test@Example.com`) before submit.
+- Minimal fix: removed only the `pattern` attribute in `src/routes/Profile.tsx`; retained `type="email"` and all existing auth form behaviors.
+- Regression coverage: added test `submits signup with uppercase email without pattern blocking` in `src/routes/Profile.auth-redirect.test.tsx`, asserting `supabase.auth.signUp` is called with `User+test@Example.com`.
+- Command results:
+  - `npm run test -- src/routes/Profile.auth-redirect.test.tsx` ✅ (1 file, 2 tests passed)
+  - `npm run lint` ✅
+  - `npm run typecheck` ✅

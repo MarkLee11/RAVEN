@@ -45,6 +45,7 @@ vi.mock('../services/reviewsService', () => ({
 
 const useAuthMock = vi.mocked(useAuth);
 const signInWithPasswordMock = vi.mocked(supabase.auth.signInWithPassword);
+const signUpMock = vi.mocked(supabase.auth.signUp);
 const getClubsCountMock = vi.mocked(clubsService.getTotalCount);
 const getBarsCountMock = vi.mocked(barsService.getTotalCount);
 const getUserClubsVisitedMock = vi.mocked(reviewsService.getUserClubsVisited);
@@ -122,5 +123,46 @@ describe('Profile login redirect flow', () => {
       password: 'pass1234',
     });
     expect(screen.getByTestId('target-state')).toHaveTextContent('"source":"guard"');
+  });
+
+  it('submits signup with uppercase email without pattern blocking', async () => {
+    signUpMock.mockResolvedValue({
+      data: { session: null, user: { id: 'user-2' } },
+      error: null,
+    } as never);
+
+    render(
+      <MemoryRouter initialEntries={['/profile']}>
+        <Routes>
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sign Up' }));
+
+    const emailInput = screen.getByPlaceholderText('your@email.com') as HTMLInputElement;
+    const passwordInput = screen.getByPlaceholderText('••••••••') as HTMLInputElement;
+
+    fireEvent.change(emailInput, {
+      target: { value: 'User+test@Example.com' },
+    });
+    fireEvent.change(passwordInput, {
+      target: { value: 'pass1234' },
+    });
+
+    expect(emailInput.checkValidity()).toBe(true);
+
+    const submitButton = within(passwordInput.closest('form') as HTMLFormElement).getByRole('button', {
+      name: 'Sign Up',
+    });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(signUpMock).toHaveBeenCalledWith({
+        email: 'User+test@Example.com',
+        password: 'pass1234',
+      });
+    });
   });
 });
