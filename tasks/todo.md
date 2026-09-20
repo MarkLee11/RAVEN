@@ -648,3 +648,10 @@
   - `npm run test -- src/routes/Profile.auth-redirect.test.tsx` ✅ (1 file, 2 tests passed)
   - `npm run lint` ✅
   - `npm run typecheck` ✅
+  - `npm run check-all` ✅ (lint/typecheck/build/unit 全通过，30/30 tests)
+  - `npm run test:e2e` ✅ (6/6)
+  - `npm run release:rehearsal` ✅（含 `npm audit` 0 vulnerabilities）
+- Production release:
+  - pushed commit `0a2a1ac` to `main`
+  - GitHub Actions `Release` run `35532546947` ✅
+  - online verification at `https://raven-berlin1.netlify.app/profile`: email input has no `pattern`; uppercase email validity check passed.

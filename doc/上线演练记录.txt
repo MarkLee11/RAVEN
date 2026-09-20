@@ -47,4 +47,16 @@ Step 4: 回滚检查点固化
 - 手机端冒烟（iPhone 13 视口）：
   - `/`、`/clubs`、`/bars`、`/submit`（跳转 `/profile`）全部通过
 
+五、邮箱注册格式修复发布记录（2026-09-20）
+-------------------------------------------------------------------------------
+- 触发原因：用户反馈注册邮箱始终提示 “match the requested format”。
+- 根因：`/profile` 注册邮箱输入框存在仅小写可过的 `pattern`，拦截合法邮箱（例如含大写）。
+- 修复提交：`0a2a1ac`
+- 发布方式：GitHub Actions `Release` workflow_dispatch（target=production）
+- Run ID：`35532546947`
+- 结果：PASS（quality-gate / preflight-secrets / deploy-production 全成功）
+- 线上核验：
+  - `https://raven-berlin1.netlify.app/profile` 邮箱输入框 `pattern = null`
+  - `User+test@Example.com` 的 `checkValidity() = true`
+
 ===============================================================================
