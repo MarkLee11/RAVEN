@@ -8,11 +8,11 @@ import { reviewsService } from '../services/reviewsService';
 import { vibeService } from '../services/vibeService';
 import { favoritesService } from '../services/favoritesService';
 import { formatTimeAgo } from '../lib/utils';
-import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
 import VibeCard from '../components/VibeCard';
+import PageStateView from '../components/ui/PageStateView';
 
 const ClubDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -128,28 +128,27 @@ const ClubDetail: React.FC = () => {
   }, [reviews, club?.ratings]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-berlin-black flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <PageStateView loading />;
   }
 
   if (!club) {
     return (
-      <div className="min-h-screen bg-berlin-black flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-ash mb-4">{error || 'Club not found'}</p>
-          <div className="flex justify-center gap-3">
-            {id && (
-              <Button onClick={() => loadClubData(id)} variant="ghost">
-                Try Again
-              </Button>
-            )}
-            <Button onClick={() => navigate('/clubs')}>Back to Clubs</Button>
-          </div>
-        </div>
-      </div>
+      <PageStateView
+        message={error || 'Club not found'}
+        primaryAction={
+          id
+            ? {
+                label: 'Try Again',
+                onClick: () => loadClubData(id),
+                variant: 'ghost',
+              }
+            : undefined
+        }
+        secondaryAction={{
+          label: 'Back to Clubs',
+          onClick: () => navigate('/clubs'),
+        }}
+      />
     );
   }
 

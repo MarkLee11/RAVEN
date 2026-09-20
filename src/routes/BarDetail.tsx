@@ -7,10 +7,10 @@ import { barsService } from '../services/barsService';
 import { reviewsService } from '../services/reviewsService';
 import { favoritesService } from '../services/favoritesService';
 import { formatTimeAgo } from '../lib/utils';
-import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
+import PageStateView from '../components/ui/PageStateView';
 
 const BarDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -54,11 +54,7 @@ const BarDetail: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-berlin-black flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <PageStateView loading />;
   }
 
   // Calculate average ratings from reviews, fallback to default bar ratings
@@ -86,19 +82,22 @@ const BarDetail: React.FC = () => {
 
   if (!bar) {
     return (
-      <div className="min-h-screen bg-berlin-black flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-ash mb-4">{error || 'Bar not found'}</p>
-          <div className="flex justify-center gap-3">
-            {id && (
-              <Button onClick={() => loadBarData(id)} variant="ghost">
-                Try Again
-              </Button>
-            )}
-            <Button onClick={() => navigate('/bars')}>Back to Bars</Button>
-          </div>
-        </div>
-      </div>
+      <PageStateView
+        message={error || 'Bar not found'}
+        primaryAction={
+          id
+            ? {
+                label: 'Try Again',
+                onClick: () => loadBarData(id),
+                variant: 'ghost',
+              }
+            : undefined
+        }
+        secondaryAction={{
+          label: 'Back to Bars',
+          onClick: () => navigate('/bars'),
+        }}
+      />
     );
   }
 

@@ -463,3 +463,34 @@
   - `npm run typecheck` ✅
 - Residual risk:
   - `AsyncStateView` currently targets list-style state containers used by `Bars`/`Clubs`; if future pages require layout variants (inline states, compact cards), an additional variant prop may be needed.
+
+## Kernel Refactor Phase 4 (2026-09-20)
+
+### Plan
+- [x] Add a lightweight shared page-state component at `src/components/ui/PageStateView.tsx` for fullscreen loading and message+actions states.
+- [x] Integrate shared state kernel into `src/routes/BarDetail.tsx` and `src/routes/ClubDetail.tsx` while preserving `Try Again` and back-button recovery behavior/copy.
+- [x] Integrate shared state kernel into `src/routes/SubmitReview.tsx` for `checkingAuth` and `No venue selected` states without changing semantics/copy.
+- [x] Add `src/routes/SubmitReview.auth-flow.test.tsx` covering unauthenticated redirect payload and no-venue fallback navigation states.
+- [x] Re-run required checks:
+  - `npm run test -- src/routes/VenueDetails.retry.test.tsx src/routes/SubmitReview.auth-flow.test.tsx`
+  - `npm run lint`
+  - `npm run typecheck`
+- [x] Append review summary and residual risks for this phase.
+
+### Review (Kernel Refactor Phase 4 - Detail/Submit State Kernel Unification)
+- Added new reusable page-state component:
+  - `src/components/ui/PageStateView.tsx`
+  - Supports fullscreen loading spinner and message state with optional primary/secondary actions.
+- Refactored routes with minimal behavior-preserving integration:
+  - `src/routes/BarDetail.tsx`: replaced duplicated loading/not-found/error state JSX with `PageStateView`, preserving `Try Again` + `Back to Bars`.
+  - `src/routes/ClubDetail.tsx`: replaced duplicated loading/not-found/error state JSX with `PageStateView`, preserving `Try Again` + `Back to Clubs`.
+  - `src/routes/SubmitReview.tsx`: replaced `checkingAuth` and `No venue selected` state JSX with `PageStateView`; login-required card flow kept unchanged.
+- Added focused auth/guard regression tests:
+  - `src/routes/SubmitReview.auth-flow.test.tsx`
+  - Covers unauthenticated `Login Required` path (`/profile` redirect with `returnTo` + `submitState`) and no-venue fallback (`No venue selected` + back to list).
+- Verification commands:
+  - `npm run test -- src/routes/VenueDetails.retry.test.tsx src/routes/SubmitReview.auth-flow.test.tsx` ✅ (2 files, 4 tests passed)
+  - `npm run lint` ✅
+  - `npm run typecheck` ✅
+- Residual risk:
+  - `PageStateView` currently targets full-page state scenes; if future routes require inline/section-level state rendering, a compact layout variant may be needed.

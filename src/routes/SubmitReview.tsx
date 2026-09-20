@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/useAuth';
 import { reviewsService } from '../services/reviewsService';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
+import PageStateView from '../components/ui/PageStateView';
 
 const SubmitReview: React.FC = () => {
   const location = useLocation();
@@ -85,23 +86,18 @@ const SubmitReview: React.FC = () => {
   };
 
   if (checkingAuth) {
-    return (
-      <div className="min-h-screen bg-berlin-black flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <PageStateView loading />;
   }
 
   if (!venueId) {
     return (
-      <div className="min-h-screen bg-berlin-black flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-ash mb-4">No venue selected</p>
-          <Button onClick={() => navigate(venueType === 'bar' ? '/bars' : '/clubs')}>
-            Back to {venueType === 'bar' ? 'Bars' : 'Clubs'}
-          </Button>
-        </div>
-      </div>
+      <PageStateView
+        message="No venue selected"
+        primaryAction={{
+          label: `Back to ${venueType === 'bar' ? 'Bars' : 'Clubs'}`,
+          onClick: () => navigate(venueType === 'bar' ? '/bars' : '/clubs'),
+        }}
+      />
     );
   }
 
