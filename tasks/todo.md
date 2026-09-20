@@ -563,3 +563,14 @@
   - Increased `Bars` filter panel close-button tap area to align with the same `min-h-11` mobile target used elsewhere.
 - Residual risk:
   - Motion-heavy CTA styles (`pour-words`, `cta`, `spill`) do not yet include a `prefers-reduced-motion` fallback and may be refined in a dedicated accessibility pass.
+
+### Review Addendum 3 (Reduced Motion Accessibility)
+- Implemented `prefers-reduced-motion` fallback in `src/index.css` for motion-heavy CTA/button styles:
+  - `.pour-words-button` (+ star fragments)
+  - `.cta` (+ arrow fragments)
+  - `.spill-button` (+ icon)
+  - `.button` rotating-text variant
+- Behavior under reduced-motion preference:
+  - disables animations
+  - sets transition duration to 0ms
+  - suppresses hover transform jumps

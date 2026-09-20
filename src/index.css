@@ -768,3 +768,34 @@ p {
   transform: rotate(250deg);
   transition-duration: 1.5s;
 }
+
+/* Accessibility: reduce heavy motion for users who prefer less animation */
+@media (prefers-reduced-motion: reduce) {
+  .pour-words-button,
+  .pour-words-button .star-1,
+  .pour-words-button .star-2,
+  .pour-words-button .star-3,
+  .pour-words-button .star-4,
+  .pour-words-button .star-5,
+  .pour-words-button .star-6,
+  .cta,
+  .cta .one,
+  .cta .two,
+  .cta .three,
+  .spill-button,
+  .spill-svgIcon,
+  .button,
+  .button__text,
+  .button__icon,
+  .button__icon--copy {
+    animation: none !important;
+    transition-duration: 0ms !important;
+  }
+
+  .pour-words-button:hover,
+  .cta:hover,
+  .spill-button:hover,
+  .button:hover {
+    transform: none !important;
+  }
+}
