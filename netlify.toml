@@ -1,7 +1,6 @@
 # === File: netlify.toml (project root) ===
 [build]
   command = "npm run build"
-  functions = "netlify/functions"
   publish = "dist"
 
 [dev]
