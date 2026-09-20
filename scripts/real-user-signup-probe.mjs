@@ -62,7 +62,7 @@ page.on('pageerror', (err) => {
   consoleLogs.push({ type: 'pageerror', text: err.message });
 });
 
-await page.goto(target, { waitUntil: 'networkidle', timeout: 60000 });
+await page.goto(`${target}?t=${Date.now()}`, { waitUntil: 'networkidle', timeout: 60000 });
 
 const signupTab = page.getByRole('button', { name: 'Sign Up' }).first();
 await signupTab.click();

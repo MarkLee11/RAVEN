@@ -663,11 +663,12 @@
 - [x] Capture the visible error plus actual network requests (URL, status, CORS, body).
 - [x] Also smoke clubs/bars list and login on the same origin to see if all Supabase calls fail.
 - [x] Find root cause (wrong baked-in URL, CORS, paused project, auth settings) and fix it.
-- [ ] Re-test the same real-user signup path until it no longer shows Failed to fetch.
+- [x] Re-test the same real-user signup path until it no longer shows Failed to fetch.
 
 ### Review
-- Real-user probe on `https://raven-berlin1.netlify.app/profile` reproduced `Failed to fetch` on the Sign Up button.
-- Browser network log showed signup POST to `https://placeholder.supabase.co/auth/v1/signup` with `net::ERR_NAME_NOT_RESOLVED`.
-- Console warning: production bundle was built without `VITE_SUPABASE_*`.
-- GitHub repo secrets originally had Netlify tokens only; `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` were missing.
-- Real Supabase API works: clubs 200, signup 200 for a normal email domain. `@example.com` is rejected by Supabase as invalid.
+- Real-user probe on `https://raven-berlin1.netlify.app/profile` first reproduced `Failed to fetch` on Sign Up.
+- Network log: signup POST went to `https://placeholder.supabase.co/auth/v1/signup` (`net::ERR_NAME_NOT_RESOLVED`).
+- Root cause: production bundle was built without `VITE_SUPABASE_*`. GitHub repo secrets originally had Netlify tokens only.
+- Fix: set `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` as repo secrets, fail production builds that still use placeholders, skip Netlify git builds without env, sync env to Netlify on release.
+- After production release `35533410849`, the same real-user signup path hits `gwwahjmagznitbsgtlid.supabase.co/auth/v1/signup` with CORS allowed. `Failed to fetch` is gone.
+- Follow-up real-user checks: login returns `Invalid login credentials` from the real auth API; `/clubs` shows RSO.Berlin; club detail `/clubs/50` loads reviews.

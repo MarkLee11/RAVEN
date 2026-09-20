@@ -43,6 +43,8 @@ RAVEN UAT 验收记录
 - [PASS] 状态组件可访问性语义（status/alert/live region）与移动触控热区增强
 - [PASS] 动效降级策略（prefers-reduced-motion）已接入关键 CTA 样式
 - [PASS] 邮箱注册输入允许合法大小写邮箱（不再触发浏览器 “match the requested format” 误拦截）
+- [PASS] 公网真实用户注册不再 Failed to fetch（请求打到真实 Supabase Auth）
+- [PASS] 公网 Clubs/Bars 列表与 Club 详情加载真实数据
 
 四、结论
 -------------------------------------------------------------------------------

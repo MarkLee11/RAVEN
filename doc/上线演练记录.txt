@@ -59,4 +59,16 @@ Step 4: 回滚检查点固化
   - `https://raven-berlin1.netlify.app/profile` 邮箱输入框 `pattern = null`
   - `User+test@Example.com` 的 `checkValidity() = true`
 
+六、Failed to fetch 真实用户复测与修复发布（2026-09-20）
+-------------------------------------------------------------------------------
+- 复现方式：Playwright 按 iPhone 视口打开公网 `/profile`，点 Sign Up，填写邮箱和密码，提交。
+- 首次结果：页面显示 `Failed to fetch`；请求打到 `placeholder.supabase.co`，DNS 失败。
+- 根因：生产构建未注入 `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`。
+- 修复提交：`484fadf`
+- 发布：GitHub Actions `Release` run `35533410849` PASS
+- 复测：
+  - 注册请求改为真实 Supabase `/auth/v1/signup`，不再出现 Failed to fetch
+  - 登录请求到达真实 `/auth/v1/token`，错误为 Invalid login credentials
+  - `/clubs` 与 `/clubs/50` 加载真实场馆与评论
+
 ===============================================================================
