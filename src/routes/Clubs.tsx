@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Filter } from 'lucide-react';
@@ -36,38 +36,16 @@ const Clubs: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [favoriteClubIds, setFavoriteClubIds] = useState<Record<string, boolean>>({});
 
-  useEffect(() => {
-    loadDistricts();
-    loadClubs();
-  }, [selectedDistrict, selectedConstruction, selectedPayment]);
-
-  // Refresh favorite statuses when page becomes visible
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden && clubs.length > 0) {
-        const clubIds = clubs.map(club => club.id);
-        favoritesService.getFavoriteStatuses(clubIds, 'club').then(favoriteStatuses => {
-          setFavoriteClubIds(favoriteStatuses);
-        });
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [clubs]);
-
-  const loadDistricts = async () => {
+  const loadDistricts = useCallback(async () => {
     try {
       const districtList = await getDistricts();
       setDistricts(districtList);
     } catch (error) {
       console.error('Failed to load districts:', error);
     }
-  };
+  }, []);
 
-  const loadClubs = async () => {
+  const loadClubs = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -90,7 +68,32 @@ const Clubs: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedDistrict, selectedConstruction, selectedPayment]);
+
+  useEffect(() => {
+    loadDistricts();
+  }, [loadDistricts]);
+
+  useEffect(() => {
+    loadClubs();
+  }, [loadClubs]);
+
+  // Refresh favorite statuses when page becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && clubs.length > 0) {
+        const clubIds = clubs.map(club => club.id);
+        favoritesService.getFavoriteStatuses(clubIds, 'club').then(favoriteStatuses => {
+          setFavoriteClubIds(favoriteStatuses);
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [clubs]);
 
   const toggleConstruction = (filter: string) => {
     setSelectedConstruction(prev =>

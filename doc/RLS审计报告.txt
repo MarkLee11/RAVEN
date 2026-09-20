@@ -1,0 +1,85 @@
+===============================================================================
+RAVEN RLS 审计报告（Phase 3）
+===============================================================================
+日期：2026-09-20
+审计范围：
+- `supabase/migrations/*.sql`
+- `sql/bars_v2_*.sql`
+
+-------------------------------------------------------------------------------
+一、现状概览
+-------------------------------------------------------------------------------
+已发现明确 RLS/Policy 定义：
+1) `supabase/migrations/complete_rls_fix.sql`
+2) `supabase/migrations/fix_club_rls_policies.sql`
+3) `sql/bars_v2_00_create_all_bar_tables.sql`
+4) `sql/bars_v2_09_create_favorites_tables.sql`
+5) 若干分表创建脚本（bar_reviews/bar_ratings/bar_locations 等）
+
+高层结论：
+- 场馆与评论读取总体允许匿名读（符合产品展示需求）
+- 收藏表采用 `auth.uid() = user_id` 策略（方向正确）
+- 但策略定义分散在多个 SQL 来源，存在漂移风险
+
+-------------------------------------------------------------------------------
+二、关键表权限结论（摘要）
+-------------------------------------------------------------------------------
+1) `bars` / `clubs` / `districts` / `themes`
+- 现状：普遍是 public/anon 可读
+- 风险：低（数据本就对外展示）
+
+2) `bar_reviews` / `club_reviews`
+- 现状：public 可读，认证用户可写入
+- 风险：中
+  - 需要防止“伪造 user_id 插入”场景（建议强制 `user_id = auth.uid()`）
+
+3) `bar_favorites` / `club_favorites`
+- 现状：已启用 RLS，select/insert/delete 均按 `auth.uid() = user_id`
+- 风险：低
+
+4) `create_get_auth_users_function.sql`
+- 函数：`get_auth_users_for_reviews()`，且授予 anon + authenticated
+- 风险：高（可能暴露 auth users 基础信息）
+- 建议：移除 anon 授权，或仅服务端受控调用
+
+-------------------------------------------------------------------------------
+三、发现的问题与建议
+-------------------------------------------------------------------------------
+P0-1（高）
+- 问题：`get_auth_users_for_reviews` 对 anon 开放
+- 建议：
+  1) 撤销 anon 执行权限
+  2) 若前端无需该函数，限制为 service role 侧调用
+
+P0-2（高）
+- 问题：策略定义散落在 `sql/` 与 `supabase/migrations/`
+- 建议：
+  1) 生产真源统一归档到 `supabase/migrations`
+  2) 每次策略修改都通过 migration
+
+P1-1（中）
+- 问题：reviews 写入策略需确认是否强制 user_id=auth.uid()
+- 建议：
+  - 添加 WITH CHECK 约束明确 user_id 一致性
+
+-------------------------------------------------------------------------------
+四、建议补充迁移（示意）
+-------------------------------------------------------------------------------
+-- 1) 收紧函数权限
+REVOKE EXECUTE ON FUNCTION get_auth_users_for_reviews() FROM anon;
+
+-- 2) （示意）强化 reviews 插入策略
+-- CREATE POLICY "Users can insert own club reviews"
+-- ON public.club_reviews
+-- FOR INSERT
+-- TO authenticated
+-- WITH CHECK (auth.uid() = user_id);
+
+-------------------------------------------------------------------------------
+五、审计后行动项
+-------------------------------------------------------------------------------
+1) 将 RLS 策略统一迁移到 `supabase/migrations`（单独 PR）
+2) 对 reviews/favorites 做一次 staging 越权测试
+3) 发布前执行“匿名/登录用户权限矩阵”回归
+
+===============================================================================

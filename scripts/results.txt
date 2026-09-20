@@ -1,0 +1,1122 @@
+[
+  {
+    "id": 60,
+    "name": "Mitte"
+  },
+  {
+    "id": 61,
+    "name": "Friedrichshain"
+  },
+  {
+    "id": 62,
+    "name": "Kreuzberg"
+  },
+  {
+    "id": 63,
+    "name": "Prenzlauer Berg"
+  },
+  {
+    "id": 64,
+    "name": "Pankow"
+  },
+  {
+    "id": 65,
+    "name": "Schöneberg"
+  },
+  {
+    "id": 66,
+    "name": "Neukölln"
+  },
+  {
+    "id": 67,
+    "name": "Treptow"
+  },
+  {
+    "id": 68,
+    "name": "Charlottenburg-Wilmersdorf"
+  },
+  {
+    "id": 69,
+    "name": "Spandau"
+  },
+  {
+    "id": 70,
+    "name": "Steglitz-Zehlendorf"
+  },
+  {
+    "id": 71,
+    "name": "Marzahn-Hellersdorf"
+  },
+  {
+    "id": 72,
+    "name": "Lichtenberg"
+  },
+  {
+    "id": 73,
+    "name": "Reinickendorf"
+  },
+  {
+    "id": 74,
+    "name": "Köpenick"
+  }
+]
+
+[
+  {
+    "id": 1,
+    "name": "Queer-friendly",
+    "category": null
+  },
+  {
+    "id": 2,
+    "name": "LGBTQ+ only",
+    "category": null
+  },
+  {
+    "id": 3,
+    "name": "Gender-inclusive",
+    "category": null
+  },
+  {
+    "id": 4,
+    "name": "Dress Code / Fetish Night",
+    "category": null
+  },
+  {
+    "id": 5,
+    "name": "Themed Parties",
+    "category": null
+  },
+  {
+    "id": 67,
+    "name": "cocktails",
+    "category": "drinks"
+  },
+  {
+    "id": 68,
+    "name": "beer",
+    "category": "drinks"
+  },
+  {
+    "id": 69,
+    "name": "wine",
+    "category": "drinks"
+  },
+  {
+    "id": 70,
+    "name": "shots",
+    "category": "drinks"
+  },
+  {
+    "id": 71,
+    "name": "whisky",
+    "category": "drinks"
+  },
+  {
+    "id": 72,
+    "name": "rum",
+    "category": "drinks"
+  },
+  {
+    "id": 73,
+    "name": "gin",
+    "category": "drinks"
+  },
+  {
+    "id": 74,
+    "name": "vodka",
+    "category": "drinks"
+  },
+  {
+    "id": 75,
+    "name": "tequila",
+    "category": "drinks"
+  },
+  {
+    "id": 76,
+    "name": "mocktails",
+    "category": "drinks"
+  },
+  {
+    "id": 77,
+    "name": "upscale",
+    "category": "style"
+  },
+  {
+    "id": 78,
+    "name": "classic",
+    "category": "style"
+  },
+  {
+    "id": 79,
+    "name": "historic",
+    "category": "style"
+  },
+  {
+    "id": 80,
+    "name": "industrial",
+    "category": "style"
+  },
+  {
+    "id": 81,
+    "name": "minimalist",
+    "category": "style"
+  },
+  {
+    "id": 82,
+    "name": "alternative",
+    "category": "style"
+  },
+  {
+    "id": 83,
+    "name": "speakeasy",
+    "category": "style"
+  },
+  {
+    "id": 84,
+    "name": "art-bar",
+    "category": "style"
+  },
+  {
+    "id": 85,
+    "name": "outdoor",
+    "category": "architecture"
+  },
+  {
+    "id": 86,
+    "name": "rooftop",
+    "category": "architecture"
+  },
+  {
+    "id": 87,
+    "name": "stage",
+    "category": "architecture"
+  },
+  {
+    "id": 88,
+    "name": "smoking-area",
+    "category": "architecture"
+  },
+  {
+    "id": 89,
+    "name": "private-rooms",
+    "category": "architecture"
+  },
+  {
+    "id": 90,
+    "name": "straight-bar",
+    "category": "vibe"
+  },
+  {
+    "id": 91,
+    "name": "gay-bar",
+    "category": "vibe"
+  },
+  {
+    "id": 92,
+    "name": "lesbian-bar",
+    "category": "vibe"
+  },
+  {
+    "id": 93,
+    "name": "queer-bar",
+    "category": "vibe"
+  },
+  {
+    "id": 94,
+    "name": "lgbtq-friendly",
+    "category": "vibe"
+  },
+  {
+    "id": 95,
+    "name": "chill",
+    "category": "vibe"
+  },
+  {
+    "id": 96,
+    "name": "classy",
+    "category": "vibe"
+  },
+  {
+    "id": 97,
+    "name": "lively",
+    "category": "vibe"
+  },
+  {
+    "id": 98,
+    "name": "crowded",
+    "category": "vibe"
+  },
+  {
+    "id": 99,
+    "name": "cozy",
+    "category": "vibe"
+  },
+  {
+    "id": 100,
+    "name": "romantic",
+    "category": "vibe"
+  },
+  {
+    "id": 101,
+    "name": "wild",
+    "category": "vibe"
+  },
+  {
+    "id": 102,
+    "name": "underground",
+    "category": "vibe"
+  },
+  {
+    "id": 103,
+    "name": "artsy",
+    "category": "vibe"
+  },
+  {
+    "id": 104,
+    "name": "intimate",
+    "category": "vibe"
+  },
+  {
+    "id": 105,
+    "name": "touristy",
+    "category": "vibe"
+  },
+  {
+    "id": 106,
+    "name": "local",
+    "category": "vibe"
+  },
+  {
+    "id": 107,
+    "name": "jazz",
+    "category": "music"
+  },
+  {
+    "id": 108,
+    "name": "blues",
+    "category": "music"
+  },
+  {
+    "id": 109,
+    "name": "funk",
+    "category": "music"
+  },
+  {
+    "id": 110,
+    "name": "soul",
+    "category": "music"
+  },
+  {
+    "id": 111,
+    "name": "disco",
+    "category": "music"
+  },
+  {
+    "id": 112,
+    "name": "pop",
+    "category": "music"
+  },
+  {
+    "id": 113,
+    "name": "indie",
+    "category": "music"
+  },
+  {
+    "id": 114,
+    "name": "rock",
+    "category": "music"
+  },
+  {
+    "id": 115,
+    "name": "electronic",
+    "category": "music"
+  },
+  {
+    "id": 116,
+    "name": "latin",
+    "category": "music"
+  },
+  {
+    "id": 117,
+    "name": "live-music",
+    "category": "music"
+  },
+  {
+    "id": 121,
+    "name": "house",
+    "category": "music"
+  },
+  {
+    "id": 123,
+    "name": "late-night",
+    "category": "vibe"
+  },
+  {
+    "id": 124,
+    "name": "beer-garden",
+    "category": "architecture"
+  },
+  {
+    "id": 125,
+    "name": "traditional",
+    "category": "style"
+  }
+]
+
+[
+  {
+    "column_name": "id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": "nextval('clubs_id_seq'::regclass)"
+  },
+  {
+    "column_name": "name",
+    "data_type": "text",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "description",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "district_id",
+    "data_type": "integer",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "outdoor_area",
+    "data_type": "boolean",
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "column_name": "cash_only",
+    "data_type": "boolean",
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "column_name": "card_accepted",
+    "data_type": "boolean",
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "column_name": "smoke_room",
+    "data_type": "boolean",
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "column_name": "awareness_room",
+    "data_type": "boolean",
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "column_name": "dark_room",
+    "data_type": "boolean",
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "column_name": "crusing_area",
+    "data_type": "boolean",
+    "is_nullable": "YES",
+    "column_default": "false"
+  },
+  {
+    "column_name": "founded_year",
+    "data_type": "integer",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  },
+  {
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  }
+]
+
+[
+  {
+    "id": 54,
+    "name": "Crack Bellmer",
+    "description": "Laid-back club with open-air area and eclectic DJ sets.",
+    "district_id": 61,
+    "outdoor_area": true,
+    "cash_only": false,
+    "card_accepted": true,
+    "smoke_room": false,
+    "awareness_room": false,
+    "dark_room": false,
+    "crusing_area": false,
+    "founded_year": 2005,
+    "created_at": "2025-08-14 04:16:34.773236+00",
+    "updated_at": "2025-08-14 04:16:34.773236+00"
+  },
+  {
+    "id": 55,
+    "name": "Polygon Club",
+    "description": "Techno club in an industrial space with immersive light installations.",
+    "district_id": 72,
+    "outdoor_area": false,
+    "cash_only": false,
+    "card_accepted": true,
+    "smoke_room": false,
+    "awareness_room": false,
+    "dark_room": true,
+    "crusing_area": false,
+    "founded_year": 2017,
+    "created_at": "2025-08-14 04:16:34.773236+00",
+    "updated_at": "2025-08-14 04:16:34.773236+00"
+  },
+  {
+    "id": 59,
+    "name": "Paloma Bar",
+    "description": "Intimate bar-club with house and disco upstairs, hip-hop downstairs.",
+    "district_id": 62,
+    "outdoor_area": false,
+    "cash_only": false,
+    "card_accepted": true,
+    "smoke_room": false,
+    "awareness_room": false,
+    "dark_room": false,
+    "crusing_area": false,
+    "founded_year": 2003,
+    "created_at": "2025-08-14 04:16:34.773236+00",
+    "updated_at": "2025-08-14 04:16:34.773236+00"
+  },
+  {
+    "id": 60,
+    "name": "AVA Club",
+    "description": "Compact venue with a focus on techno and house, near the Spree.",
+    "district_id": 62,
+    "outdoor_area": false,
+    "cash_only": false,
+    "card_accepted": true,
+    "smoke_room": false,
+    "awareness_room": false,
+    "dark_room": false,
+    "crusing_area": false,
+    "founded_year": 2017,
+    "created_at": "2025-08-14 04:16:34.773236+00",
+    "updated_at": "2025-08-14 04:16:34.773236+00"
+  },
+  {
+    "id": 56,
+    "name": "DSTRKT",
+    "description": "DSTRKT, formerly Anomalie Art Club, reopened in April 2025 under new ownership by the HIVE Festival team. Located on Storkower Straße in Prenzlauer Berg, the venue retains its underground, art‑infused identity while adding more restrooms, chill‑out zones, and \"Boiler Room stage setups.\" It focuses on hardcore and hard‑dance music programming, with upcoming acts including Angerfist, Gabber Eleganza, and Violent Magic Orchestra.",
+    "district_id": 63,
+    "outdoor_area": false,
+    "cash_only": false,
+    "card_accepted": true,
+    "smoke_room": false,
+    "awareness_room": false,
+    "dark_room": false,
+    "crusing_area": false,
+    "founded_year": 2025,
+    "created_at": "2025-08-14 04:16:34.773236+00",
+    "updated_at": "2025-08-15 01:50:29.682773+00"
+  }
+]
+
+[
+  {
+    "column_name": "id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": "nextval('bars_id_seq'::regclass)"
+  },
+  {
+    "column_name": "name",
+    "data_type": "text",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "district_id",
+    "data_type": "bigint",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "description",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "cash_only",
+    "data_type": "boolean",
+    "is_nullable": "NO",
+    "column_default": "false"
+  },
+  {
+    "column_name": "card_accepted",
+    "data_type": "boolean",
+    "is_nullable": "NO",
+    "column_default": "false"
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  },
+  {
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  }
+]
+
+[
+  {
+    "id": 8,
+    "name": "Klunkerkranich",
+    "district_id": 66,
+    "description": "Rooftop paradise above shopping mall. Sunset sessions.",
+    "cash_only": false,
+    "card_accepted": true,
+    "created_at": "2025-08-14 19:35:31.784299+00",
+    "updated_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 9,
+    "name": "Zur Wilden Renate",
+    "district_id": 61,
+    "description": "Quirky apartment-style bar with themed rooms and friendly crowd.",
+    "cash_only": true,
+    "card_accepted": false,
+    "created_at": "2025-08-14 19:35:31.784299+00",
+    "updated_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 10,
+    "name": "Buck and Breck",
+    "district_id": 60,
+    "description": "Intimate cocktail bar with surgical precision. Reservation recommended.",
+    "cash_only": true,
+    "card_accepted": false,
+    "created_at": "2025-08-14 19:35:31.784299+00",
+    "updated_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 11,
+    "name": "Green Door",
+    "district_id": 65,
+    "description": "Classic cocktail bar with dim lighting and excellent bartenders.",
+    "cash_only": false,
+    "card_accepted": true,
+    "created_at": "2025-08-14 19:35:31.784299+00",
+    "updated_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 12,
+    "name": "Prater Garten",
+    "district_id": 63,
+    "description": "Berlin's oldest beer garden. Traditional atmosphere, great for groups.",
+    "cash_only": false,
+    "card_accepted": true,
+    "created_at": "2025-08-14 19:35:31.784299+00",
+    "updated_at": "2025-08-14 19:35:31.784299+00"
+  }
+]
+
+[
+  {
+    "column_name": "club_id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "music_rating",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "vibe_rating",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "crowd_rating",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "safety_rating",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  }
+]
+
+[
+  {
+    "column_name": "id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": "nextval('bar_ratings_id_seq'::regclass)"
+  },
+  {
+    "column_name": "bar_id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "quality_rating",
+    "data_type": "integer",
+    "is_nullable": "NO",
+    "column_default": "0"
+  },
+  {
+    "column_name": "price_rating",
+    "data_type": "integer",
+    "is_nullable": "NO",
+    "column_default": "0"
+  },
+  {
+    "column_name": "vibe_rating",
+    "data_type": "integer",
+    "is_nullable": "NO",
+    "column_default": "0"
+  },
+  {
+    "column_name": "friendliness_rating",
+    "data_type": "integer",
+    "is_nullable": "NO",
+    "column_default": "0"
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  },
+  {
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  }
+]
+
+[
+  {
+    "column_name": "club_id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "theme_id",
+    "data_type": "integer",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  }
+]
+
+[
+  {
+    "column_name": "id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": "nextval('bar_themes_id_seq'::regclass)"
+  },
+  {
+    "column_name": "bar_id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "theme_id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  }
+]
+
+[
+  {
+    "column_name": "club_id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "address_line",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "postcode",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "city",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": "'Berlin'::text"
+  },
+  {
+    "column_name": "latitude",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "longitude",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "google_maps_url",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  },
+  {
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  }
+]
+
+[
+  {
+    "column_name": "id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": "nextval('bar_locations_id_seq'::regclass)"
+  },
+  {
+    "column_name": "bar_id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "address_line",
+    "data_type": "text",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "postal_code",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "latitude",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "longitude",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  },
+  {
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()"
+  }
+]
+
+[
+  {
+    "club_id": 45,
+    "theme_id": 1,
+    "created_at": "2025-08-14 04:16:34.773236+00"
+  },
+  {
+    "club_id": 45,
+    "theme_id": 2,
+    "created_at": "2025-08-14 04:16:34.773236+00"
+  },
+  {
+    "club_id": 47,
+    "theme_id": 1,
+    "created_at": "2025-08-14 04:16:34.773236+00"
+  },
+  {
+    "club_id": 47,
+    "theme_id": 4,
+    "created_at": "2025-08-14 04:16:34.773236+00"
+  },
+  {
+    "club_id": 46,
+    "theme_id": 1,
+    "created_at": "2025-08-14 04:20:46.899405+00"
+  },
+  {
+    "club_id": 48,
+    "theme_id": 1,
+    "created_at": "2025-08-14 04:20:46.899405+00"
+  },
+  {
+    "club_id": 49,
+    "theme_id": 1,
+    "created_at": "2025-08-14 04:20:46.899405+00"
+  }
+]
+
+[
+  {
+    "id": 14,
+    "bar_id": 8,
+    "theme_id": 121,
+    "created_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 15,
+    "bar_id": 8,
+    "theme_id": 111,
+    "created_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 16,
+    "bar_id": 8,
+    "theme_id": 85,
+    "created_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 17,
+    "bar_id": 8,
+    "theme_id": 94,
+    "created_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 18,
+    "bar_id": 9,
+    "theme_id": 121,
+    "created_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 19,
+    "bar_id": 9,
+    "theme_id": 111,
+    "created_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 20,
+    "bar_id": 9,
+    "theme_id": 94,
+    "created_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 21,
+    "bar_id": 10,
+    "theme_id": 67,
+    "created_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 22,
+    "bar_id": 10,
+    "theme_id": 77,
+    "created_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 23,
+    "bar_id": 11,
+    "theme_id": 67,
+    "created_at": "2025-08-14 19:35:31.784299+00"
+  }
+]
+
+[
+  {
+    "club_id": 54,
+    "address_line": "Revaler Str. 99",
+    "postcode": "10245",
+    "city": "Berlin",
+    "latitude": null,
+    "longitude": null,
+    "google_maps_url": null,
+    "created_at": "2025-08-15 03:01:57.957871+00",
+    "updated_at": "2025-08-15 03:01:57.957871+00"
+  },
+  {
+    "club_id": 55,
+    "address_line": "Wiesenweg 1-4",
+    "postcode": "10365",
+    "city": "Berlin",
+    "latitude": null,
+    "longitude": null,
+    "google_maps_url": null,
+    "created_at": "2025-08-15 03:01:57.957871+00",
+    "updated_at": "2025-08-15 03:01:57.957871+00"
+  },
+  {
+    "club_id": 59,
+    "address_line": "Skalitzer Str. 135",
+    "postcode": "10999",
+    "city": "Berlin",
+    "latitude": null,
+    "longitude": null,
+    "google_maps_url": null,
+    "created_at": "2025-08-15 03:01:57.957871+00",
+    "updated_at": "2025-08-15 03:01:57.957871+00"
+  },
+  {
+    "club_id": 60,
+    "address_line": "Warschauer Platz 18",
+    "postcode": "10245",
+    "city": "Berlin",
+    "latitude": null,
+    "longitude": null,
+    "google_maps_url": null,
+    "created_at": "2025-08-15 03:01:57.957871+00",
+    "updated_at": "2025-08-15 03:01:57.957871+00"
+  },
+  {
+    "club_id": 56,
+    "address_line": "Alexanderstr. 7",
+    "postcode": "10178",
+    "city": "Berlin",
+    "latitude": null,
+    "longitude": null,
+    "google_maps_url": null,
+    "created_at": "2025-08-15 03:01:57.957871+00",
+    "updated_at": "2025-08-15 03:01:57.957871+00"
+  }
+]
+
+[
+  {
+    "query_type": "BAR_LOCATIONS_SAMPLE_DATA"
+  }
+]
+
+[
+  {
+    "club_id": 41,
+    "music_rating": "90.00",
+    "vibe_rating": "80.00",
+    "crowd_rating": "80.00",
+    "safety_rating": "80.00",
+    "updated_at": "2025-08-14 04:39:06.346684+00"
+  },
+  {
+    "club_id": 42,
+    "music_rating": "74.00",
+    "vibe_rating": "89.00",
+    "crowd_rating": "70.00",
+    "safety_rating": "84.00",
+    "updated_at": "2025-08-14 04:39:19.110993+00"
+  }
+]
+
+[
+  {
+    "id": 8,
+    "bar_id": 8,
+    "quality_rating": 82,
+    "price_rating": 75,
+    "vibe_rating": 92,
+    "friendliness_rating": 90,
+    "created_at": "2025-08-14 19:35:31.784299+00",
+    "updated_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 9,
+    "bar_id": 9,
+    "quality_rating": 80,
+    "price_rating": 78,
+    "vibe_rating": 89,
+    "friendliness_rating": 88,
+    "created_at": "2025-08-14 19:35:31.784299+00",
+    "updated_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 10,
+    "bar_id": 10,
+    "quality_rating": 90,
+    "price_rating": 40,
+    "vibe_rating": 85,
+    "friendliness_rating": 92,
+    "created_at": "2025-08-14 19:35:31.784299+00",
+    "updated_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 11,
+    "bar_id": 11,
+    "quality_rating": 85,
+    "price_rating": 70,
+    "vibe_rating": 88,
+    "friendliness_rating": 90,
+    "created_at": "2025-08-14 19:35:31.784299+00",
+    "updated_at": "2025-08-14 19:35:31.784299+00"
+  },
+  {
+    "id": 12,
+    "bar_id": 12,
+    "quality_rating": 75,
+    "price_rating": 85,
+    "vibe_rating": 85,
+    "friendliness_rating": 95,
+    "created_at": "2025-08-14 19:35:31.784299+00",
+    "updated_at": "2025-08-14 19:35:31.784299+00"
+  }
+]

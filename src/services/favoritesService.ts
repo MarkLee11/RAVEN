@@ -6,6 +6,54 @@ export interface FavoriteVenue extends Venue {
   favoriteCreatedAt: Date;
 }
 
+interface DistrictRef {
+  name?: string;
+}
+
+interface ThemeRef {
+  name?: string;
+}
+
+interface BarRatingsRef {
+  quality_rating?: number;
+  price_rating?: number;
+  vibe_rating?: number;
+  friendliness_rating?: number;
+}
+
+interface ClubRatingsRef {
+  music_rating?: number;
+  vibe_rating?: number;
+  crowd_rating?: number;
+  safety_rating?: number;
+}
+
+interface BarRelation {
+  id: number;
+  name: string;
+  description?: string;
+  districts?: DistrictRef | DistrictRef[] | null;
+  bar_ratings?: BarRatingsRef | BarRatingsRef[] | null;
+  bar_themes?: Array<{ themes?: ThemeRef | ThemeRef[] | null }> | null;
+}
+
+interface ClubRelation {
+  id: number;
+  name: string;
+  description?: string;
+  districts?: DistrictRef | DistrictRef[] | null;
+  club_ratings?: ClubRatingsRef | ClubRatingsRef[] | null;
+  club_themes?: Array<{ themes?: ThemeRef | ThemeRef[] | null }> | null;
+  club_tonight_vibe?: Array<{ status?: string }> | null;
+}
+
+const firstItem = <T>(value: T | T[] | null | undefined): T | null => {
+  if (!value) return null;
+  return Array.isArray(value) ? (value[0] ?? null) : value;
+};
+
+const isPresent = <T>(value: T | null): value is T => value !== null;
+
 export const favoritesService = {
   // Check if a venue is favorited by the current user
   async isFavorite(venueId: string, venueType: 'bar' | 'club'): Promise<boolean> {
@@ -126,7 +174,10 @@ export const favoritesService = {
         return {};
       }
 
-      const favoriteIds = data?.map(item => item[columnName].toString()) || [];
+      const favoriteIds = (data || [])
+        .map((item: Record<string, unknown>) => item[columnName])
+        .filter((value): value is number => typeof value === 'number')
+        .map((value) => value.toString());
       const result: Record<string, boolean> = {};
       
       venueIds.forEach(id => {
@@ -168,24 +219,26 @@ export const favoritesService = {
         return [];
       }
 
-      return data?.map(fav => {
-        const bar = fav.bars;
+      return data?.map<FavoriteVenue | null>((fav) => {
+        const bar = firstItem(fav.bars as BarRelation | BarRelation[] | null);
         if (!bar) return null;
 
-        const ratings = bar.bar_ratings || {
+        const ratings = firstItem(bar.bar_ratings) || {
           quality_rating: 0,
           price_rating: 0,
           vibe_rating: 0,
           friendliness_rating: 0
         };
 
-        const themes = bar.bar_themes?.map(bt => bt.themes?.name).filter(Boolean) || [];
+        const themes = (bar.bar_themes || [])
+          .map((bt) => firstItem(bt.themes)?.name)
+          .filter((name): name is string => Boolean(name));
 
         return {
           id: bar.id.toString(),
           name: bar.name,
-          district: bar.districts?.name || 'Unknown District',
-          tags: themes as any[],
+          district: firstItem(bar.districts)?.name || 'Unknown District',
+          tags: themes,
           ratings: {
             music: Math.round(ratings?.quality_rating || 0),
             vibe: Math.round(ratings?.vibe_rating || 0),
@@ -197,7 +250,7 @@ export const favoritesService = {
           favoriteId: fav.id.toString(),
           favoriteCreatedAt: new Date(fav.created_at),
         };
-      }).filter(Boolean) as FavoriteVenue[] || [];
+      }).filter(isPresent) ?? [];
 
     } catch (error) {
       console.error('Failed to load favorite bars:', error);
@@ -234,25 +287,27 @@ export const favoritesService = {
         return [];
       }
 
-      return data?.map(fav => {
-        const club = fav.clubs;
+      return data?.map<FavoriteVenue | null>((fav) => {
+        const club = firstItem(fav.clubs as ClubRelation | ClubRelation[] | null);
         if (!club) return null;
 
-        const ratings = club.club_ratings || {
+        const ratings = firstItem(club.club_ratings) || {
           music_rating: 0,
           vibe_rating: 0,
           crowd_rating: 0,
           safety_rating: 0
         };
 
-        const themes = club.club_themes?.map(ct => ct.themes?.name).filter(Boolean) || [];
+        const themes = (club.club_themes || [])
+          .map((ct) => firstItem(ct.themes)?.name)
+          .filter((name): name is string => Boolean(name));
         const hasLiveVibe = club.club_tonight_vibe?.some(vibe => vibe.status === 'live') || false;
 
         return {
           id: club.id.toString(),
           name: club.name,
-          district: club.districts?.name || 'Unknown District',
-          tags: themes as any[],
+          district: firstItem(club.districts)?.name || 'Unknown District',
+          tags: themes,
           ratings: {
             music: Math.round(ratings?.music_rating || 0),
             vibe: Math.round(ratings?.vibe_rating || 0),
@@ -264,7 +319,7 @@ export const favoritesService = {
           favoriteId: fav.id.toString(),
           favoriteCreatedAt: new Date(fav.created_at),
         };
-      }).filter(Boolean) as FavoriteVenue[] || [];
+      }).filter(isPresent) ?? [];
 
     } catch (error) {
       console.error('Failed to load favorite clubs:', error);

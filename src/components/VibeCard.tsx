@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, Zap, Users, Shield, AlertTriangle } from 'lucide-react';
+import { Clock, Zap, Users, AlertTriangle } from 'lucide-react';
 import { VibeSummary } from '../contracts/types';
 import { formatTimeAgo } from '../lib/utils';
 import Card from './ui/Card';

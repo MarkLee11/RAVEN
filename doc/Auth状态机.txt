@@ -1,0 +1,71 @@
+===============================================================================
+RAVEN 认证状态机（Phase 2）
+===============================================================================
+版本：2026-09-20
+
+状态定义
+-------------------------------------------------------------------------------
+1) anonymous
+   - 未登录（无有效 session）
+
+2) authenticated
+   - 已登录（有有效 session + user）
+
+3) loading
+   - 启动或切换中（AuthContext 尚在读取 session）
+
+4) pending-email-confirmation
+   - 注册后返回 user 但无 session（需要邮箱确认）
+
+核心事件
+-------------------------------------------------------------------------------
+- app_init
+- auth_state_changed
+- login_submit
+- signup_submit
+- logout
+- session_expired
+- protected_route_access
+
+状态迁移
+-------------------------------------------------------------------------------
+loading --(app_init + no session)--> anonymous
+loading --(app_init + valid session)--> authenticated
+
+anonymous --(login success with session)--> authenticated
+anonymous --(signup success without session)--> pending-email-confirmation
+pending-email-confirmation --(email confirmed + login success)--> authenticated
+
+authenticated --(logout)--> anonymous
+authenticated --(session_expired)--> anonymous
+
+受保护路由行为
+-------------------------------------------------------------------------------
+路由：`/submit`, `/favorites/bars`, `/favorites/clubs`
+
+规则：
+1) loading：显示统一加载态
+2) anonymous：由 `RequireAuth` 重定向到 `/profile`
+   - 携带：
+     - returnTo: 原路径
+     - returnState: 原页面 state
+3) authenticated：放行
+
+登录后回跳规则
+-------------------------------------------------------------------------------
+Profile 页在登录成功后：
+1) 读取 location.state.returnTo
+2) 若存在，navigate(returnTo, { state: returnState, replace: true })
+3) 否则留在 Profile（或未来可跳转首页）
+
+边界条件
+-------------------------------------------------------------------------------
+1) 直接访问 `/submit` 且无 location.state.venueId：
+   - SubmitReview 页面展示 “No venue selected”
+   - 引导返回 bars/clubs 列表
+
+2) 登录成功但无 session（邮箱未验证）：
+   - 不视为 authenticated
+   - 提示用户先完成邮箱确认
+
+===============================================================================

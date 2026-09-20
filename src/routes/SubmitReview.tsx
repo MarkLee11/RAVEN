@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Star, Upload, LogIn } from 'lucide-react';
-import { VenueRatings } from '../contracts/types';
-import { supabase } from '../lib/supabase';
+import { ArrowLeft, LogIn } from 'lucide-react';
+import { Review, VenueRatings } from '../contracts/types';
+import { useAuth } from '../contexts/useAuth';
 import { reviewsService } from '../services/reviewsService';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
@@ -13,9 +13,8 @@ const SubmitReview: React.FC = () => {
   const navigate = useNavigate();
   
   const { venueId, venueName, venueType = 'club' } = location.state || {};
-  
-  const [user, setUser] = useState<any>(null);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const { user, loading: checkingAuth } = useAuth();
+
   const [ratings, setRatings] = useState<VenueRatings>({
     music: 50,
     vibe: 50,
@@ -26,22 +25,6 @@ const SubmitReview: React.FC = () => {
   const [comment, setComment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    checkUser();
-  }, []);
-
-  const checkUser = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    } catch (error) {
-      console.error('Error checking user:', error);
-    } finally {
-      setCheckingAuth(false);
-    }
-  };
 
   const handleRatingChange = (aspect: keyof VenueRatings, value: number) => {
     setRatings(prev => ({ ...prev, [aspect]: value }));
@@ -62,6 +45,7 @@ const SubmitReview: React.FC = () => {
       if (venueType === 'bar') {
         await reviewsService.createBarReview({
           barId: venueId,
+          venueId,
           userId: user.id,
           ratings,
           comment,
@@ -85,25 +69,19 @@ const SubmitReview: React.FC = () => {
         ratings,
         comment,
         createdAt: new Date(),
-      } as any;
+      };
 
       // Navigate back to appropriate detail page with optimistic data
       const detailRoute = venueType === 'bar' ? `/bars/${venueId}` : `/clubs/${venueId}`;
       navigate(detailRoute, { replace: true, state: { optimisticReview } });
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to submit review:', error);
-      setError(error.message || 'Failed to submit review. Please try again.');
+      const message = error instanceof Error ? error.message : 'Failed to submit review. Please try again.';
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const getRatingColor = (value: number): string => {
-    if (value >= 80) return 'bg-raven';
-    if (value >= 60) return 'bg-yellow-500';
-    if (value >= 40) return 'bg-orange-500';
-    return 'bg-blood';
   };
 
   if (checkingAuth) {
@@ -162,7 +140,12 @@ const SubmitReview: React.FC = () => {
             </p>
             <div className="space-y-3">
               <Button 
-                onClick={() => navigate('/profile')}
+                onClick={() => navigate('/profile', {
+                  state: {
+                    returnTo: '/submit',
+                    submitState: { venueId, venueName, venueType },
+                  },
+                })}
                 className="w-full justify-center"
               >
                 <LogIn size={16} className="mr-2" />
@@ -177,26 +160,6 @@ const SubmitReview: React.FC = () => {
               </Button>
             </div>
           </Card>
-        </div>
-      </motion.div>
-    );
-  }
-
-  // Show success state
-  if (success) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="min-h-screen bg-berlin-black flex items-center justify-center"
-      >
-        <div className="text-center px-4">
-          <div className="w-16 h-16 bg-raven/20 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Star size={32} className="text-raven" />
-          </div>
-          <h2 className="font-space text-2xl text-ink mb-2">Review Submitted!</h2>
-          <p className="text-ash mb-4">Thank you for sharing your experience.</p>
-          <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
         </div>
       </motion.div>
     );

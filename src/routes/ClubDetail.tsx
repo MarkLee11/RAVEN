@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, MapPin } from 'lucide-react';
@@ -13,7 +13,6 @@ import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
 import VibeCard from '../components/VibeCard';
-import Avatar from '../components/Avatar';
 
 const ClubDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,27 +22,41 @@ const ClubDetail: React.FC = () => {
   const [vibeSummary, setVibeSummary] = useState<VibeSummary | null>(null);
   const [currentReviewPage, setCurrentReviewPage] = useState<number>(1);
   const REVIEWS_PER_PAGE = 5;
-  const [loading, setLoading] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      loadClubData(id);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    // 页面加载时滚动到顶部
-    window.scrollTo(0, 0);
+  // Memoize pagination handlers
+  const handlePreviousPage = useCallback(() => {
+    setCurrentReviewPage(p => Math.max(1, p - 1));
   }, []);
 
-  // Reset pagination when reviews change or club changes
-  useEffect(() => {
-    setCurrentReviewPage(1);
-  }, [id, reviews.length]);
+  const handleNextPage = useCallback(() => {
+    setCurrentReviewPage(p => Math.min(Math.ceil(reviews.length / REVIEWS_PER_PAGE), p + 1));
+  }, [reviews.length]);
 
-  const loadClubData = async (clubId: string) => {
+  // Memoize paginated reviews
+  const paginatedReviews = useMemo(() => {
+    return reviews.slice((currentReviewPage - 1) * REVIEWS_PER_PAGE, currentReviewPage * REVIEWS_PER_PAGE);
+  }, [reviews, currentReviewPage]);
+
+  // Memoize total pages
+  const totalPages = useMemo(() => {
+    return Math.ceil(reviews.length / REVIEWS_PER_PAGE);
+  }, [reviews.length]);
+
+  // Memoize toggle favorite handler
+  const handleToggleFavorite = useCallback(async () => {
+    if (!club) return;
+    const success = await favoritesService.toggleFavorite(club.id, 'club');
+    if (success) {
+      setIsFavorite(prev => !prev);
+    }
+  }, [club]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const loadClubData = useCallback(async (clubId: string) => {
     setLoading(true);
+    setError(null);
     try {
       const [clubData, reviewsData, vibeData, favoriteStatus] = await Promise.all([
         clubsService.getClub(clubId),
@@ -58,14 +71,31 @@ const ClubDetail: React.FC = () => {
       setIsFavorite(favoriteStatus);
     } catch (error) {
       console.error('Failed to load club data:', error);
+      setError('Failed to load club details. Please try again.');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (id) {
+      loadClubData(id);
+    }
+  }, [id, loadClubData]);
+
+  useEffect(() => {
+    // 页面加载时滚动到顶部
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Reset pagination when reviews change or club changes
+  useEffect(() => {
+    setCurrentReviewPage(1);
+  }, [id, reviews.length]);
 
   // Optimistically prepend new review when coming back from submit
   useEffect(() => {
-    const state = (window.history.state && (window.history.state as any).usr) || {};
+    const state = (window.history.state && (window.history.state as { usr?: { optimisticReview?: Review } }).usr) || {};
     if (state && state.optimisticReview && id) {
       setReviews(prev => [state.optimisticReview as Review, ...prev]);
       // Clean it so it won't duplicate on re-entry
@@ -73,8 +103,8 @@ const ClubDetail: React.FC = () => {
     }
   }, [id]);
 
-  // Calculate average ratings from reviews
-  const calculateAverageRatings = () => {
+  // Calculate average ratings from reviews with memoization
+  const averageRatings = useMemo(() => {
     if (reviews.length === 0) {
       return club?.ratings || { music: 0, vibe: 0, crowd: 0, safety: 0 };
     }
@@ -95,9 +125,7 @@ const ClubDetail: React.FC = () => {
       crowd: Math.round(totals.crowd / reviews.length),
       safety: Math.round(totals.safety / reviews.length),
     };
-  };
-
-  const averageRatings = calculateAverageRatings();
+  }, [reviews, club?.ratings]);
 
   if (loading) {
     return (
@@ -111,8 +139,15 @@ const ClubDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-berlin-black flex items-center justify-center">
         <div className="text-center">
-          <p className="text-ash mb-4">Club not found</p>
-          <Button onClick={() => navigate('/clubs')}>Back to Clubs</Button>
+          <p className="text-ash mb-4">{error || 'Club not found'}</p>
+          <div className="flex justify-center gap-3">
+            {id && (
+              <Button onClick={() => loadClubData(id)} variant="ghost">
+                Try Again
+              </Button>
+            )}
+            <Button onClick={() => navigate('/clubs')}>Back to Clubs</Button>
+          </div>
         </div>
       </div>
     );
@@ -145,13 +180,7 @@ const ClubDetail: React.FC = () => {
           </div>
           <button
             aria-label="Toggle favorite"
-            onClick={async () => {
-              if (!club) return;
-              const success = await favoritesService.toggleFavorite(club.id, 'club');
-              if (success) {
-                setIsFavorite(prev => !prev);
-              }
-            }}
+            onClick={handleToggleFavorite}
             className="p-1.5"
           >
             <svg
@@ -254,9 +283,7 @@ const ClubDetail: React.FC = () => {
             </Card>
           ) : (
             <div className="space-y-4">
-              {reviews
-                .slice((currentReviewPage - 1) * REVIEWS_PER_PAGE, currentReviewPage * REVIEWS_PER_PAGE)
-                .map((review, index) => (
+              {paginatedReviews.map((review, index) => (
                 <motion.div
                   key={review.id}
                   initial={{ y: 20, opacity: 0 }}
@@ -277,10 +304,7 @@ const ClubDetail: React.FC = () => {
                         
                         <div className="grid grid-cols-2 gap-2">
                           {Object.entries(review.ratings).map(([key, value]) => (
-                            <div key={key} className="flex justify-between text-xs">
-                              <span className="text-ash capitalize">{key}:</span>
-                              <span className="text-ink font-medium">{value}%</span>
-                            </div>
+                            <RatingBar key={key} label={key.charAt(0).toUpperCase() + key.slice(1)} value={value} />
                           ))}
                         </div>
                         
@@ -297,7 +321,7 @@ const ClubDetail: React.FC = () => {
               {reviews.length > REVIEWS_PER_PAGE && (
                 <div className="flex items-center justify-between pt-2">
                   <button
-                    onPointerDown={(e) => { e.preventDefault(); setCurrentReviewPage(p => Math.max(1, p - 1)); }}
+                    onPointerDown={(e) => { e.preventDefault(); handlePreviousPage(); }}
                     disabled={currentReviewPage === 1}
                     className="px-3 py-1 text-xs bg-raven text-berlin-black rounded-md disabled:opacity-40 tap-fast"
                   >
@@ -306,11 +330,11 @@ const ClubDetail: React.FC = () => {
                   <span className="text-xs text-ash">
                     <span className="text-raven">{currentReviewPage}</span>
                     <span> / </span>
-                    <span className="text-raven">{Math.ceil(reviews.length / REVIEWS_PER_PAGE)}</span>
+                    <span className="text-raven">{totalPages}</span>
                   </span>
                   <button
-                    onPointerDown={(e) => { e.preventDefault(); setCurrentReviewPage(p => Math.min(Math.ceil(reviews.length / REVIEWS_PER_PAGE), p + 1)); }}
-                    disabled={currentReviewPage >= Math.ceil(reviews.length / REVIEWS_PER_PAGE)}
+                    onPointerDown={(e) => { e.preventDefault(); handleNextPage(); }}
+                    disabled={currentReviewPage >= totalPages}
                     className="px-3 py-1 text-xs bg-raven text-berlin-black rounded-md disabled:opacity-40 tap-fast"
                   >
                     Next

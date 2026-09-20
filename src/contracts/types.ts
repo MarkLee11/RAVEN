@@ -61,31 +61,7 @@ export interface ReviewInput {
   photoUrl?: string;
 }
 
-export type District = 
-  | 'Kreuzberg'
-  | 'Friedrichshain'
-  | 'Neukölln'
-  | 'Mitte'
-  | 'Prenzlauer Berg'
-  | 'Wedding';
+export type District = string;
 
-export type VenueTag = 
-  | 'techno'
-  | 'house'
-  | 'disco'
-  | 'punk'
-  | 'underground'
-  | 'cocktails'
-  | 'beer-garden'
-  | 'rooftop'
-  | 'traditional'
-  | 'upscale'
-  | 'historic'
-  | 'classic'
-  | 'queer-friendly'
-  | 'cash-only'
-  | 'outdoor'
-  | 'smoke-room'
-  | 'late-night'
-  | 'tourist-free';
+export type VenueTag = string;
 

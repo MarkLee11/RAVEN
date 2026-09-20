@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Filter } from 'lucide-react';
 import { Venue } from '../contracts/types';
@@ -25,27 +25,6 @@ const Bars: React.FC = () => {
     loadInitialData();
   }, []);
 
-  useEffect(() => {
-    loadBars();
-  }, [selectedDistrict, selectedThemes]);
-
-  // Refresh favorite statuses when page becomes visible
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden && bars.length > 0) {
-        const barIds = bars.map(bar => bar.id);
-        favoritesService.getFavoriteStatuses(barIds, 'bar').then(favoriteStatuses => {
-          setFavoriteBarIds(favoriteStatuses);
-        });
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, [bars]);
-
   const loadInitialData = async () => {
     try {
       const [districtsList, themesData] = await Promise.all([
@@ -59,7 +38,7 @@ const Bars: React.FC = () => {
     }
   };
 
-  const loadBars = async () => {
+  const loadBars = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -81,7 +60,28 @@ const Bars: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedDistrict, selectedThemes]);
+
+  useEffect(() => {
+    loadBars();
+  }, [loadBars]);
+
+  // Refresh favorite statuses when page becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && bars.length > 0) {
+        const barIds = bars.map(bar => bar.id);
+        favoritesService.getFavoriteStatuses(barIds, 'bar').then(favoriteStatuses => {
+          setFavoriteBarIds(favoriteStatuses);
+        });
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [bars]);
 
   const toggleTheme = (theme: string) => {
     setSelectedThemes(prev =>

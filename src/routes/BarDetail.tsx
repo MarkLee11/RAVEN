@@ -1,27 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, MapPin, Star, MessageCircle } from 'lucide-react';
-import { Venue, Review, VibeSummary } from '../contracts/types';
+import { ArrowLeft, MapPin } from 'lucide-react';
+import { Venue, Review } from '../contracts/types';
 import { barsService } from '../services/barsService';
 import { reviewsService } from '../services/reviewsService';
-import { vibeService } from '../services/vibeService';
 import { favoritesService } from '../services/favoritesService';
 import { formatTimeAgo } from '../lib/utils';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import RatingBar from '../components/RatingBar';
-import VibeCard from '../components/VibeCard';
-import Avatar from '../components/Avatar';
 
 const BarDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [bar, setBar] = useState<Venue | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [vibeSummary, setVibeSummary] = useState<VibeSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
@@ -37,6 +34,7 @@ const BarDetail: React.FC = () => {
 
   const loadBarData = async (barId: string) => {
     setLoading(true);
+    setError(null);
     try {
       const [barData, reviewsData, favoriteStatus] = await Promise.all([
         barsService.getBar(barId),
@@ -47,10 +45,9 @@ const BarDetail: React.FC = () => {
       setBar(barData);
       setReviews(reviewsData);
       setIsFavorite(favoriteStatus);
-      // Bars don't have vibe summary feature
-      setVibeSummary(null);
     } catch (error) {
       console.error('Failed to load bar data:', error);
+      setError('Failed to load bar details. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -91,8 +88,15 @@ const BarDetail: React.FC = () => {
     return (
       <div className="min-h-screen bg-berlin-black flex items-center justify-center">
         <div className="text-center">
-          <p className="text-ash mb-4">Bar not found</p>
-          <Button onClick={() => navigate('/bars')}>Back to Bars</Button>
+          <p className="text-ash mb-4">{error || 'Bar not found'}</p>
+          <div className="flex justify-center gap-3">
+            {id && (
+              <Button onClick={() => loadBarData(id)} variant="ghost">
+                Try Again
+              </Button>
+            )}
+            <Button onClick={() => navigate('/bars')}>Back to Bars</Button>
+          </div>
         </div>
       </div>
     );
@@ -167,9 +171,6 @@ const BarDetail: React.FC = () => {
           </Card>
         )}
 
-        {/* Tonight's Vibe */}
-        {vibeSummary && <VibeCard summary={vibeSummary} />}
-
         {/* Ratings */}
         <Card>
           <h3 className="font-space text-lg text-ink mb-4">Overall Ratings</h3>
@@ -190,7 +191,7 @@ const BarDetail: React.FC = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 xmlSpace="preserve"
                 version="1.1"
-                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", imageRendering:"optimizeQuality", fillRule:"evenodd", clipRule:"evenodd"}}
+                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", fillRule:"evenodd", clipRule:"evenodd"}}
                 viewBox="0 0 784.11 815.53"
                 xmlnsXlink="http://www.w3.org/1999/xlink"
               >
@@ -207,7 +208,7 @@ const BarDetail: React.FC = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 xmlSpace="preserve"
                 version="1.1"
-                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", imageRendering:"optimizeQuality", fillRule:"evenodd", clipRule:"evenodd"}}
+                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", fillRule:"evenodd", clipRule:"evenodd"}}
                 viewBox="0 0 784.11 815.53"
                 xmlnsXlink="http://www.w3.org/1999/xlink"
               >
@@ -224,7 +225,7 @@ const BarDetail: React.FC = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 xmlSpace="preserve"
                 version="1.1"
-                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", imageRendering:"optimizeQuality", fillRule:"evenodd", clipRule:"evenodd"}}
+                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", fillRule:"evenodd", clipRule:"evenodd"}}
                 viewBox="0 0 784.11 815.53"
                 xmlnsXlink="http://www.w3.org/1999/xlink"
               >
@@ -241,7 +242,7 @@ const BarDetail: React.FC = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 xmlSpace="preserve"
                 version="1.1"
-                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", imageRendering:"optimizeQuality", fillRule:"evenodd", clipRule:"evenodd"}}
+                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", fillRule:"evenodd", clipRule:"evenodd"}}
                 viewBox="0 0 784.11 815.53"
                 xmlnsXlink="http://www.w3.org/1999/xlink"
               >
@@ -258,7 +259,7 @@ const BarDetail: React.FC = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 xmlSpace="preserve"
                 version="1.1"
-                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", imageRendering:"optimizeQuality", fillRule:"evenodd", clipRule:"evenodd"}}
+                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", fillRule:"evenodd", clipRule:"evenodd"}}
                 viewBox="0 0 784.11 815.53"
                 xmlnsXlink="http://www.w3.org/1999/xlink"
               >
@@ -275,7 +276,7 @@ const BarDetail: React.FC = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 xmlSpace="preserve"
                 version="1.1"
-                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", imageRendering:"optimizeQuality", fillRule:"evenodd", clipRule:"evenodd"}}
+                style={{shapeRendering:"geometricPrecision", textRendering:"geometricPrecision", fillRule:"evenodd", clipRule:"evenodd"}}
                 viewBox="0 0 784.11 815.53"
                 xmlnsXlink="http://www.w3.org/1999/xlink"
               >
@@ -324,22 +325,10 @@ const BarDetail: React.FC = () => {
                         </p>
                         
                         <div className="grid grid-cols-2 gap-2">
-                          <div className="flex justify-between text-xs">
-                            <span className="text-ash capitalize">quality:</span>
-                            <span className="text-ink font-medium">{review.ratings.music}%</span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-ash capitalize">vibe:</span>
-                            <span className="text-ink font-medium">{review.ratings.vibe}%</span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-ash capitalize">price:</span>
-                            <span className="text-ink font-medium">{review.ratings.crowd}%</span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-ash capitalize">friendliness:</span>
-                            <span className="text-ink font-medium">{review.ratings.safety}%</span>
-                          </div>
+                          <RatingBar label="Quality" value={review.ratings.music} />
+                          <RatingBar label="Vibe" value={review.ratings.vibe} />
+                          <RatingBar label="Price" value={review.ratings.crowd} />
+                          <RatingBar label="Friendliness" value={review.ratings.safety} />
                         </div>
                         
                         {review.queueTime && (

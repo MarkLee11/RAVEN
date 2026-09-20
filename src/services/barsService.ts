@@ -1,6 +1,55 @@
 import { supabase } from '../lib/supabase';
 import { Venue } from '../contracts/types';
 
+interface ThemeRef {
+  name?: string;
+  category?: string;
+}
+
+interface BarThemeRow {
+  themes?: ThemeRef | ThemeRef[] | null;
+}
+
+interface DistrictRef {
+  name?: string;
+}
+
+interface BarRatingsRef {
+  quality_rating?: number;
+  price_rating?: number;
+  vibe_rating?: number;
+  friendliness_rating?: number;
+}
+
+interface BarLocationRef {
+  address_line?: string;
+}
+
+interface BarRow {
+  id: number;
+  name: string;
+  description?: string;
+  cash_only?: boolean;
+  card_accepted?: boolean;
+  districts?: DistrictRef | DistrictRef[] | null;
+  bar_ratings?: BarRatingsRef | BarRatingsRef[] | null;
+  bar_themes?: BarThemeRow[] | null;
+  bar_locations?: BarLocationRef[] | null;
+}
+
+interface BarReviewAggregateRow {
+  bar_id: number;
+  quality_rating: number;
+  price_rating: number;
+  vibe_rating: number;
+  friendliness_rating: number;
+}
+
+const firstItem = <T>(value: T | T[] | null | undefined): T | null => {
+  if (!value) return null;
+  return Array.isArray(value) ? (value[0] ?? null) : value;
+};
+
 // 获取所有区域 (与clubs共用)
 export const getBarDistricts = async (): Promise<string[]> => {
   try {
@@ -96,18 +145,18 @@ export const barsService = {
       if (!barsData) return [];
 
       // Apply theme filtering if provided
-      let filteredBars = barsData;
+      let filteredBars: BarRow[] = (barsData as BarRow[]) ?? [];
       if (themes && themes.length > 0) {
-        filteredBars = barsData.filter(bar => 
+        filteredBars = filteredBars.filter(bar => 
           bar.bar_themes?.some(bt => 
-            themes.includes(bt.themes?.name)
+            themes.includes(firstItem(bt.themes)?.name || '')
           )
         );
       }
 
       // Compute review-averaged ratings for each bar (0-100 scale)
-      const barIds: number[] = filteredBars.map((b: any) => b.id).filter((v: any) => typeof v === 'number');
-      let averagesByBarId: Record<number, { quality: number; price: number; vibe: number; friendliness: number }> = {};
+      const barIds = filteredBars.map((b) => b.id).filter((v) => typeof v === 'number');
+      const averagesByBarId: Record<number, { quality: number; price: number; vibe: number; friendliness: number }> = {};
       
       try {
         if (barIds.length > 0) {
@@ -118,7 +167,7 @@ export const barsService = {
             
           if (!avgError && Array.isArray(avgRows)) {
             const agg: Record<number, { q: number; p: number; v: number; f: number; n: number }> = {};
-            for (const row of avgRows as any[]) {
+            for (const row of avgRows as BarReviewAggregateRow[]) {
               const idNum = Number(row.bar_id);
               if (!agg[idNum]) agg[idNum] = { q: 0, p: 0, v: 0, f: 0, n: 0 };
               agg[idNum].q += Number(row.quality_rating || 0);
@@ -146,18 +195,20 @@ export const barsService = {
 
       // Transform database data to Venue format
       const venues: Venue[] = filteredBars.map(bar => {
-        const ratings = bar.bar_ratings || {
+        const ratings = firstItem(bar.bar_ratings) || {
           quality_rating: 0,
           price_rating: 0,
           vibe_rating: 0,
           friendliness_rating: 0
         };
 
-        const themes = bar.bar_themes?.map(bt => bt.themes?.name).filter(Boolean) || [];
+        const themeNames = (bar.bar_themes || [])
+          .map((bt) => firstItem(bt.themes)?.name)
+          .filter((name): name is string => Boolean(name));
         
         // Build tags array from themes and payment info
         const tags = [
-          ...themes,
+          ...themeNames,
           ...(bar.cash_only ? ['cash-only'] : []),
           ...(bar.card_accepted ? ['card-accepted'] : []),
         ];
@@ -167,8 +218,8 @@ export const barsService = {
         return {
           id: bar.id.toString(),
           name: bar.name,
-          district: bar.districts?.name || 'Unknown District',
-          tags: tags as any[],
+          district: firstItem(bar.districts)?.name || 'Unknown District',
+          tags: tags,
           ratings: {
             // Map new rating dimensions to old structure for compatibility
             // quality -> music, price -> crowd, vibe -> vibe, friendliness -> safety
@@ -219,14 +270,16 @@ export const barsService = {
         return null;
       }
 
-      const ratings = barData.bar_ratings || {
+      const ratings = firstItem(barData.bar_ratings as BarRatingsRef | BarRatingsRef[] | null) || {
         quality_rating: 0,
         price_rating: 0,
         vibe_rating: 0,
         friendliness_rating: 0
       };
 
-      const themes = barData.bar_themes?.map(bt => bt.themes?.name).filter(Boolean) || [];
+      const themes = ((barData.bar_themes as BarThemeRow[] | null) || [])
+        .map((bt) => firstItem(bt.themes)?.name)
+        .filter((name): name is string => Boolean(name));
       
       const tags = [
         ...themes,
@@ -237,8 +290,8 @@ export const barsService = {
       return {
         id: barData.id.toString(),
         name: barData.name,
-        district: barData.districts?.name || 'Unknown District',
-        tags: tags as any[],
+        district: firstItem(barData.districts as DistrictRef | DistrictRef[] | null)?.name || 'Unknown District',
+        tags: tags,
         ratings: {
           // Map new rating dimensions for compatibility
           music: Math.round(ratings?.quality_rating || 0),

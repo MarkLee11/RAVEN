@@ -1,0 +1,800 @@
+[
+  {
+    "column_name": "id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": "nextval('club_reviews_id_seq'::regclass)",
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "club_id",
+    "data_type": "bigint",
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "user_id",
+    "data_type": "uuid",
+    "is_nullable": "NO",
+    "column_default": null,
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "review_text",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "music_rating",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "vibe_rating",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "crowd_rating",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "safety_rating",
+    "data_type": "numeric",
+    "is_nullable": "YES",
+    "column_default": null,
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "NO",
+    "column_default": "now()",
+    "character_maximum_length": null
+  },
+  {
+    "column_name": "photo_urls",
+    "data_type": "ARRAY",
+    "is_nullable": "YES",
+    "column_default": "'{}'::text[]",
+    "character_maximum_length": null
+  }
+]
+
+[
+  {
+    "table_exists": true
+  }
+]
+
+[
+  {
+    "id": 41,
+    "name": "Berghain "
+  },
+  {
+    "id": 42,
+    "name": "Sisyphos"
+  },
+  {
+    "id": 44,
+    "name": "Tresor"
+  },
+  {
+    "id": 45,
+    "name": "SchwuZ"
+  },
+  {
+    "id": 46,
+    "name": "://about blank"
+  },
+  {
+    "id": 47,
+    "name": "KitKatClub"
+  },
+  {
+    "id": 48,
+    "name": "Kater Blau"
+  },
+  {
+    "id": 49,
+    "name": "Renate"
+  },
+  {
+    "id": 50,
+    "name": "RSO.Berlin"
+  },
+  {
+    "id": 51,
+    "name": "Club der Visionaere"
+  },
+  {
+    "id": 52,
+    "name": "OHM"
+  },
+  {
+    "id": 53,
+    "name": "Golden Gate"
+  },
+  {
+    "id": 54,
+    "name": "Crack Bellmer"
+  },
+  {
+    "id": 55,
+    "name": "Polygon Club"
+  },
+  {
+    "id": 56,
+    "name": "DSTRKT"
+  },
+  {
+    "id": 57,
+    "name": "Else"
+  },
+  {
+    "id": 58,
+    "name": "Lokschuppen Berlin"
+  },
+  {
+    "id": 59,
+    "name": "Paloma Bar"
+  },
+  {
+    "id": 60,
+    "name": "AVA Club"
+  },
+  {
+    "id": 61,
+    "name": "808 Berlin"
+  },
+  {
+    "id": 62,
+    "name": "ÆDEN"
+  },
+  {
+    "id": 63,
+    "name": "Arena Club"
+  },
+  {
+    "id": 64,
+    "name": "b-flat"
+  },
+  {
+    "id": 65,
+    "name": "Badehaus"
+  },
+  {
+    "id": 66,
+    "name": "Ballhaus Spandau"
+  },
+  {
+    "id": 67,
+    "name": "Bi Nuu"
+  },
+  {
+    "id": 68,
+    "name": "Birgit"
+  },
+  {
+    "id": 69,
+    "name": "Bohnengold"
+  },
+  {
+    "id": 70,
+    "name": "Bricks"
+  },
+  {
+    "id": 71,
+    "name": "Bulbul Berlin"
+  },
+  {
+    "id": 72,
+    "name": "Cassiopeia"
+  },
+  {
+    "id": 73,
+    "name": "Der Weiße Hase"
+  },
+  {
+    "id": 74,
+    "name": "Duncker Club"
+  },
+  {
+    "id": 75,
+    "name": "Frannz Club"
+  },
+  {
+    "id": 76,
+    "name": "Gretchen"
+  },
+  {
+    "id": 77,
+    "name": "Hafenbar"
+  },
+  {
+    "id": 78,
+    "name": "Havanna"
+  },
+  {
+    "id": 79,
+    "name": "Hoppetosse"
+  },
+  {
+    "id": 80,
+    "name": "Humboldthain Club"
+  },
+  {
+    "id": 81,
+    "name": "Insomnia"
+  },
+  {
+    "id": 82,
+    "name": "Lido"
+  },
+  {
+    "id": 83,
+    "name": "M01"
+  },
+  {
+    "id": 84,
+    "name": "Matrix"
+  },
+  {
+    "id": 85,
+    "name": "Maxxim Club"
+  },
+  {
+    "id": 86,
+    "name": "Metropol"
+  },
+  {
+    "id": 87,
+    "name": "MUENZE (Alte Münze)"
+  },
+  {
+    "id": 88,
+    "name": "OXI"
+  },
+  {
+    "id": 89,
+    "name": "Prinz Charles"
+  },
+  {
+    "id": 90,
+    "name": "Privatclub"
+  },
+  {
+    "id": 91,
+    "name": "Ritter Butzke"
+  },
+  {
+    "id": 92,
+    "name": "SO36"
+  },
+  {
+    "id": 93,
+    "name": "Teledisko"
+  },
+  {
+    "id": 94,
+    "name": "Trauma Bar und Kino"
+  },
+  {
+    "id": 95,
+    "name": "Void Club"
+  },
+  {
+    "id": 96,
+    "name": "Weekend Club"
+  },
+  {
+    "id": 97,
+    "name": "YAAM"
+  },
+  {
+    "id": 98,
+    "name": "Zita"
+  },
+  {
+    "id": 99,
+    "name": "Zur Klappe"
+  },
+  {
+    "id": 100,
+    "name": "Zig Zag"
+  }
+]
+
+[
+  {
+    "auth_users_exists": true
+  }
+]
+
+[
+  {
+    "column_name": "instance_id",
+    "data_type": "uuid",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "id",
+    "data_type": "uuid",
+    "is_nullable": "NO",
+    "column_default": null
+  },
+  {
+    "column_name": "aud",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "role",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "email",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "encrypted_password",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "email_confirmed_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "invited_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "confirmation_token",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "confirmation_sent_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "recovery_token",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "recovery_sent_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "email_change_token_new",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "email_change",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "email_change_sent_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "last_sign_in_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "raw_app_meta_data",
+    "data_type": "jsonb",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "raw_user_meta_data",
+    "data_type": "jsonb",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "is_super_admin",
+    "data_type": "boolean",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "created_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "updated_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "phone",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": "NULL::character varying"
+  },
+  {
+    "column_name": "phone_confirmed_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "phone_change",
+    "data_type": "text",
+    "is_nullable": "YES",
+    "column_default": "''::character varying"
+  },
+  {
+    "column_name": "phone_change_token",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": "''::character varying"
+  },
+  {
+    "column_name": "phone_change_sent_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "confirmed_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "email_change_token_current",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": "''::character varying"
+  },
+  {
+    "column_name": "email_change_confirm_status",
+    "data_type": "smallint",
+    "is_nullable": "YES",
+    "column_default": "0"
+  },
+  {
+    "column_name": "banned_until",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "reauthentication_token",
+    "data_type": "character varying",
+    "is_nullable": "YES",
+    "column_default": "''::character varying"
+  },
+  {
+    "column_name": "reauthentication_sent_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "is_sso_user",
+    "data_type": "boolean",
+    "is_nullable": "NO",
+    "column_default": "false"
+  },
+  {
+    "column_name": "deleted_at",
+    "data_type": "timestamp with time zone",
+    "is_nullable": "YES",
+    "column_default": null
+  },
+  {
+    "column_name": "is_anonymous",
+    "data_type": "boolean",
+    "is_nullable": "NO",
+    "column_default": "false"
+  }
+]
+
+[
+  {
+    "id": "4898bf03-f12b-47dd-a123-03564b3ff94b",
+    "email": "aa1439422778@gmail.com",
+    "created_at": "2025-08-14 06:54:04.025643+00"
+  },
+  {
+    "id": "06955549-c87f-4b74-ba54-fefbb09e22ba",
+    "email": "1439422778@qq.com",
+    "created_at": "2025-08-14 08:44:27.035788+00"
+  },
+  {
+    "id": "fe851f64-1a2d-4f89-84bf-393f27864c65",
+    "email": "k4x9l3z0@mail.com",
+    "created_at": "2025-08-14 08:46:07.525725+00"
+  },
+  {
+    "id": "38a83d44-13d7-4b47-8828-5d9d9bc5da5a",
+    "email": "8754x@mail.com",
+    "created_at": "2025-08-14 08:50:52.149355+00"
+  },
+  {
+    "id": "6df2fa71-1f80-4878-ad65-8a0d6730b8f1",
+    "email": "3947e0@mail.com",
+    "created_at": "2025-08-14 08:52:44.180062+00"
+  },
+  {
+    "id": "2790f25c-ee7b-4aae-aece-bdf8ab99647d",
+    "email": "9e0760@mail.com",
+    "created_at": "2025-08-14 08:52:44.180062+00"
+  },
+  {
+    "id": "1d8d109c-9da9-40fc-976e-1913f843d5ce",
+    "email": "859782@mail.com",
+    "created_at": "2025-08-14 08:52:44.180062+00"
+  },
+  {
+    "id": "9f6492e4-daae-446b-9ac7-d724753434f7",
+    "email": "afe4b7@mail.com",
+    "created_at": "2025-08-14 08:52:44.180062+00"
+  },
+  {
+    "id": "e0f1e3e8-be44-42ca-b7b6-f3cea88ea842",
+    "email": "c40ec2@mail.com",
+    "created_at": "2025-08-14 08:52:44.180062+00"
+  },
+  {
+    "id": "717f00e8-ef5e-4d9f-a56a-611c53a2e144",
+    "email": "4a47a7@mail.com",
+    "created_at": "2025-08-14 08:52:44.180062+00"
+  },
+  {
+    "id": "8368c6aa-d61d-42fc-8dcf-7f176456f698",
+    "email": "0cea73@mail.com",
+    "created_at": "2025-08-14 08:53:15.383276+00"
+  },
+  {
+    "id": "b30a247d-3a7c-490a-899f-cd5e3800dbd0",
+    "email": "ca0d58@mail.com",
+    "created_at": "2025-08-14 08:53:15.383276+00"
+  },
+  {
+    "id": "2797861f-34ef-4c8f-b83d-f2e747a728f6",
+    "email": "310138@mail.com",
+    "created_at": "2025-08-14 08:53:15.383276+00"
+  },
+  {
+    "id": "92115d26-8de6-49f2-aee2-1bc1dfc75eb8",
+    "email": "d8a27a@mail.com",
+    "created_at": "2025-08-14 08:53:15.383276+00"
+  },
+  {
+    "id": "4a1efe94-cf9f-4609-a793-f1479436e576",
+    "email": "637da1@mail.com",
+    "created_at": "2025-08-14 08:53:15.383276+00"
+  },
+  {
+    "id": "38c8a0c6-1c8e-4295-bb85-4dacca18ed28",
+    "email": "cbd3e2@mail.com",
+    "created_at": "2025-08-14 08:53:15.383276+00"
+  },
+  {
+    "id": "c973c2b4-9016-4953-a488-2b25a4bd6846",
+    "email": "af51fa@mail.com",
+    "created_at": "2025-08-14 08:53:15.383276+00"
+  },
+  {
+    "id": "ed79cd9e-2edd-4b19-8bf7-36c2be494ac7",
+    "email": "51dbdb@mail.com",
+    "created_at": "2025-08-14 08:53:15.383276+00"
+  },
+  {
+    "id": "a7ed85da-0318-4efc-936d-217f1c6ad9e0",
+    "email": "636d7b@mail.com",
+    "created_at": "2025-08-14 08:53:15.383276+00"
+  },
+  {
+    "id": "1379bcb5-24a2-4248-b642-cc1361cf0ab3",
+    "email": "8ba896@mail.com",
+    "created_at": "2025-08-14 08:53:15.383276+00"
+  }
+]
+
+[
+  {
+    "public_users_exists": false
+  }
+]
+
+[
+  {
+    "query_type": "PUBLIC_USERS_TABLE_STRUCTURE"
+  }
+]
+
+[
+  {
+    "id": 2,
+    "club_id": 41,
+    "user_id": "4898bf03-f12b-47dd-a123-03564b3ff94b",
+    "review_text": "xxx",
+    "music_rating": "3.40",
+    "vibe_rating": "3.55",
+    "crowd_rating": "4.20",
+    "safety_rating": "4.35",
+    "created_at": "2025-08-14 07:57:44.353724+00",
+    "photo_urls": []
+  },
+  {
+    "id": 3,
+    "club_id": 41,
+    "user_id": "4898bf03-f12b-47dd-a123-03564b3ff94b",
+    "review_text": "888",
+    "music_rating": "5.00",
+    "vibe_rating": "4.70",
+    "crowd_rating": "4.75",
+    "safety_rating": "4.80",
+    "created_at": "2025-08-14 08:00:02.882544+00",
+    "photo_urls": []
+  },
+  {
+    "id": 4,
+    "club_id": 41,
+    "user_id": "4898bf03-f12b-47dd-a123-03564b3ff94b",
+    "review_text": null,
+    "music_rating": "2.50",
+    "vibe_rating": "2.50",
+    "crowd_rating": "2.50",
+    "safety_rating": "2.50",
+    "created_at": "2025-08-14 15:07:18.744212+00",
+    "photo_urls": []
+  },
+  {
+    "id": 5,
+    "club_id": 41,
+    "user_id": "4898bf03-f12b-47dd-a123-03564b3ff94b",
+    "review_text": null,
+    "music_rating": "2.50",
+    "vibe_rating": "2.50",
+    "crowd_rating": "2.50",
+    "safety_rating": "2.50",
+    "created_at": "2025-08-14 15:49:59.571324+00",
+    "photo_urls": []
+  },
+  {
+    "id": 6,
+    "club_id": 41,
+    "user_id": "4898bf03-f12b-47dd-a123-03564b3ff94b",
+    "review_text": "Just okay",
+    "music_rating": "4.15",
+    "vibe_rating": "4.60",
+    "crowd_rating": "4.75",
+    "safety_rating": "4.80",
+    "created_at": "2025-08-14 16:34:55.142762+00",
+    "photo_urls": []
+  }
+]
+
+[
+  {
+    "table_name": "users",
+    "table_schema": "auth"
+  },
+  {
+    "table_name": "bar_reviews",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_favorites",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_links",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_locations",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_music_styles",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_opening_hours",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_photos",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_ratings",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_reviews",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_slugs",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_themes",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_tonight_vibe",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_vibe_reports",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "clubs",
+    "table_schema": "public"
+  }
+]
+
+[
+  {
+    "table_name": "bar_reviews",
+    "table_schema": "public"
+  },
+  {
+    "table_name": "club_reviews",
+    "table_schema": "public"
+  }
+]
+
+[
+  {
+    "total_clubs": 59
+  }
+]
+
+[
+  {
+    "total_users": 1010
+  }
+]

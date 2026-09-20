@@ -1,6 +1,64 @@
 import { supabase } from '../lib/supabase';
 import { Venue } from '../contracts/types';
 
+interface ThemeRef {
+  name?: string;
+}
+
+interface ClubThemeRow {
+  themes?: ThemeRef | ThemeRef[] | null;
+}
+
+interface DistrictRef {
+  name?: string;
+}
+
+interface ClubRatingsRef {
+  music_rating?: number;
+  vibe_rating?: number;
+  crowd_rating?: number;
+  safety_rating?: number;
+}
+
+interface VibeRef {
+  status?: string;
+}
+
+interface ClubLocationRef {
+  address_line?: string;
+}
+
+interface ClubRow {
+  id: number;
+  name: string;
+  description?: string;
+  outdoor_area?: boolean;
+  smoke_room?: boolean;
+  awareness_room?: boolean;
+  dark_room?: boolean;
+  crusing_area?: boolean;
+  cash_only?: boolean;
+  card_accepted?: boolean;
+  districts?: DistrictRef | DistrictRef[] | null;
+  club_ratings?: ClubRatingsRef | ClubRatingsRef[] | null;
+  club_themes?: ClubThemeRow[] | null;
+  club_tonight_vibe?: VibeRef[] | null;
+  club_locations?: ClubLocationRef[] | null;
+}
+
+interface ClubReviewAggregateRow {
+  club_id: number;
+  music_rating: number;
+  vibe_rating: number;
+  crowd_rating: number;
+  safety_rating: number;
+}
+
+const firstItem = <T>(value: T | T[] | null | undefined): T | null => {
+  if (!value) return null;
+  return Array.isArray(value) ? (value[0] ?? null) : value;
+};
+
 // 获取所有区域
 export const getDistricts = async (): Promise<string[]> => {
   try {
@@ -116,8 +174,9 @@ export const clubsService = {
       if (!clubsData) return [];
 
       // Compute review-averaged ratings for each club (0-5 -> 0-100)
-      const clubIds: number[] = clubsData.map((c: any) => c.id).filter((v: any) => typeof v === 'number');
-      let averagesByClubId: Record<number, { music: number; vibe: number; crowd: number; safety: number }> = {};
+      const clubRows: ClubRow[] = (clubsData as ClubRow[]) ?? [];
+      const clubIds = clubRows.map((c) => c.id).filter((v) => typeof v === 'number');
+      const averagesByClubId: Record<number, { music: number; vibe: number; crowd: number; safety: number }> = {};
       try {
         if (clubIds.length > 0) {
           const { data: avgRows, error: avgError } = await supabase
@@ -126,7 +185,7 @@ export const clubsService = {
             .in('club_id', clubIds);
           if (!avgError && Array.isArray(avgRows)) {
             const agg: Record<number, { m: number; v: number; c: number; s: number; n: number }> = {};
-            for (const row of avgRows as any[]) {
+            for (const row of avgRows as ClubReviewAggregateRow[]) {
               const idNum = Number(row.club_id);
               if (!agg[idNum]) agg[idNum] = { m: 0, v: 0, c: 0, s: 0, n: 0 };
               agg[idNum].m += Number(row.music_rating || 0);
@@ -153,15 +212,17 @@ export const clubsService = {
       }
 
       // Transform database data to Venue format
-      const venues: Venue[] = clubsData.map(club => {
-        const ratings = club.club_ratings || {
+      const venues: Venue[] = clubRows.map(club => {
+        const ratings = firstItem(club.club_ratings) || {
           music_rating: 0,
           vibe_rating: 0,
           crowd_rating: 0,
           safety_rating: 0
         };
 
-        const themes = club.club_themes?.map(ct => ct.themes?.name).filter(Boolean) || [];
+        const themes = (club.club_themes || [])
+          .map((ct) => firstItem(ct.themes)?.name)
+          .filter((name): name is string => Boolean(name));
         const hasLiveVibe = club.club_tonight_vibe?.some(vibe => vibe.status === 'live') || false;
 
         // Build tags array from database boolean fields and themes
@@ -181,8 +242,8 @@ export const clubsService = {
         return {
           id: club.id.toString(),
           name: club.name,
-          district: club.districts?.name || 'Unknown District',
-          tags: tags as any[],
+          district: firstItem(club.districts)?.name || 'Unknown District',
+          tags: tags,
           ratings: {
             // Prefer arithmetic mean from reviews if available, else fall back to club_ratings
             music: averaged ? averaged.music : Math.round(ratings?.music_rating || 0),
@@ -235,21 +296,23 @@ export const clubsService = {
         return null;
       }
 
-      const ratings = clubData.club_ratings || {
+      const ratings = firstItem(clubData.club_ratings as ClubRatingsRef | ClubRatingsRef[] | null) || {
         music_rating: 0,
         vibe_rating: 0,
         crowd_rating: 0,
         safety_rating: 0
       };
 
-      const themes = clubData.club_themes?.map(ct => ct.themes?.name).filter(Boolean) || [];
+      const themes = ((clubData.club_themes as ClubThemeRow[] | null) || [])
+        .map((ct) => firstItem(ct.themes)?.name)
+        .filter((name): name is string => Boolean(name));
       const hasLiveVibe = clubData.club_tonight_vibe?.some(vibe => vibe.status === 'live') || false;
 
       return {
         id: clubData.id.toString(),
         name: clubData.name,
-        district: clubData.districts?.name || 'Unknown District',
-        tags: themes as any[],
+        district: firstItem(clubData.districts as DistrictRef | DistrictRef[] | null)?.name || 'Unknown District',
+        tags: themes,
         ratings: {
           music: Math.round(ratings?.music_rating || 0),
           vibe: Math.round(ratings?.vibe_rating || 0),

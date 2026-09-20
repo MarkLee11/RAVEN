@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import type { CSSProperties } from 'react';
 import '../styles/raven-bottom-nav.css';
 
 const RavenBottomNav: React.FC = () => {
@@ -42,7 +43,7 @@ const RavenBottomNav: React.FC = () => {
     <div className="raven-nav" role="tablist" aria-label="Primary">
       <div 
         className="pane" 
-        style={{ ['--i' as any]: currentIndex }}
+        style={{ '--i': currentIndex } as CSSProperties}
       >
         {tabs.map((tab, index) => (
           <button

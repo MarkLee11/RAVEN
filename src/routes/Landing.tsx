@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Zap } from 'lucide-react';
-import Button from '../components/ui/Button';
+import { Zap } from 'lucide-react';
 import Card from '../components/ui/Card';
 import WordStreamReviews from '../components/WordStreamReviews';
 import { supabase } from '../lib/supabase';
 
 const Landing: React.FC = () => {
-  const headerRef = React.useRef<HTMLDivElement>(null);
   const cardsRef = React.useRef<HTMLDivElement>(null);
   const [clubsCount, setClubsCount] = useState<number | null>(null);
 
@@ -46,7 +44,6 @@ const Landing: React.FC = () => {
 
           {/* Word Stream Reviews */}
           <WordStreamReviews
-            anchorTopRef={null}
             anchorBottomRef={cardsRef}
             density={48}
             laneHeight={96}

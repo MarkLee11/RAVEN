@@ -1,67 +1,102 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, LogOut, Eye, EyeOff, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Mail, Lock, LogOut, Eye, EyeOff, MessageCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { clubsService } from '../services/clubsService';
 import { barsService } from '../services/barsService';
 import { reviewsService } from '../services/reviewsService';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
-import Badge from '../components/ui/Badge';
+import { useAuth } from '../contexts/useAuth';
 
-interface UserProfile {
+interface AuthRedirectState {
+  returnTo?: string;
+  returnState?: unknown;
+  submitState?: {
+    venueId: string;
+    venueName?: string;
+    venueType?: 'club' | 'bar';
+  };
+}
+
+interface LatestReview {
   id: string;
-  email: string;
-  created_at: string;
+  venueName: string;
+  venueType: 'club' | 'bar';
+  createdAt: Date;
+  reviewText: string;
+  ratings: {
+    music: number;
+    vibe: number;
+    crowd: number;
+    safety: number;
+  };
 }
 
-interface AuthError {
-  message: string;
+interface LatestClubReviewRow {
+  id: number | string;
+  created_at: string;
+  review_text: string | null;
+  music_rating: number | null;
+  crowd_rating: number | null;
+  vibe_rating: number | null;
+  safety_rating: number | null;
+  clubs?: { name?: string } | Array<{ name?: string }>;
 }
+
+interface LatestBarReviewRow {
+  id: number | string;
+  created_at: string;
+  review_text: string | null;
+  quality_rating: number | null;
+  price_rating: number | null;
+  vibe_rating: number | null;
+  friendliness_rating: number | null;
+  bars?: { name?: string } | Array<{ name?: string }>;
+}
+
+const isAuthRedirectState = (state: unknown): state is AuthRedirectState => {
+  if (!state || typeof state !== 'object') return false;
+  const candidate = state as Record<string, unknown>;
+  if (candidate.returnTo !== undefined && typeof candidate.returnTo !== 'string') return false;
+  return true;
+};
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user, loading: checkingAuth } = useAuth();
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<any>(null);
-  const [checkingAuth, setCheckingAuth] = useState(true);
   const [clubsTotal, setClubsTotal] = useState<number>(0);
   const [barsTotal, setBarsTotal] = useState<number>(0);
   const [loadingCounts, setLoadingCounts] = useState(true);
   const [userClubsVisited, setUserClubsVisited] = useState<number>(0);
   const [userBarsVisited, setUserBarsVisited] = useState<number>(0);
   const [loadingUserCounts, setLoadingUserCounts] = useState(true);
-  const [reviewHistory, setReviewHistory] = useState<{
-    reviews: Array<{
-      id: string;
-      venueId: string;
-      venueName: string;
-      venueType: 'club' | 'bar';
-      ratings: {
-        music: number;
-        vibe: number;
-        crowd: number;
-        safety: number;
-      };
-      comment: string;
-      queueTime?: number;
-      createdAt: Date;
-    }>;
-    totalCount: number;
-    totalPages: number;
-  }>({ reviews: [], totalCount: 0, totalPages: 0 });
-  const [currentReviewPage, setCurrentReviewPage] = useState(1);
+  const [latestReview, setLatestReview] = useState<LatestReview | null>(null);
   const [loadingReviews, setLoadingReviews] = useState(false);
 
   useEffect(() => {
-    checkUser();
     loadCounts();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      loadUserCounts(user.id);
+      loadLatestReview(user.id);
+    } else {
+      setUserClubsVisited(0);
+      setUserBarsVisited(0);
+      setLoadingUserCounts(false);
+      setLatestReview(null);
+    }
+  }, [user]);
 
   const loadCounts = async () => {
     setLoadingCounts(true);
@@ -95,40 +130,109 @@ const Profile: React.FC = () => {
     }
   };
 
-  const loadReviewHistory = async (userId: string, page: number = 1) => {
+  const loadLatestReview = async (userId: string) => {
     setLoadingReviews(true);
     try {
-      const history = await reviewsService.getUserReviewHistory(userId, page, 3); // 3 reviews per page
-      setReviewHistory(history);
-      setCurrentReviewPage(page);
+      // Query both club_reviews and bar_reviews for the latest review
+      const { data: clubReviews, error: clubError } = await supabase
+        .from('club_reviews')
+        .select(`
+          id,
+          created_at,
+          review_text,
+          music_rating,
+          crowd_rating,
+          vibe_rating,
+          safety_rating,
+          clubs!inner(name)
+        `)
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .returns<LatestClubReviewRow[]>();
+
+      const { data: barReviews, error: barError } = await supabase
+        .from('bar_reviews')
+        .select(`
+          id,
+          created_at,
+          review_text,
+          quality_rating,
+          price_rating,
+          vibe_rating,
+          friendliness_rating,
+          bars!inner(name)
+        `)
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .returns<LatestBarReviewRow[]>();
+
+      if (clubError) console.error('Club reviews error:', clubError);
+      if (barError) console.error('Bar reviews error:', barError);
+
+      // Find the most recent review between clubs and bars
+      let mostRecentReview: LatestReview | null = null;
+      
+      if (clubReviews && clubReviews.length > 0) {
+        const row = clubReviews[0];
+        const clubName = Array.isArray(row.clubs)
+          ? row.clubs[0]?.name
+          : row.clubs?.name;
+        mostRecentReview = {
+          id: String(row.id),
+          venueName: clubName || 'Unknown Club',
+          venueType: 'club' as const,
+          createdAt: new Date(row.created_at),
+          reviewText: row.review_text || '',
+          ratings: {
+            music: Math.round((row.music_rating || 0) * 20),
+            crowd: Math.round((row.crowd_rating || 0) * 20),
+            vibe: Math.round((row.vibe_rating || 0) * 20),
+            safety: Math.round((row.safety_rating || 0) * 20),
+          }
+        };
+      }
+      
+      if (barReviews && barReviews.length > 0) {
+        const row = barReviews[0];
+        const barName = Array.isArray(row.bars)
+          ? row.bars[0]?.name
+          : row.bars?.name;
+        const barReview = {
+          id: String(row.id),
+          venueName: barName || 'Unknown Bar',
+          venueType: 'bar' as const,
+          createdAt: new Date(row.created_at),
+          reviewText: row.review_text || '',
+          ratings: {
+            music: Math.round(row.quality_rating || 0),
+            crowd: Math.round(row.price_rating || 0),
+            vibe: Math.round(row.vibe_rating || 0),
+            safety: Math.round(row.friendliness_rating || 0),
+          }
+        };
+        
+        if (!mostRecentReview || barReview.createdAt > mostRecentReview.createdAt) {
+          mostRecentReview = barReview;
+        }
+      }
+      
+      setLatestReview(mostRecentReview);
     } catch (error) {
-      console.error('Failed to load review history:', error);
+      console.error('Failed to load latest review:', error);
     } finally {
       setLoadingReviews(false);
     }
   };
 
-  const checkUser = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUser(user);
-        // Load user visit counts and review history when user is authenticated
-        await Promise.all([
-          loadUserCounts(user.id),
-          loadReviewHistory(user.id, 1)
-        ]);
-      } else {
-        // Reset user counts when no user
-        setUserClubsVisited(0);
-        setUserBarsVisited(0);
-        setLoadingUserCounts(false);
-        setReviewHistory({ reviews: [], totalCount: 0, totalPages: 0 });
-      }
-    } catch (error) {
-      console.error('Error checking user:', error);
-    } finally {
-      setCheckingAuth(false);
+  const redirectAfterAuth = () => {
+    const redirectState = isAuthRedirectState(location.state) ? location.state : null;
+    if (redirectState?.returnTo) {
+      navigate(redirectState.returnTo, {
+        state: redirectState.returnState ?? redirectState.submitState,
+        replace: true,
+      });
     }
   };
 
@@ -148,16 +252,12 @@ const Profile: React.FC = () => {
         return;
       }
 
-      if (data.user) {
-        setUser(data.user);
-        // Load user visit counts and review history
-        await Promise.all([
-          loadUserCounts(data.user.id),
-          loadReviewHistory(data.user.id, 1)
-        ]);
-        // Clear form
+      if (data.session) {
         setEmail('');
         setPassword('');
+        redirectAfterAuth();
+      } else if (data.user) {
+        setError('Please confirm your email before logging in.');
       }
     } catch (error) {
       setError('An unexpected error occurred');
@@ -183,16 +283,15 @@ const Profile: React.FC = () => {
         return;
       }
 
-      if (data.user) {
-        setUser(data.user);
-        // Load user visit counts and review history
-        await Promise.all([
-          loadUserCounts(data.user.id),
-          loadReviewHistory(data.user.id, 1)
-        ]);
-        // Clear form
+      if (data.session) {
         setEmail('');
         setPassword('');
+        redirectAfterAuth();
+      } else if (data.user) {
+        setEmail('');
+        setPassword('');
+        setError('Account created. Please check your email to confirm, then log in.');
+        setActiveTab('login');
       }
     } catch (error) {
       setError('An unexpected error occurred');
@@ -209,13 +308,9 @@ const Profile: React.FC = () => {
         console.error('Logout error:', error);
         return;
       }
-      
-      setUser(null);
+
       setEmail('');
       setPassword('');
-      // Reset user counts
-      setUserClubsVisited(0);
-      setUserBarsVisited(0);
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -318,124 +413,234 @@ const Profile: React.FC = () => {
           </Card>
 
           {/* Echo */}
-          <Card>
-            <h3 className="font-space text-lg text-ink mb-4">Echo</h3>
+          {/* Echo Card with Custom Gradient Style */}
+          <div className="echo-card-container">
+            <style>{`
+              .echo-card {
+                --background: linear-gradient(to right, #74ebd5 0%, #acb6e5 100%);
+                width: 100%;
+                min-height: 280px;
+                padding: 5px;
+                border-radius: 1rem;
+                overflow: visible;
+                background: #74ebd5;
+                background: var(--background);
+                position: relative;
+                z-index: 1;
+              }
+              
+              .echo-card::before,
+              .echo-card::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: 1rem;
+                z-index: -1;
+              }
+              
+              .echo-card::before {
+                background: linear-gradient(to bottom right, #f6d365 0%, #fda085 100%);
+                transform: rotate(2deg);
+              }
+              
+              .echo-card::after {
+                background: linear-gradient(to top right, #84fab0 0%, #8fd3f4 100%);
+                transform: rotate(-2deg);
+              }
+              
+              .echo-card-info {
+                --color: #1a1a1a;
+                background: var(--color);
+                color: white;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                width: 100%;
+                height: 100%;
+                min-height: 270px;
+                overflow: visible;
+                border-radius: 0.7rem;
+                position: relative;
+                z-index: 2;
+                padding: 1rem;
+              }
+              
+              .echo-card .title {
+                font-weight: bold;
+                letter-spacing: 0.1em;
+                color: #74ebd5;
+                margin-bottom: 1rem;
+                font-size: 1.125rem;
+              }
+              
+              .echo-card:hover::before,
+              .echo-card:hover::after {
+                opacity: 0;
+                transition: opacity 0.3s ease;
+              }
+              
+              .echo-card:hover .echo-card-info {
+                color: #74ebd5;
+                transition: color 1s;
+              }
+              
+              .progress-bar {
+                width: 100%;
+                height: 6px;
+                background-color: rgba(116, 235, 213, 0.2);
+                border-radius: 3px;
+                overflow: hidden;
+                margin-top: 4px;
+              }
+              
+              .progress-fill {
+                height: 100%;
+                background: linear-gradient(to right, #74ebd5, #acb6e5);
+                border-radius: 3px;
+                transition: width 0.3s ease;
+              }
+            `}</style>
             
-            {/* Debug info - remove after testing */}
-            <div className="mb-2 p-2 bg-ash/10 rounded text-xs text-ash">
-              <div>Debug: Reviews: {reviewHistory.reviews.length}, Total: {reviewHistory.totalCount}, Pages: {reviewHistory.totalPages}, Current: {currentReviewPage}</div>
-            </div>
-            
-            {loadingReviews ? (
-              <div className="text-center py-8">
-                <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
-                <p className="text-ash mt-2 text-sm">Loading review history...</p>
-              </div>
-            ) : reviewHistory.reviews.length === 0 ? (
-              <div className="text-center py-8">
-                <MessageCircle size={32} className="text-ash mx-auto mb-3 opacity-50" />
-                <p className="text-ash text-sm mb-2">No reviews yet</p>
-                <p className="text-ash/60 text-xs">Start exploring venues and share your experiences!</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {reviewHistory.reviews.map((review, index) => (
-                  <motion.div
-                    key={review.id}
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="border border-ash/20 rounded-lg p-3"
-                  >
-                    <div className="flex items-start justify-between mb-2">
+            <div className="echo-card">
+              <div className="echo-card-info">
+                <h3 className="title">Echo</h3>
+                
+                {loadingReviews ? (
+                  <div className="text-center py-8 flex-1 flex flex-col justify-center">
+                    <div className="w-6 h-6 border-2 border-raven border-t-transparent rounded-full animate-spin mx-auto" />
+                    <p className="text-gray-300 mt-2 text-sm">Loading latest review...</p>
+                  </div>
+                ) : !latestReview ? (
+                  <div className="text-center py-8 flex-1 flex flex-col justify-center">
+                    <MessageCircle size={32} className="text-gray-400 mx-auto mb-3 opacity-50" />
+                    <p className="text-gray-300 text-sm mb-2">No reviews yet</p>
+                    <p className="text-gray-400 text-xs">Start exploring venues and share your experiences!</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4 flex-1">
+                    {/* Venue Info */}
+                    <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <button
-                          onClick={() => navigate(`/${review.venueType}s/${review.venueId}`)}
-                          className="font-medium text-ink hover:text-raven transition-colors text-left"
-                        >
-                          {review.venueName}
-                        </button>
+                        <p className="font-medium text-white text-lg">{latestReview.venueName}</p>
                         <div className="flex items-center space-x-2 mt-1">
-                          <Badge size="sm" variant={review.venueType === 'club' ? 'raven' : 'default'}>
-                            {review.venueType.toUpperCase()}
-                          </Badge>
-                          <span className="text-xs text-ash">
-                            {review.createdAt.toLocaleDateString()}
+                          <span className="text-xs px-2 py-1 bg-gradient-to-r from-raven/20 to-raven/30 text-raven rounded">
+                            {latestReview.venueType.toUpperCase()}
+                          </span>
+                          <span className="text-xs text-gray-300">
+                            {latestReview.createdAt.toLocaleDateString()}
                           </span>
                         </div>
                       </div>
+                      <MessageCircle size={16} className="text-gray-400 opacity-50" />
                     </div>
-
-                    {review.comment && (
-                      <p className="text-sm text-ash mb-3 leading-relaxed line-clamp-2">
-                        {review.comment}
-                      </p>
-                    )}
-
-                    <div className="grid grid-cols-2 gap-2 text-xs">
-                      <div className="flex justify-between">
-                        <span className="text-ash">
-                          {review.venueType === 'bar' ? 'Quality:' : 'Music:'}
-                        </span>
-                        <span className="text-ink font-medium">{review.ratings.music}%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-ash">Vibe:</span>
-                        <span className="text-ink font-medium">{review.ratings.vibe}%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-ash">
-                          {review.venueType === 'bar' ? 'Price:' : 'Crowd:'}
-                        </span>
-                        <span className="text-ink font-medium">{review.ratings.crowd}%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-ash">
-                          {review.venueType === 'bar' ? 'Friendliness:' : 'Safety:'}
-                        </span>
-                        <span className="text-ink font-medium">{review.ratings.safety}%</span>
-                      </div>
-                    </div>
-
-                    {review.queueTime && (
-                      <div className="mt-2 text-xs text-ash">
-                        Queue time: {review.queueTime} minutes
+                    
+                    {/* Review Text */}
+                    {latestReview.reviewText && (
+                      <div className="border-t border-gray-600 pt-3">
+                        <p className="text-sm text-gray-200 leading-relaxed">
+                          {latestReview.reviewText.length > 100 
+                            ? `${latestReview.reviewText.substring(0, 100)}...` 
+                            : latestReview.reviewText
+                          }
+                        </p>
                       </div>
                     )}
-                  </motion.div>
-                ))}
-
-                {/* Pagination - temporarily always show for testing */}
-                {reviewHistory.reviews.length > 0 && (
-                  <div className="flex items-center justify-between pt-3 border-t border-ash/10">
-                    <button
-                      onClick={() => user && loadReviewHistory(user.id, currentReviewPage - 1)}
-                      disabled={currentReviewPage === 1 || loadingReviews}
-                      className="flex items-center space-x-1 px-3 py-1 text-xs bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                    >
-                      <ChevronLeft size={12} />
-                      <span>Previous</span>
-                    </button>
                     
-                    <span className="text-xs text-ash">
-                      <span className="text-raven">{currentReviewPage}</span>
-                      <span> / </span>
-                      <span className="text-raven">{reviewHistory.totalPages}</span>
-                    </span>
-                    
-                    <button
-                      onClick={() => user && loadReviewHistory(user.id, currentReviewPage + 1)}
-                      disabled={currentReviewPage >= reviewHistory.totalPages || loadingReviews}
-                      className="flex items-center space-x-1 px-3 py-1 text-xs bg-raven/10 text-raven border border-raven/30 rounded-md hover:bg-raven hover:text-berlin-black transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                    >
-                      <span>Next</span>
-                      <ChevronRight size={12} />
-                    </button>
+                    {/* Ratings with Progress Bars */}
+                    {latestReview.ratings && (
+                      <div className="border-t border-gray-600 pt-3">
+                        <div className="space-y-3">
+                          {latestReview.venueType === 'club' ? (
+                            <>
+                              <div>
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-xs text-gray-300">Music</span>
+                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.music.toFixed(0)}%</span>
+                                </div>
+                                <div className="progress-bar">
+                                  <div className="progress-fill" style={{width: `${latestReview.ratings.music}%`}}></div>
+                                </div>
+                              </div>
+                              <div>
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-xs text-gray-300">Crowd</span>
+                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.crowd.toFixed(0)}%</span>
+                                </div>
+                                <div className="progress-bar">
+                                  <div className="progress-fill" style={{width: `${latestReview.ratings.crowd}%`}}></div>
+                                </div>
+                              </div>
+                              <div>
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-xs text-gray-300">Vibe</span>
+                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.vibe.toFixed(0)}%</span>
+                                </div>
+                                <div className="progress-bar">
+                                  <div className="progress-fill" style={{width: `${latestReview.ratings.vibe}%`}}></div>
+                                </div>
+                              </div>
+                              <div>
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-xs text-gray-300">Safety</span>
+                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.safety.toFixed(0)}%</span>
+                                </div>
+                                <div className="progress-bar">
+                                  <div className="progress-fill" style={{width: `${latestReview.ratings.safety}%`}}></div>
+                                </div>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div>
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-xs text-gray-300">Quality</span>
+                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.music.toFixed(0)}%</span>
+                                </div>
+                                <div className="progress-bar">
+                                  <div className="progress-fill" style={{width: `${latestReview.ratings.music}%`}}></div>
+                                </div>
+                              </div>
+                              <div>
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-xs text-gray-300">Price</span>
+                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.crowd.toFixed(0)}%</span>
+                                </div>
+                                <div className="progress-bar">
+                                  <div className="progress-fill" style={{width: `${latestReview.ratings.crowd}%`}}></div>
+                                </div>
+                              </div>
+                              <div>
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-xs text-gray-300">Vibe</span>
+                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.vibe.toFixed(0)}%</span>
+                                </div>
+                                <div className="progress-bar">
+                                  <div className="progress-fill" style={{width: `${latestReview.ratings.vibe}%`}}></div>
+                                </div>
+                              </div>
+                              <div>
+                                <div className="flex justify-between items-center mb-1">
+                                  <span className="text-xs text-gray-300">Friendliness</span>
+                                  <span className="text-xs text-raven font-medium">{latestReview.ratings.safety.toFixed(0)}%</span>
+                                </div>
+                                <div className="progress-bar">
+                                  <div className="progress-fill" style={{width: `${latestReview.ratings.safety}%`}}></div>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
-            )}
-          </Card>
+            </div>
+          </div>
 
           {/* Logout Button at Bottom */}
           <Button

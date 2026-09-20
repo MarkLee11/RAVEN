@@ -6,8 +6,11 @@ type Props = {
   laneHeight?: number;
   colorsBase?: string;
   positiveRate?: number;
-  anchorTopRef: React.RefObject<HTMLElement> | null;
   anchorBottomRef: React.RefObject<HTMLElement>;
+};
+
+type CSSVars = React.CSSProperties & {
+  [key: `--${string}`]: string | number;
 };
 
 interface ReviewFragment {
@@ -263,7 +266,6 @@ const WordStreamReviews: React.FC<Props> = ({
   laneHeight = 96,
   colorsBase = '#8ACE00',
   positiveRate = 0.6,
-  anchorTopRef,
   anchorBottomRef,
 }) => {
   const [dimensions, setDimensions] = useState({ top: 0, height: laneHeight });
@@ -275,7 +277,9 @@ const WordStreamReviews: React.FC<Props> = ({
       const g = parseInt(hex.slice(3, 5), 16) / 255;
       const b = parseInt(hex.slice(5, 7), 16) / 255;
       const max = Math.max(r, g, b), min = Math.min(r, g, b);
-      let h = 0, s = 0, l = (max + min) / 2;
+      let h = 0;
+      let s = 0;
+      const l = (max + min) / 2;
       if (max !== min) {
         const d = max - min;
         s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
@@ -398,7 +402,9 @@ const WordStreamReviews: React.FC<Props> = ({
     update();
     window.addEventListener('resize', update);
     const ro = new ResizeObserver(update);
-    anchorBottomRef?.current && ro.observe(anchorBottomRef.current);
+    if (anchorBottomRef?.current) {
+      ro.observe(anchorBottomRef.current);
+    }
     return () => { window.removeEventListener('resize', update); ro.disconnect(); };
   }, [laneHeight, anchorBottomRef]);
 
@@ -451,21 +457,21 @@ const WordStreamReviews: React.FC<Props> = ({
         {wordItems.map((item) => {
           const main = `${item.direction === 'down' ? 'fall' : 'rise'} ${item.duration}s linear ${item.phaseDelay}s infinite`;
           const sway = `sway ${item.swayDur}s ease-in-out ${item.swayPhase}s infinite alternate`;
+          const style: CSSVars = {
+            left: `calc(${item.x}vw - 80px)`,
+            color: item.color,
+            animation: `${main}, ${sway}`,
+            '--tx': `${(Math.random() - 0.5) * 20}px`,
+            '--scale': item.scale,
+            '--op': item.opacity,
+            '--start-offset': `${item.startOffset}vh`,
+            '--mx': `${item.swayAmp}px`,
+          };
           return (
             <div
               key={item.id}
               className="word-stream-item text-sm font-medium"
-              style={{
-                left: `calc(${item.x}vw - 80px)`,
-                color: item.color,
-                animation: `${main}, ${sway}`,
-                // custom props used in keyframes
-                ['--tx' as any]: `${(Math.random() - 0.5) * 20}px`,
-                ['--scale' as any]: item.scale,
-                ['--op' as any]: item.opacity,
-                ['--start-offset' as any]: `${item.startOffset}vh`,
-                ['--mx' as any]: `${item.swayAmp}px`,
-              } as React.CSSProperties}
+              style={style}
             >
               {item.text}
             </div>

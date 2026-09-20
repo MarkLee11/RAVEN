@@ -1,0 +1,83 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Deploy target environment
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run check-all
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - run: npm audit --audit-level=high
+
+  preflight-secrets:
+    needs: quality-gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate required release secrets
+        shell: bash
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID_STAGING: ${{ secrets.NETLIFY_SITE_ID_STAGING }}
+          NETLIFY_SITE_ID_PRODUCTION: ${{ secrets.NETLIFY_SITE_ID_PRODUCTION }}
+        run: |
+          missing=0
+          if [ -z "$NETLIFY_AUTH_TOKEN" ]; then echo "Missing secret: NETLIFY_AUTH_TOKEN"; missing=1; fi
+          if [ -z "$NETLIFY_SITE_ID_STAGING" ]; then echo "Missing secret: NETLIFY_SITE_ID_STAGING"; missing=1; fi
+          if [ -z "$NETLIFY_SITE_ID_PRODUCTION" ]; then echo "Missing secret: NETLIFY_SITE_ID_PRODUCTION"; missing=1; fi
+          if [ "$missing" -ne 0 ]; then
+            echo "Release preflight failed due to missing secrets."
+            exit 1
+          fi
+
+  deploy-staging:
+    if: ${{ github.event.inputs.target == 'staging' }}
+    needs: preflight-secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy to Netlify Staging
+        run: npx netlify deploy --dir=dist --site="$NETLIFY_SITE_ID_STAGING" --auth="$NETLIFY_AUTH_TOKEN"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID_STAGING: ${{ secrets.NETLIFY_SITE_ID_STAGING }}
+
+  deploy-production:
+    if: ${{ github.event.inputs.target == 'production' }}
+    needs: preflight-secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy to Netlify Production
+        run: npx netlify deploy --prod --dir=dist --site="$NETLIFY_SITE_ID_PRODUCTION" --auth="$NETLIFY_AUTH_TOKEN"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID_PRODUCTION: ${{ secrets.NETLIFY_SITE_ID_PRODUCTION }}

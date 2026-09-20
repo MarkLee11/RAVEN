@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Settings, Heart, MapPin, Calendar, Star, Edit3 } from 'lucide-react';
+import { Settings, Heart, MapPin, Calendar, Star, Edit3 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Avatar from '../components/Avatar';
-import SectionHeader from '../components/SectionHeader';
 
 interface UserStats {
   reviewsCount: number;

@@ -1,0 +1,47 @@
+[2025-08-23T04:46:45.245Z] [INFO] 开始柏林酒吧数据爬取
+[2025-08-23T04:46:45.248Z] [INFO] 搜索区域: 柏林 (52.52, 13.405)
+[2025-08-23T04:46:45.248Z] [INFO] 搜索半径: 25km
+[2025-08-23T04:46:45.248Z] [INFO] 开始处理Google Places数据
+[2025-08-23T04:46:45.248Z] [INFO] 搜索Google Places: bar
+[2025-08-23T04:46:45.959Z] [INFO] 找到 20 个结果: bar
+[2025-08-23T04:46:51.418Z] [INFO] 搜索Google Places: pub
+[2025-08-23T04:46:51.873Z] [INFO] 找到 20 个结果: pub
+[2025-08-23T04:46:56.980Z] [INFO] 搜索Google Places: cocktail bar
+[2025-08-23T04:46:57.375Z] [INFO] 找到 20 个结果: cocktail bar
+[2025-08-23T04:47:02.251Z] [INFO] 搜索Google Places: wine bar
+[2025-08-23T04:47:02.644Z] [INFO] 找到 20 个结果: wine bar
+[2025-08-23T04:47:07.783Z] [INFO] 搜索Google Places: beer garden
+[2025-08-23T04:47:08.205Z] [INFO] 找到 20 个结果: beer garden
+[2025-08-23T04:47:13.387Z] [INFO] 搜索Google Places: nightclub
+[2025-08-23T04:47:13.801Z] [INFO] 找到 20 个结果: nightclub
+[2025-08-23T04:47:19.040Z] [INFO] 搜索Google Places: lounge
+[2025-08-23T04:47:19.440Z] [INFO] 找到 20 个结果: lounge
+[2025-08-23T04:47:24.541Z] [INFO] 搜索Google Places: brewery
+[2025-08-23T04:47:24.934Z] [INFO] 找到 20 个结果: brewery
+[2025-08-23T04:47:29.973Z] [INFO] 开始处理Foursquare数据
+[2025-08-23T04:47:29.973Z] [INFO] 搜索Foursquare: bar
+[2025-08-23T04:47:30.135Z] [ERROR] Foursquare搜索失败: Request failed with status code 401
+[2025-08-23T04:47:30.135Z] [INFO] Foursquare找到 0 个结果: bar
+[2025-08-23T04:47:31.645Z] [INFO] 搜索Foursquare: pub
+[2025-08-23T04:47:31.763Z] [ERROR] Foursquare搜索失败: Request failed with status code 401
+[2025-08-23T04:47:31.763Z] [INFO] Foursquare找到 0 个结果: pub
+[2025-08-23T04:47:33.271Z] [INFO] 搜索Foursquare: cocktail bar
+[2025-08-23T04:47:33.382Z] [ERROR] Foursquare搜索失败: Request failed with status code 401
+[2025-08-23T04:47:33.382Z] [INFO] Foursquare找到 0 个结果: cocktail bar
+[2025-08-23T04:47:34.892Z] [INFO] 搜索Foursquare: wine bar
+[2025-08-23T04:47:35.303Z] [ERROR] Foursquare搜索失败: Request failed with status code 401
+[2025-08-23T04:47:35.304Z] [INFO] Foursquare找到 0 个结果: wine bar
+[2025-08-23T04:47:36.804Z] [INFO] 搜索Foursquare: beer garden
+[2025-08-23T04:47:36.923Z] [ERROR] Foursquare搜索失败: Request failed with status code 401
+[2025-08-23T04:47:36.923Z] [INFO] Foursquare找到 0 个结果: beer garden
+[2025-08-23T04:47:38.432Z] [INFO] 搜索Foursquare: nightclub
+[2025-08-23T04:47:38.557Z] [ERROR] Foursquare搜索失败: Request failed with status code 401
+[2025-08-23T04:47:38.557Z] [INFO] Foursquare找到 0 个结果: nightclub
+[2025-08-23T04:47:40.063Z] [INFO] 搜索Foursquare: lounge
+[2025-08-23T04:47:40.182Z] [ERROR] Foursquare搜索失败: Request failed with status code 401
+[2025-08-23T04:47:40.182Z] [INFO] Foursquare找到 0 个结果: lounge
+[2025-08-23T04:47:41.684Z] [INFO] 搜索Foursquare: brewery
+[2025-08-23T04:47:41.801Z] [ERROR] Foursquare搜索失败: Request failed with status code 401
+[2025-08-23T04:47:41.802Z] [INFO] Foursquare找到 0 个结果: brewery
+[2025-08-23T04:47:43.306Z] [INFO] JSON数据已保存到: E:\RAVEN\scripts\berlin-bars-data.json
+[2025-08-23T04:47:43.313Z] [INFO] SQL数据已保存到: E:\RAVEN\scripts\berlin-bars-data.sql

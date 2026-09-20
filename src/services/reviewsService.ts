@@ -235,26 +235,19 @@ export const reviewsService = {
     totalPages: number;
   }> {
     try {
-      console.log('Getting review history for userId:', userId);
+      const [clubReviewsResult, barReviewsResult] = await Promise.all([
+        supabase
+          .from('club_reviews')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('bar_reviews')
+          .select('*')
+          .eq('user_id', userId)
+          .order('created_at', { ascending: false }),
+      ]);
 
-      // First, get club reviews without joins to test basic connectivity
-      const clubReviewsResult = await supabase
-        .from('club_reviews')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
-
-      // Then get bar reviews
-      const barReviewsResult = await supabase
-        .from('bar_reviews')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
-
-      console.log('Club reviews raw:', clubReviewsResult);
-      console.log('Bar reviews raw:', barReviewsResult);
-
-      // Check for errors
       if (clubReviewsResult.error) {
         console.error('Error fetching club reviews:', clubReviewsResult.error);
       }
@@ -262,23 +255,59 @@ export const reviewsService = {
         console.error('Error fetching bar reviews:', barReviewsResult.error);
       }
 
-      // Get venue names separately
-      const allReviews: any[] = [];
+      const clubIds = Array.from(
+        new Set((clubReviewsResult.data || []).map((review) => Number(review.club_id)).filter((id) => Number.isFinite(id)))
+      );
+      const barIds = Array.from(
+        new Set((barReviewsResult.data || []).map((review) => Number(review.bar_id)).filter((id) => Number.isFinite(id)))
+      );
+
+      const [clubsLookupResult, barsLookupResult] = await Promise.all([
+        clubIds.length
+          ? supabase.from('clubs').select('id, name').in('id', clubIds)
+          : Promise.resolve({ data: [], error: null }),
+        barIds.length
+          ? supabase.from('bars').select('id, name').in('id', barIds)
+          : Promise.resolve({ data: [], error: null }),
+      ]);
+
+      if (clubsLookupResult.error) {
+        console.error('Error fetching club names:', clubsLookupResult.error);
+      }
+      if (barsLookupResult.error) {
+        console.error('Error fetching bar names:', barsLookupResult.error);
+      }
+
+      const clubNameMap = new Map<number, string>(
+        ((clubsLookupResult.data || []) as Array<{ id: number; name: string }>).map((club) => [Number(club.id), club.name])
+      );
+      const barNameMap = new Map<number, string>(
+        ((barsLookupResult.data || []) as Array<{ id: number; name: string }>).map((bar) => [Number(bar.id), bar.name])
+      );
+
+      const allReviews: Array<{
+        id: string;
+        venueId: string;
+        venueName: string;
+        venueType: 'club' | 'bar';
+        ratings: {
+          music: number;
+          vibe: number;
+          crowd: number;
+          safety: number;
+        };
+        comment: string;
+        queueTime?: number;
+        createdAt: Date;
+      }> = [];
 
       // Add club reviews
       if (clubReviewsResult.data && clubReviewsResult.data.length > 0) {
         for (const review of clubReviewsResult.data) {
-          // Get club name
-          const clubResult = await supabase
-            .from('clubs')
-            .select('name')
-            .eq('id', review.club_id)
-            .single();
-
           allReviews.push({
             id: `club_${review.id}`,
             venueId: review.club_id.toString(),
-            venueName: clubResult.data?.name || 'Unknown Club',
+            venueName: clubNameMap.get(Number(review.club_id)) || 'Unknown Club',
             venueType: 'club' as const,
             ratings: {
               music: Math.round((review.music_rating || 0) * 20), // Convert 0-5 to 0-100
@@ -296,17 +325,10 @@ export const reviewsService = {
       // Add bar reviews
       if (barReviewsResult.data && barReviewsResult.data.length > 0) {
         for (const review of barReviewsResult.data) {
-          // Get bar name
-          const barResult = await supabase
-            .from('bars')
-            .select('name')
-            .eq('id', review.bar_id)
-            .single();
-
           allReviews.push({
             id: `bar_${review.id}`,
             venueId: review.bar_id.toString(),
-            venueName: barResult.data?.name || 'Unknown Bar',
+            venueName: barNameMap.get(Number(review.bar_id)) || 'Unknown Bar',
             venueType: 'bar' as const,
             ratings: {
               music: Math.round(review.quality_rating || 0), // Already 0-100
@@ -321,8 +343,6 @@ export const reviewsService = {
         }
       }
 
-      console.log('All reviews after processing:', allReviews);
-
       // Sort by date (newest first)
       allReviews.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
@@ -331,13 +351,6 @@ export const reviewsService = {
       const totalPages = Math.ceil(totalCount / limit);
       const offset = (page - 1) * limit;
       const paginatedReviews = allReviews.slice(offset, offset + limit);
-
-      console.log('Final result:', {
-        totalCount,
-        totalPages,
-        currentPage: page,
-        paginatedCount: paginatedReviews.length
-      });
 
       return {
         reviews: paginatedReviews,

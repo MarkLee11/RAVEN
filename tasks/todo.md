@@ -129,3 +129,229 @@
 - **Comprehensive Coverage** - All major features, technical stack, and architecture patterns
 
 **The RAVEN project now has a completely accurate, comprehensive README.md that reflects the actual sophisticated Berlin nightlife discovery application with real Supabase integration, advanced animations, and professional-grade architecture.**
+
+## Service Unit Tests (bars/clubs) (2026-09-20)
+
+### Plan
+- [x] Add focused unit tests for `src/services/barsService.ts` mapping/fallback/failure paths.
+- [x] Add focused unit tests for `src/services/clubsService.ts` mapping/fallback/failure paths.
+- [x] Run targeted Vitest command and ensure pass.
+- [x] Append review summary and residual risks.
+
+### Review
+- Added `src/services/barsService.test.ts` with stable service-level tests using Vitest + mocked Supabase:
+  - Normal mapping path (district/tags/ratings/address), including review-aggregation override of base ratings.
+  - Missing relation fallback path (`Unknown District`, empty tags, zeroed ratings).
+  - Failure path (`bars` query error) returns safe empty array.
+- Added `src/services/clubsService.test.ts` with stable service-level tests using Vitest + mocked Supabase:
+  - Normal mapping path (district/tags/ratings/live vibe), including review-average scaling to 0-100 ratings.
+  - Missing relation fallback path (`Unknown District`, default ratings, safe flags/tags).
+  - Failure path (`clubs` query error) returns safe empty array.
+- Command result:
+  - `npm run test -- src/services/barsService.test.ts src/services/clubsService.test.ts` ✅ (2 files, 6 tests passed)
+- Residual risk:
+  - `getBar` / `getClub` single-item read paths are not covered in this round.
+  - District-filter branch (`districts -> id -> query.eq`) is not directly asserted in these tests.
+
+## 2026-09 Mature App Plan Task List
+
+### 1. Planning and Documentation
+- [x] Audit current project maturity gaps (testing, CI, auth, security, operations)
+- [x] Create a detailed maturity roadmap document in `doc/`
+- [x] Include Cursor prompts for every phase and sub-task
+- [x] Define phase-by-phase acceptance criteria and DoD gates
+
+### 2. Execution Preparation
+- [ ] Confirm roadmap scope and priorities with project owner
+- [ ] Lock phase order and timeline (8-12 week target)
+- [ ] Start Phase 0 baseline freeze and risk register
+
+## Review (2026-09-20)
+- Added `doc/RAVEN成熟化计划书.txt` as the master execution plan.
+- Plan covers product, engineering, testing, CI/CD, data governance, security, performance, release, and growth analytics.
+- Each phase includes ready-to-use Cursor prompt templates to reduce execution ambiguity.
+
+## Phase 0 Execution Log (2026-09-20)
+- [x] Completed maturity gap scan across app architecture, services, SQL/migrations, and deployment config.
+- [x] Added `doc/工程审计报告.txt` with domain-by-domain findings and P0/P1/P2 priorities.
+- [x] Added `doc/风险清单.txt` with probability/impact scoring and mitigation prompts.
+- [x] Added `doc/里程碑计划.txt` with an 8-week milestone sequence and acceptance goals.
+- [x] Added `doc/基线说明.txt` with baseline tag and rollback SOP.
+
+### Review (Phase 0)
+- Phase 0 documentation foundation is in place and ready for execution.
+- Recommended immediate next move is Phase 1 quality gates: scripts + CI + test scaffold.
+
+## Phase 1 Execution Log (2026-09-20)
+- [x] Added quality scripts in `package.json`: `typecheck`, `test`, `test:watch`, `check-all`.
+- [x] Added test stack and configuration: `vitest.config.ts`, `src/test/setup.ts`.
+- [x] Added initial service tests:
+  - `src/services/reviewsService.test.ts`
+  - `src/services/favoritesService.test.ts`
+- [x] Added CI workflow: `.github/workflows/ci.yml` (lint/typecheck/build/test jobs).
+- [x] Completed self-check run and recorded pass/fail status.
+
+### Review (Phase 1)
+- Build and unit tests are now automated and passing locally.
+- Lint and typecheck are still red due to existing pre-Phase-1 baseline issues in app code.
+- Next step is Phase 1.1: incremental lint/type debt cleanup in safe batches.
+
+## Phase 1.1 Debt Cleanup (2026-09-20)
+- [x] Fixed TypeScript blocking issues across routes/components/services.
+- [x] Removed lint errors and aligned stricter typing in key services.
+- [x] Verified local quality gates:
+  - `npm run lint` ✅
+  - `npm run typecheck` ✅
+  - `npm run test` ✅
+  - `npm run build` ✅
+
+## Phase 2 Auth Hardening (2026-09-20)
+- [x] Added route guard component: `src/components/RequireAuth.tsx`.
+- [x] Protected `/submit`, `/favorites/bars`, `/favorites/clubs` in `src/App.tsx`.
+- [x] Refined login redirect flow with generic `returnTo` and `returnState`.
+- [x] Split auth hook to `src/contexts/useAuth.ts` for cleaner module boundaries.
+- [x] Added docs:
+  - `doc/Auth状态机.txt`
+  - `doc/受保护路由清单.txt`
+
+## Phase 3 Data Governance (2026-09-20)
+- [x] Added DB operation SOP: `doc/数据库操作SOP.txt`.
+- [x] Added RLS audit output: `doc/RLS审计报告.txt`.
+- [x] Consolidated migration/data-environment guardrails for dev/staging/prod workflows.
+
+## Phase 4 Core Stability (2026-09-20)
+- [x] Removed N+1 queries in `reviewsService.getUserReviewHistory` by batched venue lookups.
+- [x] Added detail-page failure recovery (`Try Again`) for:
+  - `src/routes/BarDetail.tsx`
+  - `src/routes/ClubDetail.tsx`
+- [x] Added core path and defect docs:
+  - `doc/关键路径用例.txt`
+  - `doc/缺陷修复记录.txt`
+
+## Phase 5 Test Expansion (2026-09-20)
+- [x] Added Playwright E2E setup and scripts:
+  - `playwright.config.ts`
+  - `e2e/auth-guard.spec.ts`
+  - `e2e/browse-smoke.spec.ts`
+  - `package.json` scripts `test:e2e`, `test:e2e:ui`
+- [x] Added E2E CI workflow: `.github/workflows/e2e.yml`
+- [x] Expanded unit tests:
+  - Added batching-logic test in `src/services/reviewsService.test.ts`
+- [x] Scoped Vitest to unit tests (`vitest.config.ts`) to avoid E2E pickup.
+
+## Phase 6 Performance (2026-09-20)
+- [x] Implemented route-level code splitting via `React.lazy` in `src/App.tsx`.
+- [x] Added `Suspense` fallback for lazy routes.
+- [x] Added report: `doc/性能优化报告.txt`.
+
+## Phase 7 Security (2026-09-20)
+- [x] Ran dependency security baseline (`npm audit --json`).
+- [x] Applied non-breaking remediations (`npm audit fix`).
+- [x] Re-validated all quality gates after dependency changes.
+- [x] Added security governance doc: `doc/安全基线与依赖治理.txt`.
+
+## Phase 8 Release & Ops (2026-09-20)
+- [x] Added release/rollback SOP: `doc/发布回滚SOP.txt`.
+- [x] Added analytics instrumentation plan: `doc/埋点与增长分析方案.txt`.
+
+## Review (Phase 4-8 Completion)
+- Core stability is improved with batched review-history data fetching and detail-page recovery states.
+- Testing now includes both unit and E2E layers with local run commands and CI workflow support.
+- Route-level splitting reduced initial bundle pressure and established a scalable perf baseline.
+- Security baseline and non-breaking dependency remediation were executed with full regression pass.
+- Release discipline and growth analytics planning are now documented for operational maturity.
+
+## Self-check Loop Hardening (2026-09-20)
+- [x] Expanded automated tests to cover critical guard/retry/redirect/list/detail flows:
+  - `src/components/RequireAuth.test.tsx`
+  - `src/routes/Profile.auth-redirect.test.tsx`
+  - `src/routes/VenueLists.resilience.test.tsx`
+  - `src/routes/VenueDetails.retry.test.tsx`
+  - `src/services/barsService.test.ts`
+  - `src/services/clubsService.test.ts`
+- [x] Performed TypeScript risk hardening on unsafe assertions in:
+  - `src/routes/Profile.tsx`
+  - `src/services/favoritesService.ts`
+- [x] Upgraded toolchain for security and compatibility:
+  - `vite` -> `8.3.0`
+  - `vitest` -> `5.0.1`
+  - `@vitejs/plugin-react` -> `6.1.1`
+  - `typescript-eslint` -> latest compatible
+- [x] Eliminated npm audit vulnerabilities (`npm audit --json` => `0`).
+- [x] Repeated full regression loops until green:
+  - `npm run check-all` ✅
+  - `npm run test:e2e` ✅
+
+## Review (Self-check Loop)
+- Current baseline is green across lint/type/build/unit/e2e/security scan.
+- Core modules and critical user paths now have automated coverage and recovery-path assertions.
+- Remaining work should be feature expansion or deeper integration/performance benchmarks, not baseline stability fixes.
+
+## UAT & Release Rehearsal Plan (2026-09-20)
+- [x] Build a production readiness UAT checklist based on `doc/发布回滚SOP.txt`.
+- [x] Execute critical-path UAT verification (auth guard, browse, detail, review-entry path, favorites guard).
+- [x] Run release rehearsal command bundle and capture evidence.
+- [x] Simulate rollback decision process with clear checkpoints and recovery criteria.
+- [x] Produce final acceptance log with residual risks and next production actions.
+
+### Review (UAT & Rehearsal)
+- Added `doc/UAT验收记录.txt` with scope, command evidence, and pass/fail summary.
+- Added `doc/上线演练记录.txt` with release gate results and rollback checkpoint commit.
+- Added reusable script `release:rehearsal` in `package.json` for one-command gate execution.
+
+## Release Workflow Hardening (2026-09-20)
+- [x] Added GitHub manual release workflow: `.github/workflows/release.yml`.
+- [x] Added dual-target release path:
+  - `staging` (Netlify non-prod deploy)
+  - `production` (Netlify prod deploy)
+- [x] Enforced pre-deploy quality gate in workflow:
+  - `check-all` + `test:e2e` + `npm audit --audit-level=high`
+- [x] Updated `doc/发布回滚SOP.txt` with workflow trigger steps and required secrets.
+
+## Test Coverage Audit & High-Value Tests (2026-09-20)
+
+### Plan
+- [x] Audit test coverage gaps for `src/services`, auth guards, and critical flows.
+- [x] Add stable unit/integration tests for `RequireAuth` guard behavior.
+- [x] Add stable route-level tests for login redirect in `Profile` (`returnTo` handling).
+- [x] Add stable tests for list loading and error retry in `Bars`/`Clubs` routes.
+- [x] Add stable tests for detail-page failure retry in `BarDetail`/`ClubDetail`.
+- [x] Run targeted tests, fix failures, then run full unit test command to ensure pass.
+
+### Review
+- Coverage gap audit result:
+  - Existing coverage before this change was concentrated in `src/services/favoritesService.ts` and `src/services/reviewsService.ts`; guard and critical route flows were largely untested in unit/integration layer.
+  - Missing high-value route coverage included `RequireAuth` redirect contract, `Profile` post-login return navigation, list pages recovery path, and detail pages retry path.
+- Implemented minimal, stable tests:
+  - Added `src/components/RequireAuth.test.tsx`.
+  - Added `src/routes/Profile.auth-redirect.test.tsx`.
+  - Added `src/routes/VenueLists.resilience.test.tsx`.
+  - Added `src/routes/VenueDetails.retry.test.tsx`.
+  - Updated `src/test/setup.ts` with global RTL cleanup and `window.scrollTo` mock for jsdom stability.
+- Command outcomes:
+  - `npm run test -- src/components/RequireAuth.test.tsx src/routes/Profile.auth-redirect.test.tsx src/routes/VenueLists.resilience.test.tsx src/routes/VenueDetails.retry.test.tsx` ✅
+  - `npm run test` ✅ (all current unit suites passed)
+- Remaining risk hotspots:
+  - `src/services/barsService.ts` and `src/services/clubsService.ts` still lack direct unit tests for Supabase query composition and fallback branches.
+  - Authenticated profile data aggregation branches (`loadLatestReview`, user stats loading) in `src/routes/Profile.tsx` remain only partially covered.
+  - Favorite detail/list interactions with real auth sessions remain dependent on e2e coverage rather than service+route integration tests.
+
+## TypeScript 质量巡检与最小修复 (2026-09-20)
+- [x] 扫描 `src` 下潜在类型风险（`any`、不安全断言、空值路径、不稳定依赖）
+- [x] 仅对高风险点做最小且必要修复（不做大重构）
+- [x] 运行并通过本地 `typecheck` 与 `lint`
+- [x] 在本文件追加 review 总结（问题分级、改动说明、命令结果、残余风险）
+
+### Review (TypeScript 巡检)
+- 风险发现：
+  - 高：`src/routes/Profile.tsx` 中存在 `unknown as` 双重断言与 `location.state` 直接强转，可能在异常路由状态下产生错误读取路径。
+  - 中：`src/services/favoritesService.ts` 中 `filter(Boolean) as FavoriteVenue[]` 依赖断言收窄，存在类型与运行时语义不一致风险。
+  - 低：`src` 其他文件仍有若干 Supabase 结果强制断言（如 `barsService`、`clubsService`），当前未触发检查失败，但建议后续分批替换为更强类型查询。
+- 已做最小修复：
+  - `src/routes/Profile.tsx`：为两个查询增加 `.returns<...>()`，移除双重断言；新增 `isAuthRedirectState` 类型守卫，保护 `location.state` 读取。
+  - `src/services/favoritesService.ts`：用泛型 `isPresent` + `map<FavoriteVenue | null>(...)` 明确收窄，移除 `filter(Boolean)` + 断言写法。
+- 本地命令结果：
+  - `npm run typecheck` ✅
+  - `npm run lint` ✅
+- 残余风险：
+  - 仍有部分 Supabase 数据 shape 通过 `as` 断言适配（主要在 venue service 层），若后端字段变更，可能出现静态类型无法及时暴露的问题。

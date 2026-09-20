@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { cn } from '../../lib/utils';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -33,8 +32,7 @@ const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-    <motion.button
-      whileTap={{ scale: 0.95 }}
+    <button
       className={cn(
         baseClasses,
         variantClasses[variant],
@@ -52,7 +50,7 @@ const Button: React.FC<ButtonProps> = ({
       ) : (
         children
       )}
-    </motion.button>
+    </button>
   );
 };
 
