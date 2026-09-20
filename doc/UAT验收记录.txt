@@ -27,8 +27,8 @@ RAVEN UAT 验收记录
 2) `npm run test:e2e`
 
 结果：
-- Unit Tests: 23/23 通过
-- E2E Tests: 5/5 通过
+- Unit Tests: 29/29 通过
+- E2E Tests: 6/6 通过
 - Lint / Typecheck / Build: 全通过
 
 三、关键验收点状态
@@ -40,6 +40,8 @@ RAVEN UAT 验收记录
 - [PASS] 路由级懒加载后功能回归稳定
 - [PASS] ID 页 Echo 历史流分页与重试行为
 - [PASS] ID 页 Deathmarch/Echo 状态机（loading/error/empty/ready）一致
+- [PASS] 状态组件可访问性语义（status/alert/live region）与移动触控热区增强
+- [PASS] 动效降级策略（prefers-reduced-motion）已接入关键 CTA 样式
 
 四、结论
 -------------------------------------------------------------------------------

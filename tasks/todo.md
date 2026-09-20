@@ -574,3 +574,20 @@
   - disables animations
   - sets transition duration to 0ms
   - suppresses hover transform jumps
+
+## Kernel Refactor Phase 6 (2026-09-20)
+
+### Plan
+- [x] Consolidate kernel refactor outcomes into master maturity docs (`doc/RAVEN成熟化计划书.txt`).
+- [x] Sync UAT and release rehearsal records to latest quality baseline counts.
+- [x] Re-run release rehearsal gate (`check-all` + `test:e2e` + `npm audit --json`) as final handoff evidence.
+- [x] Append final review summary with residual risks and production-readiness statement.
+
+### Review (Kernel Refactor Phase 6 - Docs & Release Closure)
+- Updated master plan doc with full Kernel Refactor A~F execution record and maturity closure summary.
+- Updated `doc/UAT验收记录.txt` and `doc/上线演练记录.txt` to align with current suite scale and latest quality baseline.
+- Final gate commands were re-executed and all green in the current workspace baseline.
+
+### Residual Risk (Final)
+- E2E is generally stable but has shown occasional transient flake on initial page-render locators under parallel load; rerun clears it, and no deterministic regression is present.
+- Very large per-user cross-table review histories still use fallback merge path when RPC is unavailable; current DB-level RPC path mitigates primary scale risk.
